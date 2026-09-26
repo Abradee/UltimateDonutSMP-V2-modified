@@ -4,7 +4,7 @@
 
 <h1 align="center">UltimateDonutSmp V2</h1>
 
-<h2> align="center">fork by abradee.</h2>
+<h2 align="center">fork by abradee.</h2>
 
 <p align="center">
   Free Paper, Purpur, Pufferfish, Spigot, and Folia plugin for DonutSMP-style Minecraft servers.
