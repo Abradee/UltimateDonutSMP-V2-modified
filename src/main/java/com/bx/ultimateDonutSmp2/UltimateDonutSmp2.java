@@ -545,7 +545,8 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         console.sendMessage("");
         console.sendMessage("§8  ═════════════════════════════════════════════════════════════════════════════════════════════════");
         console.sendMessage("§7                                  §fMade by §b§lbeestoxd §8| §fversion §a§l" + v);
-        console.sendMessage("§7                              §fDiscord: §9§nhttps://dsc.gg/hellstarr");
+        console.sendMessage("§7                              §fDiscord: §9§nhttps://dsc.gg/quasarsmp");
+        console.sendMessage("§7                                  §fModified port for QuasarSMP, by abradee");
         console.sendMessage("§8  ═════════════════════════════════════════════════════════════════════════════════════════════════");
         console.sendMessage("");
         console.sendMessage("§8  ╔═══════════════════════════════════════════════════════════════════════════╗");
