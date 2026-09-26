@@ -10,9 +10,9 @@
     <packaging>jar</packaging>
 
     <name>ultimatedonutsmp2</name>
-
+,
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <!--
           Production artifacts compile against the oldest supported API.
           This prevents accidental linkage to methods introduced only in newer

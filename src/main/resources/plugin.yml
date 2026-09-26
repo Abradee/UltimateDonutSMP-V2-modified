@@ -1,7 +1,7 @@
 name: UltimateDonutSmp2
 version: ${project.version}
 main: com.bx.ultimateDonutSmp2.UltimateDonutSmp2
-api-version: "1.21"
+api-version: "26.2"
 folia-supported: true
 depend:
 - ProtocolLib
