@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="images/mainn.png" alt="UltimateDonutSmp V2" width="720">
-</p>
-
-<h1 align="center">UltimateDonutSmp V2</h1>
+<h1 align="center">ultimatedonutsmp v2 - modified fork</h1>
 
 <h2 align="center">fork by abradee. - modified for quasarsmp</h2>
 
