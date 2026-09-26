@@ -5,6 +5,7 @@
 <h1 align="center">UltimateDonutSmp V2</h1>
 
 <p align="center">
+  <b>Modified for kepzy, by abradee.</b>
   Free Paper, Purpur, Pufferfish, Spigot, and Folia plugin for DonutSMP-style Minecraft servers.
   Economy, PvP, marketplace, staff tools, menus, and network utilities in one production-focused plugin.
 </p>
