@@ -180,7 +180,7 @@ commands:
     permission-message: "&cYou do not have permission to use /pvp."
   auctionhouse:
     description: Open the Auction House
-    usage: /auctionhouse [sell|my|claims|cancel|reload]
+    usage: /auctionhouse [sell|my|claims|cancel|search|reload]
     aliases:
     - ah
     permission: ultimatedonutsmp2.command.auctionhouse

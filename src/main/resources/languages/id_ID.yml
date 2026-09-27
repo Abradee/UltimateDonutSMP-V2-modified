@@ -1854,6 +1854,7 @@ MESSAGES:
     CLAIM_DATABASE_ERROR: "&cKlaim belum dapat diselesaikan sekarang."
     DISABLED: "&cAuction dan seterusnya."
     SELL_USAGE: "&cUsage: /ah menjual <price>"
+    SEARCH_USAGE: "&cUsage: /ah search <item>"
     CANCEL_USAGE: "&cUsage: /ah batalkan <listingid>"
     INVALID_PRICE: "&cInvalid price format. use numbers 100, 5k, or 1,5m."
     INVALID_LISTING_ID: "&cInvalid dan id."

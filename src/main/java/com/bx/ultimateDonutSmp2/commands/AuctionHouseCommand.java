@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -95,6 +96,11 @@ public final class AuctionHouseCommand implements CommandExecutor, TabCompleter 
             }
             case "fastbuy" -> togglePreference(player, true);
             case "fastsell" -> togglePreference(player, false);
+            case "search" -> {
+                if (requirePermission(player, "use")) {
+                    handleSearch(player, args);
+                }
+            }
             default -> {
                 if (requirePermission(player, "use")) {
                     openBrowse(player);
@@ -316,6 +322,42 @@ public final class AuctionHouseCommand implements CommandExecutor, TabCompleter 
         });
     }
 
+    private void handleSearch(Player player, String[] args) {
+        String query = searchArgument(args);
+        if (query.isEmpty()) {
+            AuctionHouseSounds.fail(player, plugin);
+            send(player, "AUCTION_HOUSE.SEARCH_USAGE", "&cUsage: /ah search <item>");
+            return;
+        }
+        plugin.getAuctionHouseManager().setSearchQuery(player.getUniqueId(), query);
+        openBrowse(player);
+    }
+
+    static String searchArgument(String[] args) {
+        if (args == null || args.length < 2) {
+            return "";
+        }
+        String joined = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).trim();
+        if (joined.length() > 64) {
+            return joined.substring(0, 64);
+        }
+        return joined;
+    }
+
+    static List<String> searchTabComplete(String token) {
+        if (token == null || token.isBlank()) {
+            return List.of();
+        }
+        String prefix = token.toLowerCase(Locale.ROOT).replace(' ', '_');
+        return Arrays.stream(Material.values())
+                .map(material -> material.name().toLowerCase(Locale.ROOT))
+                .filter(name -> !name.equals("air") && !name.startsWith("legacy_"))
+                .filter(name -> name.startsWith(prefix))
+                .sorted()
+                .limit(40)
+                .toList();
+    }
+
     private void openBrowse(Player player) {
         plugin.getAuctionHouseManager().processAutoClaims(player);
         AuctionHouseSounds.play(player, plugin, AuctionHouseSounds.OPEN);
@@ -409,10 +451,19 @@ public final class AuctionHouseCommand implements CommandExecutor, TabCompleter 
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (!(sender instanceof Player player) || args.length != 1) {
+        if (!(sender instanceof Player player)) {
+            return List.of();
+        }
+        if (args.length >= 2 && "search".equalsIgnoreCase(args[0]) && canUse(player, "use")) {
+            return searchTabComplete(args[args.length - 1]);
+        }
+        if (args.length != 1) {
             return List.of();
         }
         List<String> values = new ArrayList<>();
+        if (canUse(player, "use")) {
+            values.add("search");
+        }
         if (canUse(player, "sell")) {
             values.add("sell");
         }
