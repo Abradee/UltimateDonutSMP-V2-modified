@@ -1770,6 +1770,7 @@ MESSAGES:
     CLAIM_DATABASE_ERROR: "&c目前无法完成领取。"
     DISABLED: "&cAuction house is currently disabled。"
     SELL_USAGE: "&cUsage: /ah 出售 <price>"
+    SEARCH_USAGE: "&cUsage: /ah search <item>"
     CANCEL_USAGE: "&cUsage：/ah 取消 <listingid>"
     INVALID_PRICE: "&cInvalid price format。 use numbers like 100、5k、or 1.5M。"
     INVALID_LISTING_ID: "&cInvalid listing id。"

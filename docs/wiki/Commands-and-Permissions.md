@@ -118,7 +118,7 @@ The five sell commands (`/sell`, `/sellall`, `/sellhand`, `/sellhistory`, `/sell
 
 | Command | Aliases | Usage | Permission | Description |
 |---------|---------|-------|------------|-------------|
-| `/auctionhouse` | `/ah` | `/auctionhouse [sell\|my\|claims\|cancel\|limit\|fastbuy\|fastsell\|reload]` | `ultimatedonutsmp2.command.auctionhouse`; per-action `ultimatedonutsmp2.auctionhouse.<action>` or `donutauction.<action>`; `reload` requires `ultimatedonutsmp2.admin.auctionhouse` | Open and operate the Auction House. |
+| `/auctionhouse` | `/ah` | `/auctionhouse [sell\|my\|claims\|cancel\|search\|limit\|fastbuy\|fastsell\|reload]` | `ultimatedonutsmp2.command.auctionhouse`; per-action `ultimatedonutsmp2.auctionhouse.<action>` or `donutauction.<action>`; `reload` requires `ultimatedonutsmp2.admin.auctionhouse` | Open and operate the Auction House. |
 | `/orders` | — | `/orders [my\|collect\|reload]` | `ultimatedonutsmp2.command.orders`; `reload` requires `ultimatedonutsmp2.admin.orders` | Open the Orders board, view your own orders, or collect fulfilled orders. |
 
 ### `/auctionhouse` subcommands
@@ -128,6 +128,7 @@ Each action is checked against `ultimatedonutsmp2.auctionhouse.<action>` **or** 
 | Subcommand | Arguments | Permission | Effect |
 |------------|-----------|------------|--------|
 | *(none)* | — | `ultimatedonutsmp2.auctionhouse.use` / `donutauction.use` | Open the browse menu. |
+| `search` | `<item>` | `ultimatedonutsmp2.auctionhouse.use` / `donutauction.use` | Open the browse menu already filtered to that item. Same 64 character cap as the sign search. |
 | `sell` | `<price>` | `ultimatedonutsmp2.auctionhouse.sell` / `donutauction.sell` | List the held item. Subject to the listing limit tier. |
 | `my` | — | `ultimatedonutsmp2.auctionhouse.my` / `donutauction.my` | View your active listings. |
 | `claims` | — | `ultimatedonutsmp2.auctionhouse.claims` / `donutauction.claims` | View and collect sale proceeds and expired items. |

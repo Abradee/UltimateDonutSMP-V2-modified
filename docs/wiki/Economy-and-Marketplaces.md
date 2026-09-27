@@ -180,6 +180,7 @@ price source Quick Buy reads from, so its health directly affects what `/shop` c
 | Command | Purpose |
 | :--- | :--- |
 | `/ah` | Open the browser |
+| `/ah search <item>` | Open the browser filtered to that item |
 | `/ah sell <price>` | List the held item |
 | `/ah my` | View your own listings |
 | `/ah claims` | Collect sale proceeds and expired items |

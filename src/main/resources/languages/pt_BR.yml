@@ -1777,6 +1777,7 @@ MESSAGES:
     CLAIM_DATABASE_ERROR: "&cNão foi possível concluir o resgate agora."
     DISABLED: "&cAuction house is currently disabled."
     SELL_USAGE: "&cUsage: /ah vende <price>"
+    SEARCH_USAGE: "&cUsage: /ah search <item>"
     CANCEL_USAGE: "&cUsage: /ah cancelar <listingid>"
     INVALID_PRICE: "&cInvalid price format. use numbers like 100, 5k, or 1,5m."
     INVALID_LISTING_ID: "&cInvalid listing id."
