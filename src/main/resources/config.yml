@@ -693,15 +693,15 @@ TABLIST:
   NAME-FORMAT: '<media_badge>%prefix%<donut_badge>&f<nick>%team_suffix%'
   # Configuration section for Header.
   HEADER:
-  - ''
-  - <#00A6FF><bold>UltimateDonutSMP V2
-  - '&f%online_compact% Players'
-  - ''
+    - ''
+    - '&#002B5C&lQ&#004172&lu&#005789&la&#006D9F&ls&#0083B5&la&#0099CC&lr&#26AEE0&lS&#4DC4F5&lM&#73D8FF&lP'
+    - '&f%online% Players'
+    - ''
   # Configuration section for Footer.
   FOOTER:
-  - ''
-  - '<#00FF00>$ &f%money% <#00FF00>• &f%ping% ms'
-  - ''
+    - ''
+    - '   &#FF5E00/discord  &#FF9800/guide  &#FFD200/store   '
+    - ''
 # Configuration section for Server List.
 SERVER-LIST:
   # Determines whether Enabled is enabled or disabled. When true, the text under this server's name
