@@ -445,7 +445,7 @@ commands:
     permission-message: "&cYou do not have permission to use /punishments."
   offend:
     description: Punish a player using preset offense rules from offenses.yml
-    usage: /offend <player> <reason> [time]
+    usage: /offend <player> <reason> [time] [wipe]
     permission: ultimatedonutsmp2.staff.punishments.offend
     permission-message: "&cYou do not have permission to use /offend."
   ban:

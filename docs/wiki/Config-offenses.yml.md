@@ -37,7 +37,7 @@ wipe, and neither do MUTE, WARN or KICK offenses.
 | | |
 | :--- | :--- |
 | **On disk** | `plugins/UltimateDonutSmp2/offenses.yml` |
-| **Commands** | `/offend` |
+| **Commands** | `/offend <player> <reason> [time] [wipe]` |
 | **Player-facing text** | Not translated. Edit this file directly. |
 | **Reload** | `/ultimatedonutsmp2 reload` |
 
@@ -126,6 +126,7 @@ Each entry under `offenses` is keyed by a name you choose, and every entry accep
 | `durations` | `list` | A list of values | Required | Escalation ladder, one duration per prior offence. Accepts `30d`, `24h`, `perm`, and `0s` for a warning. The final entry repeats for all later offences. |
 | `name` | `string` | Any text | Required | Display name shown to staff in `/offend` and in punishment messages. |
 | `type` | `string` | Any text | Required | Punishment applied: `BAN`, `MUTE`, `WARN` or `KICK`. |
+| `wipe` | `boolean` | `true`, `false` | Optional | When `true`, automatically runs a player wipe on `BAN` and `BLACKLIST` punishments. Defaults to `false`. Can be overridden per-use with the 4th argument of `/offend <player> <reason> [time] [wipe]` (`wipe`/`true` or `nowipe`/`false`). |
 
 <details>
 <summary>Default <code>offenses</code> block as shipped</summary>
