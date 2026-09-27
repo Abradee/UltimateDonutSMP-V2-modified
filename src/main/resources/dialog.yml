@@ -55,8 +55,8 @@ SCREENS:
   RTP-QUEUE: true
 
 DONUT_SMP_DIALOG:
-  TITLE: "UltimateDonutSmp V2"
-  EXTERNAL-TITLE: "UltimateDonutSmp V2"
+  TITLE: "QuasarSMP"
+  EXTERNAL-TITLE: "QuasarSMP"
   CAN-CLOSE-WITH-ESCAPE: true
   # Keep this on NONE. With CLOSE the client drops back to the world the moment a button is
   # pressed and only then receives the next screen, and Minecraft warps the mouse to the middle
@@ -98,7 +98,7 @@ DONUT_SMP_DIALOG:
 
 SETTINGS_DIALOG:
   TITLE: "Settings"
-  TEXT: "Choose a category to change your UltimateDonutSMP V2 settings"
+  TEXT: "Choose a category to change your QuasarSMP settings"
   EXTERNAL-TITLE: "Settings"
   AFTER-ACTION: NONE
   ITEM: ""

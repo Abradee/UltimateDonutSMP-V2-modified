@@ -6,11 +6,11 @@
 
     <groupId>com.bx</groupId>
     <artifactId>ultimatedonutsmp2</artifactId>
-    <version>1.0</version>
+    <version>1.0.2-DEV</version>
     <packaging>jar</packaging>
 
     <name>ultimatedonutsmp2</name>
-,
+
     <properties>
         <java.version>25</java.version>
         <!--
@@ -274,6 +274,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

@@ -43,7 +43,7 @@ DELIVERY:
 
 # Item matching and restriction filters
 MATCHING:
-  # Materials blocked from being requested via item orders. The Quick Buy blacklist in shop.yml does not apply here.
+  # Materials blocked from being requested via item orders
   BLOCKED_MATERIALS:
     - BEDROCK
     - BARRIER
@@ -194,6 +194,9 @@ SORTING:
     - MOST_MONEY_PER_ITEM
     - MOST_PAID
     - RECENTLY_LISTED
+
+# Visual layout style mode
+DONUT-STYLE: DEPOSIT_GUI
 
 # Geyser/Floodgate Bedrock player compatibility
 BEDROCK:

@@ -31,13 +31,13 @@ START-COUNTDOWN:
     # Play tick sound effects during countdown
     ENABLED: true
   TITLES:
-    6: ''
-    5: '&e5'
-    4: '&e4'
-    3: '&c3'
-    2: '&c2'
-    1: '&c1'
-    0: '&a&lFight!'
+    '6': ''
+    '5': '&e5'
+    '4': '&e4'
+    '3': '&c3'
+    '2': '&c2'
+    '1': '&c1'
+    '0': '&a&lFight!'
   MESSAGES:
     '5': '&a5'
     '4': '&a4'
@@ -57,7 +57,8 @@ RESULT-TITLES:
   draw:
     title: '&e&lDRAW!'
     subtitle: '&fTime''s up - no winner.'
-    message: '&e[Timer] &fTime limit reached! Match ended as a &eDRAW &f- streaks unchanged.'
+    message: '&e[Timer] &fTime limit reached! Match ended as a &eDRAW &f- streaks
+      unchanged.'
 
 # Command restrictions during a duel
 COMMAND_BLOCK:
@@ -67,12 +68,12 @@ COMMAND_BLOCK:
   MODE: ALLOWLIST
   # List of commands allowed (or blocked depending on MODE) during a duel match
   COMMANDS:
-    - "/duel"
-    - "/draw"
-    - "/leave"
-    - "/queue"
+  - /duel
+  - /draw
+  - /leave
+  - /queue
   # Message shown to players attempting blocked commands
-  MESSAGE: "&cYou cannot use that command during a duel."
+  MESSAGE: '&cYou cannot use that command during a duel.'
 
 # World Border settings applied during dynamic random biome duel matches
 WORLDBORDER:
@@ -103,7 +104,7 @@ MAP_SOURCES:
     AUTO_LOAD: true
     # List of world names containing static duel arenas (e.g., ["world_duels"])
     WORLDS: []
-
+  
   # Configuration for dynamic auto-generated random biome duel worlds
   RANDOM_BIOMES:
     # Enable auto-generating random biome duel worlds for matches (true / false)
@@ -128,32 +129,36 @@ MAP_SOURCES:
     ALLOWLIST: []
     # Blacklist of biome keys excluded from selection
     EXCLUDE:
-      - "minecraft:the_end"
-      - "minecraft:end_highlands"
-      - "minecraft:end_midlands"
-      - "minecraft:end_barrens"
-      - "minecraft:small_end_islands"
-      - "minecraft:nether_wastes"
-      - "minecraft:soul_sand_valley"
-      - "minecraft:crimson_forest"
-      - "minecraft:warped_forest"
-      - "minecraft:basalt_deltas"
-
+    - minecraft:the_end
+    - minecraft:end_highlands
+    - minecraft:end_midlands
+    - minecraft:end_barrens
+    - minecraft:small_end_islands
+    - minecraft:nether_wastes
+    - minecraft:soul_sand_valley
+    - minecraft:crimson_forest
+    - minecraft:warped_forest
+    - minecraft:basalt_deltas
+    
     # Pre-prepared world pool settings for FLAT terrain mode
     FLAT_POOL:
       # Enable pre-generating flat duel worlds in advance (true / false)
       ENABLED: true
       # Recycle and reuse clean flat worlds for subsequent matches (true / false)
       REUSE_WORLDS: true
+      # Number of pre-prepared flat worlds to keep ready in pool
+      SIZE: 2
       # Interval in ticks between pool preparation checks
       PREPARE_INTERVAL_TICKS: 20
-
+    
     # Pre-prepared world pool settings for VANILLA terrain mode
     VANILLA_POOL:
       # Enable pre-generating vanilla terrain duel worlds (true / false)
       ENABLED: true
       # Allow background chunk generation for vanilla terrain (true / false)
       RUNTIME_GENERATION: true
+      # Number of pre-prepared vanilla worlds to keep ready in pool
+      SIZE: 2
       # Chunks generated per tick to prevent server lag
       CHUNKS_PER_TICK: 1
       # Interval in ticks between vanilla pool preparation ticks
@@ -166,23 +171,42 @@ MAP_SOURCES:
       MAX_WATER_PERCENT: 40
       # How many times a too-watery arena is regenerated before it is used anyway
       MAX_TERRAIN_ATTEMPTS: 5
+    TERRAIN_MODE_SETTINGS:
+      FLAT:
+        ALLOW_ITEM_DROP: false
+        ALLOW_BLOCK_BREAK: true
+        ALLOW_BLOCK_PLACE: true
+        ALLOW_BUCKET_USE: true
+        NO_HUNGER: false
+        NO_WEATHER: false
+        ALWAYS_MORNING: false
+        NO_FALL_DAMAGE: false
+      VANILLA:
+        ALLOW_ITEM_DROP: false
+        ALLOW_BLOCK_BREAK: true
+        ALLOW_BLOCK_PLACE: true
+        ALLOW_BUCKET_USE: true
+        NO_HUNGER: false
+        NO_WEATHER: false
+        ALWAYS_MORNING: false
+        NO_FALL_DAMAGE: false
 
 # Cross-server BungeeCord / Velocity Redis sync settings
 CROSS_SERVER:
   # Enable cross-server duel matchmaking (true / false)
   ENABLED: false
   # Unique identifier for this local server instance
-  LOCAL_SERVER_ID: ""
+  LOCAL_SERVER_ID: ''
   # Redis channel for duel match communications
-  REDIS_CHANNEL: "ultimatedonutsmp2:duels"
+  REDIS_CHANNEL: ultimatedonutsmp2:duels
   # Redis key prefix for duel data
-  KEY_PREFIX: "uds:duels:"
+  KEY_PREFIX: 'uds:duels:'
   # Stale queue request timeout (in seconds)
   STALE_QUEUE_TIMEOUT_SECONDS: 45
   # Player proxy transfer timeout (in seconds)
   TRANSFER_TIMEOUT_SECONDS: 20
   # Proxy server target name
-  PROXY_SERVER_NAME: ""
+  PROXY_SERVER_NAME: ''
   # List of server IDs allowed for duel matchmaking queues
   ALLOWED_QUEUE_SERVERS: []
   # List of server IDs allowed to host duel matches
@@ -200,12 +224,12 @@ GUI:
       LEAVE_QUEUE:
         NAME: '&cleave queue'
         LORE:
-          - '&7players queued: &f{queued}'
-          - '&7click to leave the duel queue.'
+        - '&7players queued: &f{queued}'
+        - '&7click to leave the duel queue.'
       NO_MAPS:
         NAME: '&cno queue maps available'
         LORE:
-          - '&7configure queue arenas or enable random biomes.'
+        - '&7configure queue arenas or enable random biomes.'
       JOIN_QUEUE:
         NAME: '&ajoin casual queue'
         LORE_QUEUED: '&7players queued: &f{queued}'
@@ -227,15 +251,15 @@ GUI:
       STATS:
         NAME: '&eyour duel stats'
         LORE:
-          - '&7wins: &f{wins}'
-          - '&7losses: &f{losses}'
-          - '&7draws: &f{draws}'
-          - '&7streak: &f{streak}'
-          - '&7best streak: &f{best_streak}'
+        - '&7wins: &f{wins}'
+        - '&7losses: &f{losses}'
+        - '&7draws: &f{draws}'
+        - '&7streak: &f{streak}'
+        - '&7best streak: &f{best_streak}'
       CLAIMS:
         NAME: '&dclaims'
         LORE:
-          - '&7open duel loot claim packages.'
+        - '&7open duel loot claim packages.'
       CLOSE:
         NAME: '&cclose'
   QUEUE_MAP_SELECT:
@@ -248,11 +272,11 @@ GUI:
       NO_MAPS:
         NAME: '&cNo queue maps available'
         LORE:
-          - '&7Configure queue arenas or enable random biomes.'
+        - '&7Configure queue arenas or enable random biomes.'
       BACK:
         NAME: '&eBack'
         LORE:
-          - '&7Return to queue menu.'
+        - '&7Return to queue menu.'
       CLOSE:
         NAME: '&cClose'
   CREATE:
@@ -262,22 +286,22 @@ GUI:
       TARGET_OFFLINE:
         NAME: '&ctarget offline'
         LORE:
-          - '&7this player is no longer online.'
+        - '&7this player is no longer online.'
       NO_MAPS:
         NAME: '&cno duel maps available'
         LORE:
-          - '&7configure arenas or enable random biomes.'
+        - '&7configure arenas or enable random biomes.'
       MAP_OPTION:
         NAME: '&a{map}'
         LORE:
-          - '&7privacy: &f{privacy}'
-          - '&7target: &f{target}'
-          - '&7{description}'
-          - '&eclick to send challenge.'
+        - '&7privacy: &f{privacy}'
+        - '&7target: &f{target}'
+        - '&7{description}'
+        - '&eclick to send challenge.'
       TARGET_HEAD:
         NAME: '&etarget: &f{target}'
         LORE:
-          - '&7choose a map to send a duel request.'
+        - '&7choose a map to send a duel request.'
       PRIVACY_BUTTON:
         NAME: '&bprivacy: &f{privacy}'
         LORE_FRIENDS: '&7only same-team members can accept this duel.'
@@ -300,14 +324,14 @@ GUI:
       NO_CLAIMS:
         NAME: '&cno pending claims'
         LORE:
-          - '&7loot from duel wins will show up here.'
+        - '&7loot from duel wins will show up here.'
       CLAIM_ENTRY:
         NAME: '&eloot from &f{player}'
         LORE:
-          - '&7match: &f#{match_id}'
-          - '&7stored items: &f{count}'
-          - '&7click to preview this loot package.'
-          - '&8delete is available inside the preview.'
+        - '&7match: &f#{match_id}'
+        - '&7stored items: &f{count}'
+        - '&7click to preview this loot package.'
+        - '&8delete is available inside the preview.'
   CLAIM_PREVIEW:
     TITLE: '&8duel loot preview'
     SIZE: 54
@@ -315,7 +339,7 @@ GUI:
       CLAIM_NOT_FOUND:
         NAME: '&cclaim not found'
         LORE:
-          - '&7this duel loot package no longer exists.'
+        - '&7this duel loot package no longer exists.'
       BACK_ARROW:
         NAME: '&aback'
       BACK_BARRIER:
@@ -323,19 +347,19 @@ GUI:
       SUMMARY:
         NAME: '&eloot summary'
         LORE:
-          - '&7defeated player: &f{player}'
-          - '&7match: &f#{match_id}'
-          - '&7stored items: &f{count}'
+        - '&7defeated player: &f{player}'
+        - '&7match: &f#{match_id}'
+        - '&7stored items: &f{count}'
       CLAIM_ALL:
         NAME: '&aclaim all'
         LORE:
-          - '&7move all fitting items into your inventory.'
-          - '&7if some do not fit, they stay in claims.'
+        - '&7move all fitting items into your inventory.'
+        - '&7if some do not fit, they stay in claims.'
       DELETE_CLAIM:
         NAME: '&cdelete claim'
         LORE:
-          - '&7delete this entire loot package.'
-          - '&7this action cannot be undone.'
+        - '&7delete this entire loot package.'
+        - '&7this action cannot be undone.'
 
 # Duel system feedback and notification messages
 MESSAGES:
@@ -367,20 +391,24 @@ MESSAGES:
   LOOT_SENT_TO_CLAIMS: '&eloot from &f{player} &ehas been sent to your duel claims.'
   PREPARING_BIOME: '&epreparing duel biome arena...'
   CANCELLED_PLAYER_LEFT: '&cduel cancelled because one player left preparation.'
-  CANCELLED_PLAYER_UNAVAILABLE: '&cduel cancelled because one player is no longer available.'
+  CANCELLED_PLAYER_UNAVAILABLE: '&cduel cancelled because one player is no longer
+    available.'
   NO_BIOME_ARENA: '&cno duel biome arena is available right now.'
-  UNSAFE_ITEMS: '&cthe duel could not start because your opponent has unsafe item data.'
+  UNSAFE_ITEMS: '&cthe duel could not start because your opponent has unsafe item
+    data.'
   COULD_NOT_START: '&ccould not start the duel right now.'
   DUEL_FOUND: '&aduel found against &f{player}&a on arena &f{arena}&a.'
   ALREADY_IN_DUEL: '&cyou are already in a duel.'
   ARENA_PREPARING: '&cyour duel arena is preparing.'
   ALREADY_HAVE_REQUEST: '&cyou already have a pending duel request.'
   CANNOT_USE_FFA: '&cyou cannot use duels while inside the ffa system.'
-  FRIENDS_SAME_TEAM: '&cfriends-only duels require both players to be in the same team.'
+  FRIENDS_SAME_TEAM: '&cfriends-only duels require both players to be in the same
+    team.'
   FRIENDS_ONLY_TEAM: '&cfriends-only duels can only target members of your team.'
   CROSS_SERVER_PREPARING: '&across-server duel found. preparing match...'
   CROSS_SERVER_TRANSFERRING: '&across-server duel found. transferring to match server...'
-  CROSS_SERVER_NO_ARENA: '&ccross-server duel could not start because no arena is available.'
+  CROSS_SERVER_NO_ARENA: '&ccross-server duel could not start because no arena is
+    available.'
   REQUEST_EXPIRED_TO: '&cyour duel request to &f{player} &cexpired.'
   REQUEST_EXPIRED_FROM: '&cyour duel request from &f{player} &cexpired.'
   REQUEST_CLEARED: '&cyour duel request was cleared.'
@@ -400,12 +428,16 @@ MESSAGES:
   NO_MAP_AVAILABLE: '&cthat duel map is not available.'
   ARENA_NOT_AVAILABLE: '&cthat arena is not available.'
   NO_READY_ARENAS: '&cthere are no duel arenas ready yet.'
-  REQUEST_COULD_NOT_START: '&cyour duel request could not start because no arena is available.'
+  REQUEST_COULD_NOT_START: '&cyour duel request could not start because no arena is
+    available.'
   CLAIM_NO_LONGER_EXISTS: '&cthat duel claim no longer exists.'
   CLAIM_MAKE_ROOM: '&cmake room in your inventory before claiming that loot.'
-  CLAIM_PARTIAL: '&eclaimed some duel loot from &f{player}&e. &7some items are still waiting in claims.'
+  CLAIM_PARTIAL: '&eclaimed some duel loot from &f{player}&e. &7some items are still
+    waiting in claims.'
   CLAIM_SUCCESS: '&aclaimed duel loot from &f{player}&a.'
   CLAIM_DELETE_FAILED: '&ccould not delete that duel claim right now.'
   CLAIM_DELETED: '&cdeleted duel loot claim from &f{player}&c.'
-  QUEUE_ARENAS_NOT_READY: '&cqueue arenas exist but are not ready yet. &7use &f/arena setpos1 <id> &7and &f/arena setpos2 <id> &7for: &f{arenas}&7.'
-  QUEUE_NO_READY_ARENAS: '&cno ready queue arenas are configured yet. &7enable queue with &f/arena queue <id> true&7, then set &fpos1 &7and &fpos2&7.'
+  QUEUE_ARENAS_NOT_READY: '&cqueue arenas exist but are not ready yet. &7use &f/arena
+    setpos1 <id> &7and &f/arena setpos2 <id> &7for: &f{arenas}&7.'
+  QUEUE_NO_READY_ARENAS: '&cno ready queue arenas are configured yet. &7enable queue
+    with &f/arena queue <id> true&7, then set &fpos1 &7and &fpos2&7.'

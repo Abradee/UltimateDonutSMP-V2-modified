@@ -4,7 +4,7 @@
   <groupId>com.bx</groupId>
   <artifactId>ultimatedonutsmp2</artifactId>
   <name>ultimatedonutsmp2</name>
-  <version>1.0</version>
+  <version>1.0.2-DEV</version>
   <build>
     <sourceDirectory>${source.directory}</sourceDirectory>
     <defaultGoal>clean package</defaultGoal>

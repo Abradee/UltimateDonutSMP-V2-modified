@@ -545,7 +545,7 @@ SHARDS:
       # Configuration section for Spawn.
       spawn:
         # Determines whether Enabled is enabled or disabled. Available options: true, false
-        ENABLED: false
+        ENABLED: true
         # Determines whether Bound is enabled or disabled. Available options: true, false
         BOUND: false
         # The numerical value for Priority. Available options: Any valid integer
@@ -558,7 +558,7 @@ SHARDS:
         # that pays shards alongside CUBOID, and the AFK point gets one that counts as the
         # AFK area when no AFK cuboid is bound. One number covers both. Set 0 to switch the
         # shard sphere off and leave the AFK sphere at its built-in 16.
-        RADIUS: 16
+        RADIUS: 400
         # The numerical value for Interval. Available options: Any valid integer
         INTERVAL: 60
         # The numerical value for Amount. Available options: Any valid integer
@@ -667,6 +667,12 @@ TEAM:
   NAME-MAX-LENGTH: 5
   # The numerical value for Limit Members. Available options: Any valid integer
   LIMIT-MEMBERS: 10
+# Configuration section for Leaderboard.
+LEADERBOARD:
+  # The numerical value for Update. Available options: Any valid integer
+  UPDATE: 10
+  # The numerical value for Npc Refresh. Available options: Any valid integer
+  NPC-REFRESH: 1
 # Configuration section for Tablist.
 TABLIST:
   # Determines whether Enabled is enabled or disabled. Available options: true, false
@@ -693,15 +699,15 @@ TABLIST:
   NAME-FORMAT: '<media_badge>%prefix%<donut_badge>&f<nick>%team_suffix%'
   # Configuration section for Header.
   HEADER:
-    - ''
-    - '&#002B5C&lQ&#004172&lu&#005789&la&#006D9F&ls&#0083B5&la&#0099CC&lr&#26AEE0&lS&#4DC4F5&lM&#73D8FF&lP'
-    - '&f%online% Players'
-    - ''
+  - ''
+  - <#00A6FF><bold>QuasarSMP
+  - '&f%online_compact% Players'
+  - ''
   # Configuration section for Footer.
   FOOTER:
-    - ''
-    - '   &#FF5E00/discord  &#FF9800/guide  &#FFD200/store   '
-    - ''
+  - ''
+  - '&#002B5C/discord  &#005FA5Money: &#0099CC%economy_nicestMoney%  &#005FA5Ping: &#0099CC%economy_ping%ms'
+  - ''
 # Configuration section for Server List.
 SERVER-LIST:
   # Determines whether Enabled is enabled or disabled. When true, the text under this server's name
@@ -713,7 +719,7 @@ SERVER-LIST:
   # the number of players on the server and %max_players% the slot count, the same two tokens the
   # tablist header takes. Maintenance mode keeps its own text while it is on, set in network.yml
   MOTD:
-  - '&e&lUltimateDonutSMP2'
+  - '&e&lQuasarSMP'
   - '&7%online%&8/&7%max_players% &7online'
 # Configuration section for Optimization.
 OPTIMIZATION:
@@ -730,6 +736,8 @@ OPTIMIZATION:
   TPS-CRITICAL-THRESHOLD: 16.0
   # The decimal value for Mspt Warn Threshold. Available options: Any decimal number
   MSPT-WARN-THRESHOLD: 45.0
+  # The decimal value for Mspt Critical Threshold. Available options: Any decimal number
+  MSPT-CRITICAL-THRESHOLD: 55.0
   # The numerical value for Recovery Samples. Available options: Any valid integer
   RECOVERY-SAMPLES: 3
   # Determines whether Log State Changes is enabled or disabled. Available options: true, false
@@ -993,6 +1001,139 @@ BOUNTY:
   # Configuration section for Excluded Worlds.
   EXCLUDED-WORLDS:
   - duels
+# Configuration section for Amethyst Tools.
+AMETHYST-TOOLS:
+  # Configuration section for Excluded Worlds.
+  EXCLUDED-WORLDS:
+  - duels
+  # Configuration section for Pickaxe.
+  PICKAXE:
+    # Configuration section for Particle.
+    PARTICLE:
+      NAME: FALLING_DUST
+      MATERIAL: PURPLE_CONCRETE_POWDER
+      # The numerical value for Amount. Available options: Any valid integer
+      AMOUNT: 10
+    # Configuration section for Disabled Blocks.
+    DISABLED-BLOCKS:
+    - GRASS_BLOCK
+    - DIRT_PATH
+    - DIRT
+    - COARSE_DIRT
+    - ROOTED_DIRT
+    - CLAY
+    - FARMLAND
+    - SAND
+    - RED_SAND
+    - GRAVEL
+    - SPAWNER
+    NAME: '&#A303F9Amethyst Pickaxe'
+    LORE:
+    - '&79 Blocks Per Break'
+    - '&8Self Destruct'
+    - '&8{time}'
+    # Configuration section for Enchantments.
+    ENCHANTMENTS:
+    - MENDING:1
+    - EFFICIENCY:5
+    - UNBREAKING:3
+  # Configuration section for Axe.
+  AXE:
+    # Configuration section for Particle.
+    PARTICLE:
+      NAME: FALLING_DUST
+      MATERIAL: PURPLE_CONCRETE_POWDER
+      # The numerical value for Amount. Available options: Any valid integer
+      AMOUNT: 10
+    NAME: '&#A303F9Amethyst Axe'
+    LORE:
+    - '&7Breaks Trees Instantly'
+    - '&8Self Destruct'
+    - '&8{time}'
+    # Configuration section for Enchantments.
+    ENCHANTMENTS:
+    - MENDING:1
+    - EFFICIENCY:5
+    - UNBREAKING:3
+    - SILK_TOUCH:1
+  # Configuration section for Sellaxe.
+  SELLAXE:
+    # Configuration section for Particle.
+    PARTICLE:
+      NAME: FALLING_DUST
+      MATERIAL: PURPLE_CONCRETE_POWDER
+      # The numerical value for Amount. Available options: Any valid integer
+      AMOUNT: 10
+    NAME: '&#A303F9Amethyst Sell Axe'
+    LORE:
+    - '&7Instantly Sells All Items in A Chest'
+    - '&8Self Destruct'
+    - '&8{time}'
+    # Configuration section for Enchantments.
+    ENCHANTMENTS:
+    - MENDING:1
+    - EFFICIENCY:5
+    - UNBREAKING:3
+  # Configuration section for Shovel.
+  SHOVEL:
+    # Configuration section for Particle.
+    PARTICLE:
+      NAME: FALLING_DUST
+      MATERIAL: PURPLE_CONCRETE_POWDER
+      # The numerical value for Amount. Available options: Any valid integer
+      AMOUNT: 10
+    # Configuration section for Allowed Blocks.
+    ALLOWED-BLOCKS:
+    - GRASS_BLOCK
+    - DIRT_PATH
+    - DIRT
+    - COARSE_DIRT
+    - ROOTED_DIRT
+    - CLAY
+    - FARMLAND
+    - SAND
+    - RED_SAND
+    - GRAVEL
+    NAME: '&#A303F9Amethyst Shovel'
+    LORE:
+    - '&79 Blocks Per Break'
+    - '&8Self Destruct'
+    - '&8{time}'
+    # Configuration section for Enchantments.
+    ENCHANTMENTS:
+    - MENDING:1
+    - EFFICIENCY:5
+    - UNBREAKING:3
+  # Configuration section for Bucket.
+  BUCKET:
+    # Configuration section for Particle.
+    PARTICLE:
+      NAME: FALLING_DUST
+      MATERIAL: PURPLE_CONCRETE_POWDER
+      # The numerical value for Amount. Available options: Any valid integer
+      AMOUNT: 10
+    NAME: '&#A303F9Amethyst Bucket'
+    LORE:
+    - '&7Drains 27 Water At Once'
+    - '&8Self Destruct'
+    - '&8{time}'
+    # A list configuration for Enchantments. Available options: Multiple items
+    ENCHANTMENTS: []
+  # Configuration section for Booster.
+  BOOSTER:
+    # Configuration section for Particle.
+    PARTICLE:
+      NAME: FALLING_DUST
+      MATERIAL: PURPLE_CONCRETE_POWDER
+      # The numerical value for Amount. Available options: Any valid integer
+      AMOUNT: 10
+    NAME: '&#A303F9Shard Booster'
+    LORE:
+    - '&74x Shard Production for 24 hours'
+    - '&8Self Destruct'
+    - '&8{time}'
+    # A list configuration for Enchantments. Available options: Multiple items
+    ENCHANTMENTS: []
 # Configuration section for Commands.
 # Configuration section for Voice Chat.
 VOICE-CHAT:

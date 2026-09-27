@@ -561,8 +561,7 @@ QUICK-BUY:
     MODE: VANILLA
     # Maximum number of items to display in the selection list (default: 2000)
     MAX-ITEMS: 2000
-    # Extra materials hidden from Quick Buy's Choose Item screen. Does not affect /orders.
-    # Wildcards such as *_SPAWN_EGG are allowed.
+    # Extra materials hidden from Choose Item. Wildcards such as *_SPAWN_EGG are allowed.
     # Command-block variants, infested blocks, and spawn eggs are always hidden even if omitted here.
     BLACKLIST:
       - BEDROCK
@@ -595,12 +594,6 @@ QUICK-BUY:
       - SUSPICIOUS_GRAVEL
       - '*_SPAWN_EGG'
       - 'INFESTED_*'
-
-  # Bedrock freezes on the Choose Item dialog, which is one button per material.
-  # Floodgate players get a paged form with search. false uses the chest catalogue instead.
-  BEDROCK:
-    ENABLED: true
-    PAGE-SIZE: 20
 
   # Configuration for empty grid slots (slots 0-44)
   EMPTY-SLOT:

@@ -814,6 +814,7 @@ MENUS:
       - '&7{current_earned}/{next_goal}'
   SELL-MENU:
     TITLE: '&8Place items in here to sell'
+    MULTIPLIER-TITLE: '&8Sell multipliers'
     CONFIRM-BUTTON:
       TITLE: '&a&lConfirm sell'
       LORE:
@@ -1332,7 +1333,7 @@ MENUS:
         LORE:
         - '&7Disable storing all drops.'
     SELL-CONFIRM-MENU:
-      TITLE: 'Confirm Sell'
+      TITLE: Confirm Sell
       CANCEL-BUTTON:
         TITLE: '&cCancel'
         LORE:
@@ -1500,6 +1501,11 @@ CONFIG:
         TITLE: Auction -> Your Items
     RESTRICTIONS:
       BLOCKED_IF_HAS_LORE_CONTAINS: []
+    BOTS:
+      BOT_NAMES:
+      - DonutBot
+      - AuctionBot
+      - ShopKeeper
   BILLFORD:
     ANNOUNCE_MESSAGE: '&6&l[Billford] &eTrade has rotated! &7New trade is live. &bNext
       change in &f{countdown}&b.'
@@ -1790,6 +1796,11 @@ CONFIG:
       - Price
       - ''
       input-line: 0
+    BOTS:
+      BOT_NAMES:
+      - OrderBot
+      - BuyerBot
+      - ItemCollector
   DUELS:
     COMMAND_BLOCK:
       MESSAGE: '&cYou cannot use that command during a duel.'
@@ -1979,20 +1990,25 @@ CONFIG:
       LOOT_SENT_TO_CLAIMS: '&eloot from &f{player} &ehas been sent to your duel claims.'
       PREPARING_BIOME: '&epreparing duel biome arena...'
       CANCELLED_PLAYER_LEFT: '&cduel cancelled because one player left preparation.'
-      CANCELLED_PLAYER_UNAVAILABLE: '&cduel cancelled because one player is no longer available.'
+      CANCELLED_PLAYER_UNAVAILABLE: '&cduel cancelled because one player is no longer
+        available.'
       NO_BIOME_ARENA: '&cno duel biome arena is available right now.'
-      UNSAFE_ITEMS: '&cthe duel could not start because your opponent has unsafe item data.'
+      UNSAFE_ITEMS: '&cthe duel could not start because your opponent has unsafe item
+        data.'
       COULD_NOT_START: '&ccould not start the duel right now.'
       DUEL_FOUND: '&aduel found against &f{player}&a on arena &f{arena}&a.'
       ALREADY_IN_DUEL: '&cyou are already in a duel.'
       ARENA_PREPARING: '&cyour duel arena is preparing.'
       ALREADY_HAVE_REQUEST: '&cyou already have a pending duel request.'
       CANNOT_USE_FFA: '&cyou cannot use duels while inside the ffa system.'
-      FRIENDS_SAME_TEAM: '&cfriends-only duels require both players to be in the same team.'
+      FRIENDS_SAME_TEAM: '&cfriends-only duels require both players to be in the same
+        team.'
       FRIENDS_ONLY_TEAM: '&cfriends-only duels can only target members of your team.'
       CROSS_SERVER_PREPARING: '&across-server duel found. preparing match...'
-      CROSS_SERVER_TRANSFERRING: '&across-server duel found. transferring to match server...'
-      CROSS_SERVER_NO_ARENA: '&ccross-server duel could not start because no arena is available.'
+      CROSS_SERVER_TRANSFERRING: '&across-server duel found. transferring to match
+        server...'
+      CROSS_SERVER_NO_ARENA: '&ccross-server duel could not start because no arena
+        is available.'
       REQUEST_EXPIRED_TO: '&cyour duel request to &f{player} &cexpired.'
       REQUEST_EXPIRED_FROM: '&cyour duel request from &f{player} &cexpired.'
       REQUEST_CLEARED: '&cyour duel request was cleared.'
@@ -2012,15 +2028,19 @@ CONFIG:
       NO_MAP_AVAILABLE: '&cthat duel map is not available.'
       ARENA_NOT_AVAILABLE: '&cthat arena is not available.'
       NO_READY_ARENAS: '&cthere are no duel arenas ready yet.'
-      REQUEST_COULD_NOT_START: '&cyour duel request could not start because no arena is available.'
+      REQUEST_COULD_NOT_START: '&cyour duel request could not start because no arena
+        is available.'
       CLAIM_NO_LONGER_EXISTS: '&cthat duel claim no longer exists.'
       CLAIM_MAKE_ROOM: '&cmake room in your inventory before claiming that loot.'
-      CLAIM_PARTIAL: '&eclaimed some duel loot from &f{player}&e. &7some items are still waiting in claims.'
+      CLAIM_PARTIAL: '&eclaimed some duel loot from &f{player}&e. &7some items are
+        still waiting in claims.'
       CLAIM_SUCCESS: '&aclaimed duel loot from &f{player}&a.'
       CLAIM_DELETE_FAILED: '&ccould not delete that duel claim right now.'
       CLAIM_DELETED: '&cdeleted duel loot claim from &f{player}&c.'
-      QUEUE_ARENAS_NOT_READY: '&cqueue arenas exist but are not ready yet. &7use &f/arena setpos1 <id> &7and &f/arena setpos2 <id> &7for: &f{arenas}&7.'
-      QUEUE_NO_READY_ARENAS: '&cno ready queue arenas are configured yet. &7enable queue with &f/arena queue <id> true&7, then set &fpos1 &7and &fpos2&7.'
+      QUEUE_ARENAS_NOT_READY: '&cqueue arenas exist but are not ready yet. &7use &f/arena
+        setpos1 <id> &7and &f/arena setpos2 <id> &7for: &f{arenas}&7.'
+      QUEUE_NO_READY_ARENAS: '&cno ready queue arenas are configured yet. &7enable
+        queue with &f/arena queue <id> true&7, then set &fpos1 &7and &fpos2&7.'
   FFA:
     RESULT-TITLES:
       victory:
@@ -2202,6 +2222,11 @@ CONFIG:
       TOOL-LOCKED: '&cYour staff tools are locked while Staff Mode is active.'
       CUSTOM-ITEM-NO-TARGET: '&cRight-click a player to use this tool.'
       RELOAD-SUCCESS: '&aStaff mode config reloaded.'
+    CUSTOM-ITEMS:
+      EXAMPLE:
+        NAME: '&eCustom Command'
+        LORE:
+        - '&7Click to execute custom command'
   SERVER_WIPE:
     MESSAGES:
       MAINTENANCE: '&cthe server is preparing a season reset. try again after the
@@ -4531,25 +4556,4 @@ QUICK_BUY:
   LISTED_SUCCESS: '&aSuccessfully listed {item} for ${price}!'
   TRANSACTIONS_TITLE: Transactions (Page {page})
   YOUR_ITEMS_TITLE: Auction -> Your Items
-  BEDROCK:
-    CATALOGUE_TITLE: Choose Item
-    CATALOGUE_PAGE: "Page {page}/{pages}."
-    CATALOGUE_SEARCHING: "Search: {query}. Page {page}/{pages}."
-    CATALOGUE_EMPTY: "Nothing matches {query}."
-    SEARCH_TITLE: Search items
-    SEARCH_INPUT: Item name
-    AMOUNT_TITLE: How many to buy?
-    AMOUNT_INPUT: "Amount (max {max})"
-    AMOUNT_INVALID: Enter a whole number.
-    ENCHANT_TITLE: Choose Enchantments
-    ENCHANT_CONTENT: Tap an enchantment to change its level.
-    ENCHANT_OFF: "{name}"
-    ENCHANT_ON: "{name} {level}"
-    BUTTON_SEARCH: Search
-    BUTTON_BACK: Back
-    BUTTON_PREVIOUS: Previous page
-    BUTTON_NEXT: Next page
-    BUTTON_SKIP: Skip enchantments
-    BUTTON_CONFIRM: Confirm enchantments
-    BUTTON_ADD: Add to Quick Buy
 
