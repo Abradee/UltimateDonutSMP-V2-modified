@@ -138,6 +138,8 @@ Each action is checked against `ultimatedonutsmp2.auctionhouse.<action>` **or** 
 | `fastsell` | — | `ultimatedonutsmp2.auctionhouse.fastsell` / `donutauction.fastsell` | Toggle the confirmation-free selling preference. Not declared in `plugin.yml`. |
 | `reload` | — | `ultimatedonutsmp2.admin.auctionhouse` | Reload Auction House settings. |
 
+Words that are not one of those subcommands are a search as well. `/ah neth boot prot 4` opens the browser on netherite boots with Protection IV or higher, and `/ah search neth boot prot 4` does the same thing. `prot4` and `prot iv` count as Protection IV.
+
 Buying from the browse menu is checked against `ultimatedonutsmp2.auctionhouse.buy` / `donutauction.buy`.
 
 ## Teleportation & Homes

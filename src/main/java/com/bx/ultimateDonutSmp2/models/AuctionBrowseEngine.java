@@ -5,6 +5,7 @@ import com.bx.ultimateDonutSmp2.managers.AuctionHouseManager;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 public final class AuctionBrowseEngine {
@@ -71,7 +72,36 @@ public final class AuctionBrowseEngine {
         }
         String display = itemDescription.apply(listing);
         String normalizedDisplay = display == null ? "" : display.toLowerCase(Locale.ROOT);
-        String material = listing.item().getType().name().toLowerCase(Locale.ROOT).replace('_', ' ');
-        return normalizedDisplay.contains(normalizedSearch) || material.contains(normalizedSearch);
+        String material = listing.item() == null
+                ? ""
+                : listing.item().getType().name().toLowerCase(Locale.ROOT).replace('_', ' ');
+        Map<String, Integer> enchants = AuctionIntelligentSearch.needsEnchantLevels(normalizedSearch)
+                ? enchantLevels(listing.item())
+                : Map.of();
+        return AuctionIntelligentSearch.matches(normalizedSearch, material, normalizedDisplay, enchants);
+    }
+
+    private static Map<String, Integer> enchantLevels(org.bukkit.inventory.ItemStack item) {
+        if (item == null) {
+            return Map.of();
+        }
+        try {
+            Map<String, Integer> levels = new java.util.HashMap<>();
+            item.getEnchantments().forEach((enchant, level) -> {
+                if (enchant != null && enchant.getKey() != null && level != null) {
+                    levels.put(enchant.getKey().getKey(), level);
+                }
+            });
+            if (item.getItemMeta() instanceof org.bukkit.inventory.meta.EnchantmentStorageMeta stored) {
+                stored.getStoredEnchants().forEach((enchant, level) -> {
+                    if (enchant != null && enchant.getKey() != null && level != null) {
+                        levels.merge(enchant.getKey().getKey(), level, Math::max);
+                    }
+                });
+            }
+            return levels;
+        } catch (RuntimeException | LinkageError ignored) {
+            return Map.of();
+        }
     }
 }
