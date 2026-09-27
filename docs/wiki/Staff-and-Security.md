@@ -22,12 +22,13 @@ The hide and fake-player nodes are **not** in `plugin.yml`, so they have no defa
 
 ## Staff Mode and Vanish (`staff-mode.yml`)
 
-`/staffmode` (alias `/staff`) swaps the moderator's survival inventory for a staff hotbar and back again. The bundled hotbar holds five tools, each with its own permission and slot under `STAFF-MODE.HOTBAR-SLOTS`:
+`/staffmode` (alias `/staff`) swaps the moderator's survival inventory for a staff hotbar and back again. The bundled hotbar holds six tools, each with its own permission and slot under `STAFF-MODE.HOTBAR-SLOTS`:
 
 | Tool | Slot | Permission |
 | --- | --- | --- |
 | Vanish toggle | 0 | `ultimatedonutsmp2.staff.mode.vanish` |
 | Freeze tool | 1 | `ultimatedonutsmp2.staff.freeze` |
+| Spectator toggle | 6 | `ultimatedonutsmp2.staff.mode.spectator` |
 | Staff list | 4 | `ultimatedonutsmp2.staff.mode.stafflist` |
 | Better View | 7 | `ultimatedonutsmp2.staff.mode.betterview` |
 | Random teleport | 8 | `ultimatedonutsmp2.staff.mode.randomtp` |
@@ -42,6 +43,7 @@ Behaviour worth configuring before you hand the command out:
 - `AUTO-VANISH-ON-ENABLE` is `false` by default, so entering staff mode does not vanish anyone until you turn it on.
 - `BETTER-VIEW` grants night vision and flight while the tool is active.
 - `RANDOM-TELEPORT` can exclude staff, vanished, frozen, duelling and FFA players from the target pool.
+- The spectator tool switches you to spectator mode. You cannot click the hotbar while spectating, so sneak to come back to creative. Leaving staff mode still restores the gamemode you had before. A relog while staff mode is still on puts you back in creative.
 - `LUCKPERMS-CONTEXT` registers a LuckPerms context key (default `staffmode`) so permission sets can differ inside and outside staff mode. It requires LuckPerms to be installed.
 
 `CUSTOM-ITEMS` lets you add your own hotbar entries that run commands. Each entry takes a slot, material, optional `PERMISSION`, `REQUIRE-TARGET`, and `EXECUTE-AS: PLAYER | CONSOLE`. A `CONSOLE` item runs with full console rights, which bypasses the holder's own permissions, so always pair one with a `PERMISSION` value. Slots already used by the built-in tools are refused.

@@ -47,6 +47,7 @@ fake player feature checks the legacy permission prefix `ultimatedonutsmp.staff.
 | `STAFF-MODE.BETTER-VIEW-PERMISSION` | `string` | Any text | `ultimatedonutsmp2.staff.mode.betterview` | Permission node. Leave empty to allow everyone. |
 | `STAFF-MODE.STAFF-LIST-PERMISSION` | `string` | Any text | `ultimatedonutsmp2.staff.mode.stafflist` | Permission node. Leave empty to allow everyone. |
 | `STAFF-MODE.RANDOM-TELEPORT-PERMISSION` | `string` | Any text | `ultimatedonutsmp2.staff.mode.randomtp` | Permission node. Leave empty to allow everyone. |
+| `STAFF-MODE.SPECTATOR-PERMISSION` | `string` | Any text | `ultimatedonutsmp2.staff.mode.spectator` | Permission node. Leave empty to allow everyone. |
 | `STAFF-MODE.SEE-VANISHED-PERMISSION` | `string` | Any text | `ultimatedonutsmp2.staff.mode.seevanished` | Permission node. Leave empty to allow everyone. |
 | `STAFF-MODE.OTHERS-PERMISSION` | `string` | Any text | `ultimatedonutsmp2.staff.mode.others` | Permission node. Leave empty to allow everyone. |
 
@@ -90,6 +91,7 @@ fake player feature checks the legacy permission prefix `ultimatedonutsmp.staff.
 | `STAFF-MODE.HOTBAR-SLOTS.STAFF_LIST` | `integer` | Any integer | `4` | Staff list. |
 | `STAFF-MODE.HOTBAR-SLOTS.BETTER_VIEW` | `integer` | Any integer | `7` | Better view. |
 | `STAFF-MODE.HOTBAR-SLOTS.RANDOM_TELEPORT` | `integer` | Any integer | `8` | Random teleport. |
+| `STAFF-MODE.HOTBAR-SLOTS.SPECTATOR` | `integer` | Any integer | `6` | Spectator. |
 
 ### `STAFF-MODE.BETTER-VIEW`
 

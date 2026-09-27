@@ -867,6 +867,7 @@ permissions:
       ultimatedonutsmp2.staff.mode.stafflist: true
       ultimatedonutsmp2.staff.mode.betterview: true
       ultimatedonutsmp2.staff.mode.randomtp: true
+      ultimatedonutsmp2.staff.mode.spectator: true
       ultimatedonutsmp2.staff.mode.seevanished: true
       ultimatedonutsmp2.staff.mode.others: true
       ultimatedonutsmp2.staff.chat.use: true
@@ -1049,6 +1050,7 @@ permissions:
       ultimatedonutsmp2.staff.mode.stafflist: true
       ultimatedonutsmp2.staff.mode.betterview: true
       ultimatedonutsmp2.staff.mode.randomtp: true
+      ultimatedonutsmp2.staff.mode.spectator: true
       ultimatedonutsmp2.staff.mode.seevanished: true
       ultimatedonutsmp2.staff.mode.others: true
       ultimatedonutsmp2.staff.chat.use: true
@@ -1079,6 +1081,9 @@ permissions:
     default: op
   ultimatedonutsmp2.staff.mode.randomtp:
     description: Teleport to a random player from the staff mode hotbar
+    default: op
+  ultimatedonutsmp2.staff.mode.spectator:
+    description: Toggle spectator from the staff mode hotbar
     default: op
   ultimatedonutsmp2.staff.mode.seevanished:
     description: See staff members who are vanished

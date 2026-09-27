@@ -8,6 +8,7 @@ public enum StaffToolType {
     STAFF_LIST("STAFF_LIST"),
     BETTER_VIEW("BETTER_VIEW"),
     RANDOM_TELEPORT("RANDOM_TELEPORT"),
+    SPECTATOR("SPECTATOR"),
     /**
      * Marker for admin defined items from {@code CUSTOM-ITEMS}. The concrete definition is
      * identified by a second persistent data tag rather than by this constant.

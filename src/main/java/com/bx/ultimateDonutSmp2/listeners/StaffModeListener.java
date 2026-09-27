@@ -5,6 +5,7 @@ import com.bx.ultimateDonutSmp2.managers.FreezeManager;
 import com.bx.ultimateDonutSmp2.managers.StaffModeManager;
 import com.bx.ultimateDonutSmp2.staff.StaffToolType;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -112,6 +114,21 @@ public class StaffModeListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onSneak(PlayerToggleSneakEvent event) {
+        if (!event.isSneaking()) {
+            return;
+        }
+        Player player = event.getPlayer();
+        if (player.getGameMode() != GameMode.SPECTATOR
+                || !plugin.getStaffModeManager().isInStaffMode(player.getUniqueId())
+                || !plugin.getStaffModeManager().canUseSpectator(player)
+                || isOnInteractCooldown(player)) {
+            return;
+        }
+        plugin.getStaffModeManager().toggleSpectator(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
@@ -201,6 +218,15 @@ public class StaffModeListener implements Listener {
                             plugin.getStaffModeManager().getRandomTeleportMessage("NO_PLAYERS", "&cNo other players available for random teleport")
                     ));
                 }
+            }
+            case SPECTATOR -> {
+                if (!plugin.getStaffModeManager().canUseSpectator(player)) {
+                    player.sendMessage(ColorUtils.toComponent(
+                            plugin.getStaffModeManager().getMessage("NO-PERMISSION", "&cYou do not have permission.")
+                    ));
+                    return;
+                }
+                plugin.getStaffModeManager().toggleSpectator(player);
             }
             case CUSTOM -> plugin.getStaffModeManager().useCustomItem(player, event.getItem(), null);
             default -> {

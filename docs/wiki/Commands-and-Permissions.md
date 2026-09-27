@@ -628,10 +628,11 @@ Note that `ultimatedonutsmp2.command.flyspeed.others` is the only command node t
 
 | Node | Default | Description |
 |------|---------|-------------|
-| `ultimatedonutsmp2.staff.mode` | op | Parent: full staff access for Staff Mode and staff utility commands. Grants 28 children including `ultimatedonutsmp2.chat.color`. |
+| `ultimatedonutsmp2.staff.mode` | op | Parent: full staff access for Staff Mode and staff utility commands. Grants 29 children including `ultimatedonutsmp2.chat.color`. |
 | `ultimatedonutsmp2.staff.mode.betterview` | op | Toggle better view from the staff mode hotbar. |
 | `ultimatedonutsmp2.staff.mode.others` | op | Toggle staff mode for other players. |
 | `ultimatedonutsmp2.staff.mode.randomtp` | op | Teleport to a random player from the hotbar. |
+| `ultimatedonutsmp2.staff.mode.spectator` | op | Toggle spectator from the staff mode hotbar. |
 | `ultimatedonutsmp2.staff.mode.seevanished` | op | See vanished staff members. |
 | `ultimatedonutsmp2.staff.mode.stafflist` | op | Open the staff list from the hotbar. |
 | `ultimatedonutsmp2.staff.mode.vanish` | op | Toggle vanish from the hotbar. |
