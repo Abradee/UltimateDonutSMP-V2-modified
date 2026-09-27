@@ -23,6 +23,7 @@ this build, and nothing reads it. See [FAQ](FAQ) for the details.
 | [`SPAWN`](#section-spawn) | section | 1 keys |
 | [`SELL`](#section-sell) | section | 2 keys |
 | [`PAY`](#section-pay) | section | 1 keys |
+| [`PRIVATE_MESSAGE`](#section-private-message) | section | 1 keys |
 | [`AMETHYST`](#section-amethyst) | section | 2 keys |
 | [`BOOSTER`](#section-booster) | section | 2 keys |
 | [`SHARDS`](#section-shards) | section | 3 keys |
@@ -136,6 +137,28 @@ SELL:
 PAY:
   # The text or value for Success. Available options: Any valid string text
   SUCCESS: minecraft:entity.player.levelup|1.0|1.2
+```
+
+</details>
+
+---
+
+## Section: `PRIVATE_MESSAGE`
+
+### Options
+
+| Option path | Type | Accepted values | Default | What it does |
+| :--- | :--- | :--- | :--- | :--- |
+| `PRIVATE_MESSAGE.RECEIVED` | `string` | Any text | `minecraft:block.note_block.bell\|1.0\|1.2` | Played for the receiver when a private message arrives. Empty silences it. |
+
+<details>
+<summary>Default <code>PRIVATE_MESSAGE</code> block as shipped</summary>
+
+```yaml
+# Configuration section for Private Message.
+PRIVATE_MESSAGE:
+  # Played for the receiver when a private message arrives. Empty silences it.
+  RECEIVED: minecraft:block.note_block.bell|1.0|1.2
 ```
 
 </details>

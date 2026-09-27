@@ -65,6 +65,10 @@ public class OrdersCollectMenu extends BaseMenu {
                 "&ePage " + page + "&7/&e" + getTotalPages(claims.size(), itemsPerPage),
                 List.of("&7Pending claims: &f" + claims.size())
         ));
+        set(lastRow + 6, OrdersMenuSupport.button(
+                plugin, "GUI.COLLECT.BUTTONS.DROP_ALL", "ORDERS.GUI.COLLECT.DROP_ALL",
+                Material.DROPPER, "&eDrop all", List.of("&fDrop every pending item claim at your feet")
+        ));
         set(lastRow + 7, hasNextPage(claims.size(), itemsPerPage)
                 ? ItemUtils.createItem(Material.ARROW, "&aNext page", List.of("&7Go to page &f" + (page + 1)))
                 : ItemUtils.createPlaceholder(Material.BLACK_STAINED_GLASS_PANE));
@@ -112,6 +116,10 @@ public class OrdersCollectMenu extends BaseMenu {
         }
         if (slot == lastRow + 4) {
             collectPage(player, false, claims, itemsPerPage);
+            return;
+        }
+        if (slot == lastRow + 6) {
+            collectRange(player, true, claims, 0, claims.size());
             return;
         }
         if (slot == lastRow + 7) {
@@ -190,9 +198,17 @@ public class OrdersCollectMenu extends BaseMenu {
     ) {
         int from = Math.min(claims.size(), (page - 1) * itemsPerPage);
         int to = Math.min(claims.size(), from + itemsPerPage);
-        List<Long> claimIds = claims.subList(from, to).stream()
-                .map(OrderCollectionClaim::id)
-                .toList();
+        collectRange(player, dropItems, claims, from, to);
+    }
+
+    private void collectRange(
+            Player player,
+            boolean dropItems,
+            List<OrderCollectionClaim> claims,
+            int from,
+            int to
+    ) {
+        List<Long> claimIds = claimIds(claims, from, to);
         OrderBatchClaimResult result = plugin.getOrdersManager().claimBatch(player, claimIds, dropItems);
         player.sendMessage(ColorUtils.toComponent(OrdersMenuSupport.text(
                 plugin,
@@ -205,6 +221,15 @@ public class OrdersCollectMenu extends BaseMenu {
         )));
         OrdersMenuSupport.play(player, plugin, collectPageSound(result, dropItems));
         new OrdersCollectMenu(plugin, page, orderId).open(player);
+    }
+
+    static List<Long> claimIds(List<OrderCollectionClaim> claims, int from, int to) {
+        if (claims == null || claims.isEmpty()) {
+            return List.of();
+        }
+        int start = Math.max(0, Math.min(from, claims.size()));
+        int end = Math.max(start, Math.min(to, claims.size()));
+        return claims.subList(start, end).stream().map(OrderCollectionClaim::id).toList();
     }
 
     private static String collectPageSound(OrderBatchClaimResult result, boolean dropItems) {
