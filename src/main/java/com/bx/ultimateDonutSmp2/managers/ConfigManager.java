@@ -1289,10 +1289,11 @@ public class ConfigManager {
         if (path == null) {
             return "";
         }
+        // A blank value is an explicit mute. Only a missing key falls through to the built-in cue.
         if (sounds != null) {
             String sound = sounds.getString(path);
-            if (sound != null && !sound.isBlank()) {
-                return sound;
+            if (sound != null) {
+                return sound.isBlank() ? "" : sound;
             }
         }
         if ("BUY.SUCCESS".equalsIgnoreCase(path) || "SHOP.BUY-SUCCESS".equalsIgnoreCase(path)) {
