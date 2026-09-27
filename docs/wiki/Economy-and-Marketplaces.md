@@ -94,15 +94,15 @@ Prices are not written in `shop.yml`. `QUICK-BUY.PRICING` decides where each one
 order:
 
 1. With `USE-AUCTION-HOUSE: true`, the lowest active Auction House listing that matches the pinned
-   item sets the price, and buying goes through the Auction House purchase path so the money reaches
-   the player who listed it.
+   item sets the price of one item. Quick Buy does not purchase that listing. The seller keeps it.
 2. If no listing matches, the `worth.yml` price is used, multiplied by `WORTH-MULTIPLIER`.
 3. If the item has no `worth.yml` entry either and `AUTO-BALANCE-MISSING` is on, a price is derived
    automatically and multiplied by `AUTO-BALANCE-MULTIPLIER`.
 
-If a slot has no price from any of the three, it shows as out of stock instead of selling at zero.
-This is what makes `/shop` a front end for the player economy rather than an infinite item source:
-with `USE-AUCTION-HOUSE` on, most of what players buy is bought from each other.
+Each of those is a price for one item. The slot multiplies it by the amount the player pinned, and
+that total is what the lore shows and what the click withdraws. A pin of 64 costs 64 times a pin of
+1 of the same item. If a slot has no price from any of the three, it shows as out of stock instead
+of selling at zero.
 
 `SHOP-GUI` holds the shared item lore (`SHOP-GUI.ITEM.LORE`, with `{shop_price}` and `{auction_line}`
 placeholders), the favourites toggle, and `SHOP-GUI.WEB-SERVER`, which controls the embedded sell

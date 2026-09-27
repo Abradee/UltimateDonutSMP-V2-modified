@@ -4,6 +4,7 @@ import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.QuickBuyItemDialog;
 import com.bx.ultimateDonutSmp2.managers.AuctionHouseManager;
+import com.bx.ultimateDonutSmp2.managers.ShopManager;
 import com.bx.ultimateDonutSmp2.models.QuickBuyEntry;
 import com.bx.ultimateDonutSmp2.utils.BedrockPlayers;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
@@ -118,12 +119,12 @@ public class QuickBuyMenu extends BaseMenu {
         if (filter == Filter.CHEAPEST) {
             displayList.sort(Comparator.comparingDouble(e -> {
                 var q = plugin.getShopManager().resolveQuickBuyQuote(player, e);
-                return q.outOfStock() ? Double.MAX_VALUE : q.unitPrice();
+                return q.outOfStock() ? Double.MAX_VALUE : ShopManager.pricePaidFor(q);
             }));
         } else if (filter == Filter.MOST_EXPENSIVE) {
             displayList.sort(Comparator.comparingDouble((QuickBuyEntry e) -> {
                 var q = plugin.getShopManager().resolveQuickBuyQuote(player, e);
-                return q.outOfStock() ? -1D : q.unitPrice();
+                return q.outOfStock() ? -1D : ShopManager.pricePaidFor(q);
             }).reversed());
         } else if (filter == Filter.NAME) {
             displayList.sort(Comparator.comparing(e -> itemName(e.material()), String.CASE_INSENSITIVE_ORDER));
@@ -165,7 +166,7 @@ public class QuickBuyMenu extends BaseMenu {
         if (quote.outOfStock()) {
             priceText = ColorUtils.colorize(outOfStockText);
         } else {
-            priceText = ColorUtils.colorize(priceFormat.replace("{price}", NumberUtils.formatNice(quote.unitPrice())));
+            priceText = ColorUtils.colorize(priceFormat.replace("{price}", NumberUtils.formatNice(ShopManager.pricePaidFor(quote))));
         }
 
         List<String> lore = new ArrayList<>();

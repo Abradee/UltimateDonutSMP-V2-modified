@@ -36,4 +36,22 @@ class QuickBuyItemAmountDisplayTest {
         QuickBuyEntry swordEntry = new QuickBuyEntry(2, Material.DIAMOND_SWORD, 1);
         assertEquals(1, swordEntry.buyAmount());
     }
+
+    @Test
+    void quickBuyPricesThePinnedStackRatherThanOneItem() throws Exception {
+        String menu = Files.readString(QUICK_BUY_MENU, StandardCharsets.UTF_8);
+        assertFalse(menu.contains("quote.unitPrice()"),
+                "Quick buy lore and sort must use the stack price");
+        assertFalse(menu.contains("q.unitPrice()"),
+                "Cheapest and most expensive must sort by the stack price");
+        assertTrue(menu.contains("ShopManager.pricePaidFor(quote)"));
+        assertTrue(menu.contains("ShopManager.pricePaidFor(q)"));
+
+        String shop = Files.readString(
+                Path.of("src/main/java/com/bx/ultimateDonutSmp2/managers/ShopManager.java"),
+                StandardCharsets.UTF_8);
+        assertFalse(shop.contains("purchaseListing"),
+                "Quick buy must charge the pinned amount instead of buying one auction listing");
+        assertTrue(shop.contains("double price = pricePaidFor(quote);"));
+    }
 }

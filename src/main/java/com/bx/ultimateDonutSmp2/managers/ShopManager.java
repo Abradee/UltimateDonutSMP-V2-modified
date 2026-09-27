@@ -396,6 +396,17 @@ public class ShopManager {
         }
     }
 
+    /**
+     * What one click on a pinned slot costs. {@code totalPrice} is the unit price times the
+     * pinned amount. A matching auction listing only supplies that unit price.
+     */
+    public static double pricePaidFor(QuickBuyQuote quote) {
+        if (quote == null || quote.outOfStock()) {
+            return 0D;
+        }
+        return quote.totalPrice();
+    }
+
     public record QuickBuyExecutionResult(
             boolean success,
             String message,
@@ -658,43 +669,27 @@ public class ShopManager {
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.OUT_OF_STOCK", "&cOut of stock! No auction listings available."), 0, 0));
         }
 
-        if (quote.fromAuction() && quote.listing() != null) {
-            return plugin.getAuctionHouseManager().purchaseListing(buyer, quote.listing().id()).thenApply(result -> {
-                if (result.success()) {
-                    int boughtAmount = quote.listing().item() != null ? quote.listing().item().getAmount() : entry.buyAmount();
-                    double pricePaid = quote.listing().price();
-                    return new QuickBuyExecutionResult(true, "", pricePaid, boughtAmount);
-                } else {
-                    String reason = switch (result.reason()) {
-                        case NO_MONEY -> plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!");
-                        case INVENTORY_FULL -> plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!");
-                        default -> plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.FAILED", "&cPurchase failed. Price may have changed.");
-                    };
-                    return new QuickBuyExecutionResult(false, reason, 0, 0);
-                }
-            });
-        } else {
-            if (!plugin.getEconomyManager().has(buyer, quote.totalPrice())) {
-                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
-            }
-            ItemStack stack = entry.createItem(entry.buyAmount());
-            if (!canFitQuickBuyStack(buyer.getInventory().getStorageContents(), stack, stack.getMaxStackSize())) {
-                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
-            }
-            var withdraw = plugin.getEconomyManager().withdraw(buyer, quote.totalPrice(), EconomyReason.SHOP_PURCHASE);
-            if (!withdraw.success()) {
-                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
-            }
-            buyer.getInventory().addItem(stack);
-            PlayerData data = plugin.getPlayerDataManager().get(buyer);
-            if (data != null) {
-                data.addMoneySpent(quote.totalPrice());
-            }
-            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(true, "", quote.totalPrice(), entry.buyAmount()));
+        double price = pricePaidFor(quote);
+        if (!plugin.getEconomyManager().has(buyer, price)) {
+            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
+                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
+        ItemStack stack = entry.createItem(entry.buyAmount());
+        if (!canFitQuickBuyStack(buyer.getInventory().getStorageContents(), stack, stack.getMaxStackSize())) {
+            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
+                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
+        }
+        var withdraw = plugin.getEconomyManager().withdraw(buyer, price, EconomyReason.SHOP_PURCHASE);
+        if (!withdraw.success()) {
+            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
+                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
+        }
+        buyer.getInventory().addItem(stack);
+        PlayerData data = plugin.getPlayerDataManager().get(buyer);
+        if (data != null) {
+            data.addMoneySpent(price);
+        }
+        return CompletableFuture.completedFuture(new QuickBuyExecutionResult(true, "", price, entry.buyAmount()));
     }
 
 

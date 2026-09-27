@@ -403,7 +403,7 @@ Item display and pricing lore formats for pinned quick buy items
 
 | Option path | Type | Accepted values | Default | What it does |
 | :--- | :--- | :--- | :--- | :--- |
-| `QUICK-BUY.ITEM.PRICE-FORMAT` | `string` | Any text | `&a$ &f{price}` | Price format. |
+| `QUICK-BUY.ITEM.PRICE-FORMAT` | `string` | Any text | `&a$ &f{price}` | Lore for the pinned item. `{price}` is the cost of the whole pin, unit price times the amount. |
 | `QUICK-BUY.ITEM.OUT-OF-STOCK` | `string` | Any text | `&cOut of stock` | Out of stock. |
 | `QUICK-BUY.ITEM.EDIT-REMOVE-LORE` | `string` | Any text | `&o&7Click to remove` | Edit remove lore. |
 | `QUICK-BUY.ITEM.EDIT-RESTORE-LORE` | `string` | Any text | `&o&7Click to add back` | Edit restore lore. |

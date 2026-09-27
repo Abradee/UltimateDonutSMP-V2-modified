@@ -183,6 +183,94 @@ class QuickBuyPricingWorthFloorTest {
     }
 
     @Test
+    void worthPriceScalesWithPinnedAmount() {
+        ItemStack diamond = new ItemStack(Material.DIAMOND, 1);
+        ShopManager.QuickBuyQuote one = shopManager.resolveQuickBuyQuote(null, diamond, 1);
+        ShopManager.QuickBuyQuote stack = shopManager.resolveQuickBuyQuote(null, diamond, 64);
+
+        assertEquals(100.0, ShopManager.pricePaidFor(one), 0.001);
+        assertEquals(6400.0, ShopManager.pricePaidFor(stack), 0.001);
+    }
+
+    @Test
+    void auctionUnitPriceStillScalesWithPinnedAmount() throws Exception {
+        ItemStack diamond = new ItemStack(Material.DIAMOND, 1);
+        long now = System.currentTimeMillis();
+        AuctionListing listing = new AuctionListing(
+                7,
+                UUID.randomUUID(),
+                "Seller",
+                null,
+                AuctionListing.Status.ACTIVE,
+                200.0,
+                0.0,
+                diamond,
+                now,
+                now + 100_000L,
+                0L,
+                0L,
+                0L,
+                "ALL"
+        );
+        installListings(List.of(listing));
+
+        ShopManager.QuickBuyQuote one = shopManager.resolveQuickBuyQuote(null, diamond, 1);
+        ShopManager.QuickBuyQuote stack = shopManager.resolveQuickBuyQuote(null, diamond, 64);
+
+        assertTrue(one.fromAuction());
+        assertTrue(stack.fromAuction());
+        assertEquals(200.0, one.listing().price(), 0.001);
+        assertEquals(200.0, ShopManager.pricePaidFor(one), 0.001);
+        assertEquals(12_800.0, ShopManager.pricePaidFor(stack), 0.001);
+    }
+
+    @Test
+    void pricePaidForUsesStackTotalEvenWhenTheListingIsOneItem() {
+        ItemStack diamond = new ItemStack(Material.DIAMOND, 1);
+        AuctionListing listing = new AuctionListing(
+                8,
+                UUID.randomUUID(),
+                "Seller",
+                null,
+                AuctionListing.Status.ACTIVE,
+                200.0,
+                0.0,
+                diamond,
+                1L,
+                2L,
+                0L,
+                0L,
+                0L,
+                "ALL"
+        );
+        ShopManager.QuickBuyQuote stack = new ShopManager.QuickBuyQuote(200.0, 12_800.0, listing, true, false);
+        ShopManager.QuickBuyQuote missing = new ShopManager.QuickBuyQuote(200.0, 12_800.0, listing, true, true);
+
+        assertEquals(12_800.0, ShopManager.pricePaidFor(stack), 0.001);
+        assertEquals(0.0, ShopManager.pricePaidFor(missing), 0.001);
+        assertEquals(0.0, ShopManager.pricePaidFor(null), 0.001);
+    }
+
+    private void installListings(List<AuctionListing> listings) throws Exception {
+        Constructor<Object> objectConstructor = Object.class.getConstructor();
+        sun.reflect.ReflectionFactory reflectionFactory = sun.reflect.ReflectionFactory.getReflectionFactory();
+        Constructor<?> ahmConstructor = reflectionFactory.newConstructorForSerialization(AuctionHouseManager.class, objectConstructor);
+        AuctionHouseManager ahm = (AuctionHouseManager) ahmConstructor.newInstance();
+
+        Field ahmPluginField = AuctionHouseManager.class.getDeclaredField("plugin");
+        ahmPluginField.setAccessible(true);
+        ahmPluginField.set(ahm, plugin);
+
+        Field listingCacheField = AuctionHouseManager.class.getDeclaredField("listingCache");
+        listingCacheField.setAccessible(true);
+        listingCacheField.set(ahm, new java.util.concurrent.atomic.AtomicReference<>(listings));
+
+        Field ahmField = UltimateDonutSmp2.class.getDeclaredField("auctionHouseManager");
+        ahmField.setAccessible(true);
+        ahmField.set(plugin, ahm);
+    }
+
+    @Test
     void matchesRequiredEnchantsProperlyChecksStoredEnchants() {
         ItemStack sword = new ItemStack(Material.DIAMOND_SWORD, 1);
         sword.addUnsafeEnchantment(sharpness, 5);
