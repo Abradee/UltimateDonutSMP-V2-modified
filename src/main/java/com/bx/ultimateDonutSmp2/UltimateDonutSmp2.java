@@ -548,7 +548,13 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         console.sendMessage("§7                              §fDiscord: §9§nhttps://dsc.gg/quasarsmp");
         console.sendMessage("§7                                  §fModified port for QuasarSMP, by abradee");
         console.sendMessage("§8  ═════════════════════════════════════════════════════════════════════════════════════════════════");
-        
+
+        if (currentVersion.contains("-BUILD") || currentVersion.contains("-SNAPSHOT" || currentVersion.contains("-DEV")) {
+            getLogger().warning("Running a development build (" + currentVersion + ").");
+            getLogger().warning("Development builds are NOT for production servers. Bugs are highly likely to occur.");
+            getLogger().warning("See https://abradee.github.io/devbuild/ for more info.");
+            return;
+        }
     }
 
     // ── Registration helpers ──────────────────────────────────────────────────
