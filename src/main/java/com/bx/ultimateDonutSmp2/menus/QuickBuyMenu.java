@@ -178,7 +178,8 @@ public class QuickBuyMenu extends BaseMenu {
             }
         }
 
-        ItemStack item = entry.createItem(1);
+        int displayAmount = Math.max(1, Math.min(entry.material().getMaxStackSize(), entry.buyAmount()));
+        ItemStack item = entry.createItem(displayAmount);
         org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(ColorUtils.colorize("&f" + itemName(entry.material())));
