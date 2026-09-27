@@ -1632,12 +1632,17 @@ public class ShopManager {
         return getSellProgressInfo(getSellProgress(uuid), category);
     }
 
+    public boolean isSellMultiplierEnabled() {
+        return plugin.getConfigManager().getMenus().getBoolean("PROGRESS-MENU.ENABLED", true);
+    }
+
     public SellProgressInfo getSellProgressInfo(Map<SellCategory, Double> progress, SellCategory category) {
         List<Long> levels = getSellProgressLevels();
         double earned = progress.getOrDefault(category, 0D);
         int completedLevels = getCompletedLevels(earned, levels);
         boolean maxed = completedLevels >= levels.size();
-        double currentMultiplier = 1.0 + (completedLevels * 0.1);
+        boolean enabled = isSellMultiplierEnabled();
+        double currentMultiplier = enabled ? 1.0 + (completedLevels * 0.1) : 1.0;
         double previousGoal = completedLevels <= 0 ? 0 : levels.get(completedLevels - 1);
         double nextGoal = maxed ? levels.get(levels.size() - 1) : levels.get(completedLevels);
         int percentage = calculateProgressPercentage(earned, previousGoal, nextGoal, maxed);
@@ -1647,7 +1652,7 @@ public class ShopManager {
                 earned,
                 completedLevels,
                 currentMultiplier,
-                maxed ? "MAX" : formatMultiplier(1.0 + ((completedLevels + 1) * 0.1)),
+                !enabled ? "1.0x" : (maxed ? "MAX" : formatMultiplier(1.0 + ((completedLevels + 1) * 0.1))),
                 previousGoal,
                 nextGoal,
                 percentage,
@@ -1657,6 +1662,9 @@ public class ShopManager {
     }
 
     public double getCurrentSellMultiplier(Map<SellCategory, Double> progress, SellCategory category) {
+        if (!isSellMultiplierEnabled()) {
+            return 1.0;
+        }
         return 1.0 + (getCompletedLevels(progress.getOrDefault(category, 0D), getSellProgressLevels()) * 0.1);
     }
 
@@ -1854,11 +1862,13 @@ public class ShopManager {
         }
 
         Map<SellCategory, Double> earnedCopy = new EnumMap<>(sale.earnedByCategory);
+        boolean multipliersEnabled = isSellMultiplierEnabled();
         for (var entry : sale.earnedByCategory.entrySet()) {
             SellCategory category = entry.getKey();
             double before = sale.currentProgress.getOrDefault(category, 0D);
             double after = before + entry.getValue();
-            if (getCompletedLevels(after, getSellProgressLevels())
+            if (multipliersEnabled
+                    && getCompletedLevels(after, getSellProgressLevels())
                     > getCompletedLevels(before, getSellProgressLevels())) {
                 leveledUpCategories.add(category);
             }
@@ -1869,8 +1879,10 @@ public class ShopManager {
         plugin.getDatabaseManager().executeAsync(() -> {
             plugin.getDatabaseManager().addSellHistoryBatch(historyBatch);
             plugin.getDatabaseManager().addPlayerLogBatch(logBatch);
-            for (var entry : earnedCopy.entrySet()) {
-                plugin.getDatabaseManager().addSellProgress(player.getUniqueId(), entry.getKey(), entry.getValue());
+            if (multipliersEnabled) {
+                for (var entry : earnedCopy.entrySet()) {
+                    plugin.getDatabaseManager().addSellProgress(player.getUniqueId(), entry.getKey(), entry.getValue());
+                }
             }
         });
 

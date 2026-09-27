@@ -1051,6 +1051,7 @@ LEADERBOARDS-MENU:
 
 | Option path | Type | Accepted values | Default | What it does |
 | :--- | :--- | :--- | :--- | :--- |
+| `PROGRESS-MENU.ENABLED` | `boolean` | `true`, `false` | `true` | When `true`, sell category multipliers scale payouts from progress milestones. When `false`, all sell and spawner payouts use base worth (`1.0x`), milestone progress is paused, and `/sellmulti` commands report multipliers disabled. |
 | `PROGRESS-MENU.PROGRESS-BAR` | `string` | Any text | `■` | Progress bar. |
 | `PROGRESS-MENU.LEVEL` | `list` | A list of values | _list of 20 items_ | The level list. |
 
@@ -1313,6 +1314,7 @@ LORE:
 
 ```yaml
 PROGRESS-MENU:
+  ENABLED: true
   PROGRESS-BAR: "■"
   LEVEL:
   - 25000

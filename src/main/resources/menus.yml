@@ -816,6 +816,7 @@ LEADERBOARDS-MENU:
       LORE:
       - '&fClick to view BOUNTIES leaderboard'
 PROGRESS-MENU:
+  ENABLED: true
   PROGRESS-BAR: "■"
   LEVEL:
   - 25000

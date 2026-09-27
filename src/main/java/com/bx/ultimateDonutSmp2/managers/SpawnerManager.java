@@ -1179,10 +1179,13 @@ public class SpawnerManager {
         }
 
         Map<SellCategory, Double> earnedCopy = new EnumMap<>(earnedByCategory);
+        boolean multipliersEnabled = plugin.getShopManager().isSellMultiplierEnabled();
         plugin.getDatabaseManager().executeAsync(() -> {
             plugin.getDatabaseManager().addSellHistoryBatch(historyRecords);
-            for (Map.Entry<SellCategory, Double> progressEntry : earnedCopy.entrySet()) {
-                plugin.getDatabaseManager().addSellProgress(player.getUniqueId(), progressEntry.getKey(), progressEntry.getValue());
+            if (multipliersEnabled) {
+                for (Map.Entry<SellCategory, Double> progressEntry : earnedCopy.entrySet()) {
+                    plugin.getDatabaseManager().addSellProgress(player.getUniqueId(), progressEntry.getKey(), progressEntry.getValue());
+                }
             }
         });
 
