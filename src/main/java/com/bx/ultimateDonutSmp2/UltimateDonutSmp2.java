@@ -548,19 +548,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         console.sendMessage("§7                              §fDiscord: §9§nhttps://dsc.gg/quasarsmp");
         console.sendMessage("§7                                  §fModified port for QuasarSMP, by abradee");
         console.sendMessage("§8  ═════════════════════════════════════════════════════════════════════════════════════════════════");
-        console.sendMessage("");
-        console.sendMessage("§8  ╔═══════════════════════════════════════════════════════════════════════════╗");
-        console.sendMessage("§8  ║                                                                         ║");
-        console.sendMessage("§8  ║  §e§l⚠ §6§lNote                                                              §8║");
-        console.sendMessage("§8  ║                                                                         ║");
-        console.sendMessage("§8  ║  §fGuys, please donate to this project or this plugin if you really      §8║");
-        console.sendMessage("§8  ║  §fLike this plugin, for the donation link just DM me on Discord,        §8║");
-        console.sendMessage("§8  ║  §fAnd for those who have donated to me, may god bless you and may       §8║");
-        console.sendMessage("§8  ║  §fYou always be healthy and i am very grateful for the donations        §8║");
-        console.sendMessage("§8  ║  §fThat have been given to me §e:)                                       §8║");
-        console.sendMessage("§8  ║                                                                         ║");
-        console.sendMessage("§8  ╚═══════════════════════════════════════════════════════════════════════════╝");
-        console.sendMessage("");
+        
     }
 
     // ── Registration helpers ──────────────────────────────────────────────────
