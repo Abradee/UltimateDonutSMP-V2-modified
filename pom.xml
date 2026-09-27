@@ -6,7 +6,7 @@
 
     <groupId>com.bx</groupId>
     <artifactId>ultimatedonutsmp2</artifactId>
-    <version>1.0.2-DEV</version>
+    <version>1.0.3-DEV</version>
     <packaging>jar</packaging>
 
     <name>ultimatedonutsmp2</name>
