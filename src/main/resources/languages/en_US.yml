@@ -126,6 +126,10 @@ ORDERS:
         NAME: '&eDrop page'
         LORE:
         - '&fDrop item claims safely at your feet'
+      DROP_ALL:
+        NAME: '&eDrop all'
+        LORE:
+        - '&fDrop every pending item claim at your feet'
     ORDER_ITEM:
       NAME: '&f{item}'
       LORE:
@@ -2482,6 +2486,7 @@ MESSAGES:
       is offline.'
     SENDER_FORMAT: '&e(To &a%player%&e) %message%'
     RECEIVER_FORMAT: '&e(From &a%player%&e) %message%'
+    CLICK_TO_REPLY: '&7Click to reply'
     USAGE: '&cUsage: /msg <player> <message>'
     REPLY_USAGE: '&cUsage: /reply <message>'
     PLAYER_NOT_ONLINE: '&cPlayer not online.'

@@ -76,6 +76,10 @@ ORDERS:
         NAME: "&eJatuhkan halaman"
         LORE:
         - "&fJatuhkan klaim item dengan aman"
+      DROP_ALL:
+        NAME: "&eJatuhkan semua"
+        LORE:
+        - "&fJatuhkan semua klaim item di kakimu"
     ORDER_ITEM:
       NAME: "&f{item}"
       LORE:
@@ -1966,6 +1970,7 @@ MESSAGES:
       is offline."
     SENDER_FORMAT: "&e(To &a%player%&e) %message%"
     RECEIVER_FORMAT: "&e(From &a%player%&e) %message%"
+    CLICK_TO_REPLY: "&7Klik untuk membalas"
     USAGE: "&cUsage: /msg <player> <message>"
     REPLY_USAGE: "&cUsage: /reply <message>"
     PLAYER_NOT_ONLINE: "&cPlayer not online."

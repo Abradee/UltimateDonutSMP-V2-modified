@@ -35,6 +35,10 @@ ORDERS:
       TITLE: "Orders -> Cancel Order"
     COLLECT:
       TITLE: "&8Commandes -> récupérer"
+      DROP_ALL:
+        NAME: "&eTout déposer"
+        LORE:
+        - "&fDépose chaque objet en attente à tes pieds"
   BEDROCK:
     MAIN:
       TITLE: Commandes
@@ -1889,6 +1893,7 @@ MESSAGES:
       is offline."
     SENDER_FORMAT: "&e(To &a%player%&e) %message%"
     RECEIVER_FORMAT: "&e(From &a%player%&e) %message%"
+    CLICK_TO_REPLY: "&7Clique pour répondre"
     USAGE: "&cUsage : /msg <player> <message>"
     REPLY_USAGE: "&cUsage : /reply <message>"
     PLAYER_NOT_ONLINE: "&cPlayer not online."

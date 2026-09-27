@@ -5,7 +5,12 @@ import com.bx.ultimateDonutSmp2.utils.PermissionUtils;
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.models.PlayerData;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
+import com.bx.ultimateDonutSmp2.utils.PlayerSettingUtils;
+import com.bx.ultimateDonutSmp2.utils.SoundUtils;
 import com.bx.ultimateDonutSmp2.utils.TypedColorPolicy;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -111,7 +116,9 @@ public class PrivateMessageManager {
         );
 
         send(sender, applyPlaceholders(sentFormat, targetName, message));
-        target.sendMessage(ColorUtils.toComponent(applyPlaceholders(receivedFormat, senderName, message), target));
+        String replyName = sender instanceof Player playerSender ? replyName(playerSender) : null;
+        deliverReceived(target, applyPlaceholders(receivedFormat, senderName, message), replyName);
+        playReceiveSound(target);
 
         boolean logPrivateMessages = plugin.getChatManager().isPrivateChatLoggingEnabled();
 
@@ -182,6 +189,55 @@ public class PrivateMessageManager {
 
     public void clear() {
         replyTargets.clear();
+    }
+
+    static String replySuggestCommand(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return "";
+        }
+        return "/msg " + playerName + " ";
+    }
+
+    private void deliverReceived(Player target, String received, String replyName) {
+        String command = replySuggestCommand(replyName);
+        if (command.isEmpty()) {
+            target.sendMessage(ColorUtils.toComponent(received, target));
+            return;
+        }
+        TextComponent component = ColorUtils.toBaseComponent(received, target);
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
+        component.setHoverEvent(new HoverEvent(
+                HoverEvent.Action.SHOW_TEXT,
+                ColorUtils.toBaseComponents(clickToReplyHover(), target)
+        ));
+        target.spigot().sendMessage(component);
+    }
+
+    private String clickToReplyHover() {
+        String fallback = "&7Click to reply";
+        if (plugin.getLanguageManager() == null) {
+            return fallback;
+        }
+        return plugin.getLanguageManager().text("MESSAGES.CLICK_TO_REPLY", null, fallback);
+    }
+
+    private String replyName(Player sender) {
+        if (plugin.getHideManager() != null) {
+            return plugin.getHideManager().plainPublicName(sender);
+        }
+        return sender.getName();
+    }
+
+    private void playReceiveSound(Player target) {
+        if (plugin.getConfigManager() == null) {
+            return;
+        }
+        SoundUtils.play(
+                plugin,
+                target,
+                plugin.getConfigManager().getSound("PRIVATE_MESSAGE.RECEIVED"),
+                PlayerSettingUtils.SoundChannel.NOTIFICATION
+        );
     }
 
     private String applyPlaceholders(String format, String playerName, String message) {

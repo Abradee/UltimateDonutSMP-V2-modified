@@ -18,6 +18,10 @@ SELL:
 PAY:
   # The text or value for Success. Available options: Any valid string text
   SUCCESS: minecraft:entity.player.levelup|1.0|1.2
+# Configuration section for Private Message.
+PRIVATE_MESSAGE:
+  # Played for the receiver when a private message arrives. Empty silences it.
+  RECEIVED: minecraft:block.note_block.bell|1.0|1.2
 # Configuration section for Amethyst.
 AMETHYST:
   # The text or value for Expired. Available options: Any valid string text

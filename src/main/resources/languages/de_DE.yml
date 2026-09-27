@@ -81,6 +81,10 @@ ORDERS:
         NAME: "&eSeite ablegen"
         LORE:
         - "&fGegenstände sicher vor dir ablegen"
+      DROP_ALL:
+        NAME: "&eAlles ablegen"
+        LORE:
+        - "&fAlle ausstehenden Gegenstände vor dir ablegen"
     ORDER_ITEM:
       NAME: "&f{item}"
       LORE:
@@ -1970,6 +1974,7 @@ MESSAGES:
       is offline."
     SENDER_FORMAT: "&e(To &a%player%&e) %message%"
     RECEIVER_FORMAT: "&e(From &a%player%&e) %message%"
+    CLICK_TO_REPLY: "&7Klicken zum Antworten"
     USAGE: "&cUsage: /msg <player> <message>"
     REPLY_USAGE: "&cUsage: /reply <message>"
     PLAYER_NOT_ONLINE: "&cPlayer not online."

@@ -324,6 +324,8 @@ Both commands require `ultimatedonutsmp2.admin.duels` and `ultimatedonutsmp2.adm
 
 `/discord`, `/twitter`, `/store` and `/social` share a single executor that selects the configuration key from the command label.
 
+A received `/msg` is clickable when the sender is a player. The click puts `/msg <name> ` into the chat box, with a space after the name, so the reply can be typed immediately. That name is the one other players see, including a disguise alias. The receiver also hears `PRIVATE_MESSAGE.RECEIVED` from `sounds.yml`, unless notification sounds are off in `/settings` or that sound value is empty.
+
 ### `/chat` subcommands
 
 | Subcommand | Arguments | Permission | Effect |

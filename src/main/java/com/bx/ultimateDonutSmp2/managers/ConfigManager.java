@@ -1345,6 +1345,13 @@ public class ConfigManager {
         if (path.toUpperCase(Locale.ROOT).startsWith("AUCTION_HOUSE.")) {
             return auctionHouseSoundFallback(path);
         }
+        if ("PRIVATE_MESSAGE.RECEIVED".equalsIgnoreCase(path)) {
+            if (sounds != null && sounds.isString(path)) {
+                String configured = sounds.getString(path);
+                return configured == null ? "" : configured;
+            }
+            return "minecraft:block.note_block.bell|1.0|1.2";
+        }
         return "";
     }
 

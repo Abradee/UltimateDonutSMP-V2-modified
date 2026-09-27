@@ -34,6 +34,10 @@ ORDERS:
       TITLE: "Orders -> Cancel Order"
     COLLECT:
       TITLE: "&8订单 -> 领取"
+      DROP_ALL:
+        NAME: "&e全部丢出"
+        LORE:
+        - "&f把所有待领取物品丢在脚下"
   BEDROCK:
     MAIN:
       TITLE: "订单"
@@ -1882,6 +1886,7 @@ MESSAGES:
       is offline。"
     SENDER_FORMAT: "&e(To &a%player%&e) %message%"
     RECEIVER_FORMAT: "&e(From &a%player%&e) %message%"
+    CLICK_TO_REPLY: "&7点击回复"
     USAGE: "&cUsage: /msg <player> <message>"
     REPLY_USAGE: "&cUsage: /reply <message>"
     PLAYER_NOT_ONLINE: "&cPlayernotonline。"
