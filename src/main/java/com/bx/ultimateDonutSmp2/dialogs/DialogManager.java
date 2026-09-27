@@ -1,6 +1,7 @@
 package com.bx.ultimateDonutSmp2.dialogs;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
+import com.bx.ultimateDonutSmp2.dialogs.screens.AmethystToolDialog;
 import com.bx.ultimateDonutSmp2.dialogs.screens.FriendsDialog;
 import com.bx.ultimateDonutSmp2.dialogs.screens.HomesDialog;
 import com.bx.ultimateDonutSmp2.dialogs.screens.LeaderboardDialog;
@@ -48,6 +49,7 @@ public final class DialogManager {
     private final QuickBuyItemDialog quickBuyItem;
     private final OrdersDialog orders;
     private final com.bx.ultimateDonutSmp2.dialogs.screens.BountyDialog bounty;
+    private final AmethystToolDialog amethyst;
     private final List<DialogScreen> screens;
     private final PauseScreenDatapack pauseScreen;
 
@@ -66,8 +68,9 @@ public final class DialogManager {
         this.quickBuyItem = new QuickBuyItemDialog(plugin, config, sessions);
         this.orders = new OrdersDialog(plugin, config, sessions);
         this.bounty = new com.bx.ultimateDonutSmp2.dialogs.screens.BountyDialog(plugin, config, sessions);
+        this.amethyst = new AmethystToolDialog(plugin, config, sessions);
         // Ordered so the cheap exact-match screens answer before the prefix-matching ones.
-        this.screens = List.of(main, settings, pay, stats, leaderboards, homes, friends, teleport, rtpQueue, bounty, orders, quickBuyItem);
+        this.screens = List.of(main, settings, pay, stats, leaderboards, homes, friends, teleport, rtpQueue, bounty, amethyst, orders, quickBuyItem);
         this.pauseScreen = new PauseScreenDatapack(plugin);
     }
 
@@ -154,6 +157,10 @@ public final class DialogManager {
 
     public boolean openBountySearch(Player player, String query, boolean sortByRecent, int page) {
         return bounty.openSearch(player, query, sortByRecent, page);
+    }
+
+    public boolean openAmethyst(Player player) {
+        return config.isScreenEnabled("AMETHYST") && amethyst.open(player);
     }
 
     /** Routes one button press. Unknown ids are ignored rather than logged, to stay quiet. */

@@ -47,6 +47,7 @@ class AmethystMessageKeyTest {
         }
         // The command reads the same AMETHYST-MESSAGES section from outside the package.
         collect(Path.of("src/main/java/com/bx/ultimateDonutSmp2/commands/AmethystToolCommand.java"), keys);
+        collect(Path.of("src/main/java/com/bx/ultimateDonutSmp2/dialogs/screens/AmethystToolDialog.java"), keys);
         return keys;
     }
 

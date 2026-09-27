@@ -9,13 +9,20 @@ server exposes the Paper dialog API; on older servers, or on Spigot, the plugin 
 falls back to the chest-based menus in `menus.yml`. Setting `ENABLED` to `false` forces
 that fallback everywhere.
 
+That fallback is **server-wide**, not per player. A current Paper server still sends native
+dialogs to everyone. Players on **Minecraft 1.21.5 or older** (ViaVersion / ViaBackwards)
+cannot render those screens — menus look broken, and commands such as `/ah` will not present
+a usable UI. Mojang added the Dialog API in 1.21.6; the old client has no renderer, so this
+cannot be patched in the plugin. Require Java clients 1.21.6+ and block older protocol
+versions on the proxy. Full write-up: [Dialog API & older clients](Dialog-API-and-Older-Clients).
+
 `PAUSE-SCREEN` is written out as a datapack during `onLoad()`, before worlds load, so
 changes there need a full server restart rather than a reload.
 
 Comment at the top of the shipped file:
 
 ```text
-UltimateDonutSMP2 - Dialog Configuration
+UltimateDonutSMP V2 - Dialog Configuration
 
 Dialogs are the client-side menus introduced in Minecraft 1.21.6. They need a
 Paper server (or a Paper fork) running 1.21.6 or newer. On Spigot, or on an
@@ -50,7 +57,7 @@ COLUMNS controls how many buttons sit side by side.
 | :--- | :--- | :--- |
 | [`ENABLED`](#section-enabled) | boolean | `true` |
 | [`PAUSE-SCREEN`](#section-pause-screen) | section | 3 keys |
-| [`SCREENS`](#section-screens) | section | 9 keys |
+| [`SCREENS`](#section-screens) | section | 10 keys |
 | [`DONUT_SMP_DIALOG`](#section-donut-smp-dialog) | section | 8 keys |
 | [`SETTINGS_DIALOG`](#section-settings-dialog) | section | 15 keys |
 | [`PAY_DIALOG`](#section-pay-dialog) | section | 10 keys |
@@ -154,6 +161,7 @@ Per-screen overrides. Set one to false to force that command back to its chest m
 | `SCREENS.FRIENDS` | `boolean` | `true`, `false` | `true` | On/off for friends. |
 | `SCREENS.TELEPORT` | `boolean` | `true`, `false` | `true` | On/off for teleport. |
 | `SCREENS.RTP-QUEUE` | `boolean` | `true`, `false` | `true` | On/off for rtp queue. |
+| `SCREENS.AMETHYST` | `boolean` | `true`, `false` | `true` | On/off for the `/amethysttool` Dialog API give flow. |
 
 <details>
 <summary>Default <code>SCREENS</code> block as shipped</summary>
@@ -171,6 +179,7 @@ SCREENS:
   FRIENDS: true
   TELEPORT: true
   RTP-QUEUE: true
+  AMETHYST: true
 ```
 
 </details>
@@ -1919,6 +1928,37 @@ RTP_QUEUE_DIALOG:
 ```
 
 </details>
+
+---
+
+---
+
+## Amethyst give flow
+
+`/amethysttool` and `/shardtool` with no arguments open this stack when `SCREENS.AMETHYST` is on.
+
+| Screen | What it is |
+| :--- | :--- |
+| `AMETHYST_TYPE_DIALOG` | One button per tool. Label is `%icon% %name%`; tooltip is that tool's lore. |
+| `AMETHYST_PLAYER_DIALOG` | Every known player, online first. Button label is the 2D skin head plus nick. Lore is `PLAYER-ONLINE` or `PLAYER-OFFLINE` with `{time}` as `d`/`h`/`m`. |
+| `AMETHYST_PLAYER_SEARCH_DIALOG` | Name filter for the player list. |
+| `AMETHYST_DURATION_DIALOG` | Preset buttons labelled `1h`, `5h`, `10h`, `1d`, `5d` (not `3600`) plus Custom. |
+| `AMETHYST_DURATION_CUSTOM_DIALOG` | Text input. Accepts `1h`, `5d`, `1d 5h`, or seconds. |
+
+Offline grants are written to `plugins/UltimateDonutSmp2/amethyst-pending.yml` and given on join, with the same `RECEIVED` chat as an online grant.
+
+```yaml
+AMETHYST_DURATION_DIALOG:
+  TITLE: "Duration for %target%"
+  COLUMNS: 2
+  DURATIONS:
+    - {LABEL: 1h, SECONDS: 3600}
+    - {LABEL: 5h, SECONDS: 18000}
+    - {LABEL: 10h, SECONDS: 36000}
+    - {LABEL: 1d, SECONDS: 86400}
+    - {LABEL: 5d, SECONDS: 432000}
+    - {LABEL: Custom, ACTION: custom}
+```
 
 ---
 

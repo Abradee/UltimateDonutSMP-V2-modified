@@ -1447,9 +1447,16 @@ CONFIG:
       BOOSTER-ALREADY: "{prefix}&#BDC3C7You already have an active shard booster!"
       NO-PERMISSION: '{prefix}&#BDC3C7You do not have permission to use this item.'
       WRONG-OWNER: "{prefix}&#BDC3C7This amethyst tool is bound to another player."
-      GIVE-SUCCESS: "{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7."
-      GIVE-USAGE: "{prefix}&#BDC3C7Usage: &e/amethysttool berikan <player> <type>
-        [duration_seconds]"
+      GIVE-SUCCESS: "{prefix}&#BDC3C7Memberikan &e{type} &7kepada &e{player}&7. &8({time})"
+      GIVE-QUEUED: "{prefix}&#BDC3C7Antrian &e{type} &7untuk &e{player}&7. Mereka akan menerimanya selama &e{time} &7saat online."
+      GIVE-FAILED: "{prefix}&#BDC3C7Gagal membuat &e{type}&7. Periksa config amethyst-tools."
+      GIVE-PLAYER-NOT-FOUND: "{prefix}&#BDC3C7Player tidak ditemukan: &e{player}"
+      RECEIVED: "{prefix}&#BDC3C7Kamu mendapatkan &e{type} &7selama &e{time}&7."
+      PLAYER-ONLINE: "&aOnline"
+      PLAYER-OFFLINE: "&7Offline ({time} last online)"
+      DURATION-INVALID: "{prefix}&#BDC3C7Durasi tidak valid. Gunakan &e1h&7, &e5h&7, &e1d&7, atau jumlah detik."
+      DIALOG-UNAVAILABLE: "{prefix}&#BDC3C7Dialog tidak tersedia. Usage: &e/amethysttool give <player> <type> [duration]"
+      GIVE-USAGE: "{prefix}&#BDC3C7Usage: &e/amethysttool &7atau &e/amethysttool give <player> <type> [duration]"
       GIVE-INVALID-TYPE: "{prefix}&#BDC3C7Invalid tool type. nama: drill, chopper,
         sell_axe, shovel, bucket, shard_booster"
       RELOAD-SUCCESS: "{prefix}&#BDC3C7Configuration reloaded."

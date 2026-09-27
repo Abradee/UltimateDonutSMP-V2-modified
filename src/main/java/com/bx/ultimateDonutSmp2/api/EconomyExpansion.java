@@ -146,6 +146,28 @@ public class EconomyExpansion extends PlaceholderExpansion {
                     : plugin.getHideManager().publicName(offlinePlayer.getUniqueId(), offlinePlayer.getName());
         }
 
+        if (params.equalsIgnoreCase("amethyst_pending")) {
+            if (offlinePlayer == null || plugin.getAmethystToolsManager() == null) {
+                return "0";
+            }
+            return String.valueOf(plugin.getAmethystToolsManager().pendingCount(offlinePlayer.getUniqueId()));
+        }
+
+        if (params.equalsIgnoreCase("last_online") || params.equalsIgnoreCase("lastonline")) {
+            if (offlinePlayer == null) {
+                return "";
+            }
+            if (offlinePlayer.isOnline()) {
+                return "online";
+            }
+            long lastSeen = offlinePlayer.getLastPlayed();
+            if (lastSeen <= 0L) {
+                return "";
+            }
+            return com.bx.ultimateDonutSmp2.amethyst.AmethystDuration.formatLastOnline(
+                    Math.max(0L, System.currentTimeMillis() - lastSeen));
+        }
+
         CurrencyManager currencyManager = plugin.getCurrencyManager();
         if (params.equalsIgnoreCase("money_symbol")) {
             return currencyManager.symbol(CurrencyManager.CurrencyType.MONEY);

@@ -5,6 +5,7 @@ import com.bx.ultimateDonutSmp2.managers.FeatureManager;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import com.bx.ultimateDonutSmp2.utils.ItemUtils;
 import com.bx.ultimateDonutSmp2.utils.SoundUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,6 +28,7 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import com.bx.ultimateDonutSmp2.utils.ShulkerBoxSupport;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -48,8 +50,15 @@ public class AmethystToolsManager {
     private static final long DEFAULT_VISUAL_SYNC_SUPPRESSION_MS = 3000L;
 
     private final UltimateDonutSmp2 plugin;
+    private final AmethystPendingGrants pendingGrants;
     private final Map<UUID, Long> useCooldowns = new java.util.HashMap<>();
     private final Map<UUID, Long> visualSyncSuppressions = new java.util.HashMap<>();
+
+    public enum GrantOutcome {
+        ONLINE,
+        QUEUED,
+        FAILED
+    }
 
     public AmethystToolsManager(UltimateDonutSmp2 plugin) {
         this.plugin = plugin;
@@ -58,6 +67,11 @@ public class AmethystToolsManager {
         KEY_OWNER = new NamespacedKey(plugin, "amethyst_tool_owner");
         KEY_ID = new NamespacedKey(plugin, "amethyst_tool_id");
         KEY_LORE_TEMPLATE = new NamespacedKey(plugin, "amethyst_tool_lore");
+        this.pendingGrants = new AmethystPendingGrants(
+                new File(plugin.getDataFolder(), "amethyst-pending.yml"),
+                plugin.getLogger()
+        );
+        this.pendingGrants.load();
     }
 
     public enum ShardToolVariant {
@@ -255,6 +269,10 @@ public class AmethystToolsManager {
         public List<String> getDefaultPotionEffects() { return defaultPotionEffects; }
         public String getDefaultPotionColor() { return defaultPotionColor; }
         public long getDefaultDuration() { return defaultDuration; }
+
+        public String getId() {
+            return name().toLowerCase(Locale.ROOT).replace('_', '-');
+        }
     }
 
     public static ShardToolVariant resolveVariant(String input) {
@@ -372,6 +390,131 @@ public class AmethystToolsManager {
             return null;
         }
         return createTool(variant, ownerUuid, durationSeconds);
+    }
+
+    public GrantOutcome grant(UUID targetId, ShardToolVariant variant, long durationSeconds) {
+        if (targetId == null || variant == null) {
+            return GrantOutcome.FAILED;
+        }
+        long duration = durationSeconds > 0L ? durationSeconds : variant.getDefaultDuration();
+        if (duration <= 0L) {
+            duration = 86_400L;
+        }
+        Player online = Bukkit.getPlayer(targetId);
+        if (online != null && online.isOnline()) {
+            ItemStack item = createTool(variant, targetId, duration);
+            if (item == null) {
+                return GrantOutcome.FAILED;
+            }
+            long grantedDuration = duration;
+            plugin.getSpigotScheduler().runEntity(online, () -> {
+                if (!online.isOnline()) {
+                    pendingGrants.queue(targetId, variant.getId(), grantedDuration);
+                    return;
+                }
+                deliverTo(online, item, variant, grantedDuration);
+            });
+            return GrantOutcome.ONLINE;
+        }
+        pendingGrants.queue(targetId, variant.getId(), duration);
+        return GrantOutcome.QUEUED;
+    }
+
+    public void deliverPending(Player player) {
+        if (player == null || !player.isOnline()) {
+            return;
+        }
+        for (AmethystPendingGrants.Grant grant : pendingGrants.take(player.getUniqueId())) {
+            ShardToolVariant variant = resolveVariant(grant.typeId());
+            if (variant == null) {
+                continue;
+            }
+            ItemStack item = createTool(variant, player.getUniqueId(), grant.durationSeconds());
+            if (item == null) {
+                continue;
+            }
+            deliverTo(player, item, variant, grant.durationSeconds());
+        }
+    }
+
+    public int pendingCount(UUID playerId) {
+        return pendingGrants.count(playerId);
+    }
+
+    public Material getDialogMaterial(ShardToolVariant variant) {
+        if (variant == null) {
+            return Material.NETHERITE_PICKAXE;
+        }
+        ConfigurationSection shop = shopSection(variant);
+        if (shop != null && shop.contains("MATERIAL")) {
+            Material parsed = ItemUtils.parseMaterial(shop.getString("MATERIAL"));
+            if (parsed != null && parsed != Material.AIR) {
+                return parsed;
+            }
+        }
+        ConfigurationSection tool = getToolSection(variant.getBaseType());
+        if (tool != null) {
+            Material parsed = ItemUtils.parseMaterial(tool.getString("MATERIAL", variant.getDefaultMaterial().name()));
+            if (parsed != null && parsed != Material.AIR) {
+                return parsed;
+            }
+        }
+        return variant.getDefaultMaterial();
+    }
+
+    public String getDialogName(ShardToolVariant variant) {
+        if (variant == null) {
+            return "Amethyst Tool";
+        }
+        ConfigurationSection shop = shopSection(variant);
+        if (shop != null && shop.isString("DISPLAY-NAME")) {
+            return shop.getString("DISPLAY-NAME");
+        }
+        ConfigurationSection tool = getToolSection(variant.getBaseType());
+        if (tool != null && tool.isString("NAME")) {
+            return tool.getString("NAME");
+        }
+        return variant.getDefaultDisplayName();
+    }
+
+    public List<String> getDialogLore(ShardToolVariant variant) {
+        if (variant == null) {
+            return List.of();
+        }
+        ConfigurationSection shop = shopSection(variant);
+        if (shop != null && shop.isList("LORE")) {
+            return AmethystToolAppearance.ownedLoreTemplate(shop.getStringList("LORE"));
+        }
+        if (!variant.getDefaultLoreTemplate().isEmpty()) {
+            return variant.getDefaultLoreTemplate();
+        }
+        ConfigurationSection tool = getToolSection(variant.getBaseType());
+        if (tool != null && tool.isList("LORE")) {
+            return tool.getStringList("LORE");
+        }
+        return List.of();
+    }
+
+    private ConfigurationSection shopSection(ShardToolVariant variant) {
+        if (variant == null || variant.getShopKey() == null) {
+            return null;
+        }
+        if (plugin.getConfigManager() == null || plugin.getConfigManager().getShop() == null) {
+            return null;
+        }
+        return plugin.getConfigManager().getShop().getConfigurationSection("SHARD-MENU." + variant.getShopKey());
+    }
+
+    private void deliverTo(Player player, ItemStack item, ShardToolVariant variant, long durationSeconds) {
+        Map<Integer, ItemStack> leftovers = player.getInventory().addItem(item);
+        leftovers.values().forEach(leftover ->
+                player.getWorld().dropItemNaturally(player.getLocation(), leftover));
+        player.sendMessage(ColorUtils.toComponent(getMessage(
+                "RECEIVED",
+                "{type}", getDialogName(variant),
+                "{time}", AmethystDuration.formatDhM(durationSeconds),
+                "{player}", player.getName()
+        )));
     }
 
     public ItemStack createTool(AmethystToolType type, UUID ownerUuid, long durationSeconds) {

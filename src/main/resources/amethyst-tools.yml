@@ -358,9 +358,32 @@ AMETHYST-MESSAGES:
   # The text or value for Wrong Owner. Available options: Any valid string text
   WRONG-OWNER: '{prefix}&#BDC3C7This Amethyst Tool is bound to another player.'
   # The text or value for Give Success. Available options: Any valid string text
-  GIVE-SUCCESS: '{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7.'
+  # Placeholders: {prefix} {type} {player} {time}
+  GIVE-SUCCESS: '{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7. &8({time})'
+  # The text or value for Give Queued. Available options: Any valid string text
+  # Placeholders: {prefix} {type} {player} {time}
+  GIVE-QUEUED: '{prefix}&#BDC3C7Queued &e{type} &7for &e{player}&7. They will receive it for &e{time} &7when they join.'
+  # The text or value for Give Failed. Available options: Any valid string text
+  # Placeholders: {prefix} {type} {player} {time}
+  GIVE-FAILED: '{prefix}&#BDC3C7Failed to create &e{type}&7. Check the amethyst-tools config.'
+  # The text or value for Give Player Not Found. Available options: Any valid string text
+  # Placeholders: {prefix} {player}
+  GIVE-PLAYER-NOT-FOUND: '{prefix}&#BDC3C7Player not found: &e{player}'
+  # The text or value for Received. Available options: Any valid string text
+  # Placeholders: {prefix} {type} {time} {player}
+  RECEIVED: '{prefix}&#BDC3C7You received &e{type} &7for &e{time}&7.'
+  # The text or value for Player Online. Available options: Any valid string text
+  # Placeholders: {status} {player}
+  PLAYER-ONLINE: '&aOnline'
+  # The text or value for Player Offline. Available options: Any valid string text
+  # Placeholders: {status} {time} {last_online} {player}
+  PLAYER-OFFLINE: '&7Offline ({time} last online)'
+  # The text or value for Duration Invalid. Available options: Any valid string text
+  DURATION-INVALID: '{prefix}&#BDC3C7Invalid duration. Use &e1h&7, &e5h&7, &e1d&7, or a number of seconds.'
+  # The text or value for Dialog Unavailable. Available options: Any valid string text
+  DIALOG-UNAVAILABLE: '{prefix}&#BDC3C7Dialogs are unavailable. Usage: &e/amethysttool give <player> <type> [duration]'
   # The text or value for Give Usage. Available options: Any valid string text
-  GIVE-USAGE: '{prefix}&#BDC3C7Usage: &e/amethysttool give <player> <type> [duration_seconds]'
+  GIVE-USAGE: '{prefix}&#BDC3C7Usage: &e/amethysttool &7or &e/amethysttool give <player> <type> [duration]'
   # The text or value for Give Invalid Type. Available options: Any valid string text
   GIVE-INVALID-TYPE: '{prefix}&#BDC3C7Invalid tool type. Types: DRILL, CHOPPER, SELL_AXE,
     SHOVEL, BUCKET, SHARD_BOOSTER, HASTE_POTION'

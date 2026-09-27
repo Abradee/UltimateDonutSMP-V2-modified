@@ -73,6 +73,8 @@ public class DatabaseManager {
 
     public record AltAccountMatch(UUID uuid, String username, List<String> sharedIps, long lastSeenAt) {}
 
+    public record KnownPlayerIdentity(UUID uuid, String username) {}
+
     public record ServerWipePreview(Map<String, Integer> counts) {
         public int count(String key) {
             return counts.getOrDefault(key, 0);
@@ -1232,6 +1234,54 @@ public class DatabaseManager {
             }
         }
         return names;
+    }
+
+    public List<KnownPlayerIdentity> loadKnownPlayerIdentities() {
+        List<KnownPlayerIdentity> identities = new ArrayList<>();
+        String sql = "SELECT uuid, username FROM players "
+                + "WHERE uuid IS NOT NULL AND TRIM(uuid) <> '' "
+                + "AND username IS NOT NULL AND TRIM(username) <> '' "
+                + "ORDER BY LOWER(username) ASC";
+
+        if (hikariDataSource != null && !hikariDataSource.isClosed()) {
+            try (Connection conn = hikariDataSource.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                collectIdentities(rs, identities);
+            } catch (SQLException e) {
+                if (plugin != null) {
+                    plugin.getLogger().log(Level.WARNING, "Failed to load known player identities", e);
+                }
+            }
+            return identities;
+        }
+
+        if (connection == null) {
+            return identities;
+        }
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            collectIdentities(rs, identities);
+        } catch (SQLException e) {
+            if (plugin != null) {
+                plugin.getLogger().log(Level.WARNING, "Failed to load known player identities", e);
+            }
+        }
+        return identities;
+    }
+
+    private void collectIdentities(ResultSet rs, List<KnownPlayerIdentity> identities) throws SQLException {
+        while (rs.next()) {
+            String rawUuid = rs.getString("uuid");
+            String username = rs.getString("username");
+            if (rawUuid == null || username == null || username.isBlank()) {
+                continue;
+            }
+            try {
+                identities.add(new KnownPlayerIdentity(UUID.fromString(rawUuid), username.trim()));
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
     }
 
     public UUID findPunishmentTargetUuidByName(String username) {

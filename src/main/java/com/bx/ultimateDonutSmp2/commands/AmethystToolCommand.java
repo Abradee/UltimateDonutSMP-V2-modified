@@ -3,7 +3,7 @@ package com.bx.ultimateDonutSmp2.commands;
 import com.bx.ultimateDonutSmp2.utils.PermissionUtils;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
-import com.bx.ultimateDonutSmp2.amethyst.AmethystToolType;
+import com.bx.ultimateDonutSmp2.amethyst.AmethystDuration;
 import com.bx.ultimateDonutSmp2.amethyst.AmethystToolsManager;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import org.bukkit.Bukkit;
@@ -12,7 +12,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.CommandMap;
 import org.bukkit.util.StringUtil;
 
@@ -41,7 +40,7 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
             "bucket",
             "shard-booster"
     );
-    private static final List<String> DURATION_COMPLETIONS = List.of("600", "1200", "3600", "7200");
+    private static final List<String> DURATION_COMPLETIONS = List.of("1h", "5h", "10h", "1d", "5d");
 
     private final UltimateDonutSmp2 plugin;
 
@@ -54,6 +53,17 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
         var mgr = plugin.getAmethystToolsManager();
 
         if (args.length < 1) {
+            if (sender instanceof Player player) {
+                if (!PermissionUtils.has(sender, PERMISSION)) {
+                    sender.sendMessage(ColorUtils.toComponent("&cNo permission."));
+                    return true;
+                }
+                if (plugin.getDialogManager() != null && plugin.getDialogManager().openAmethyst(player)) {
+                    return true;
+                }
+                sender.sendMessage(ColorUtils.toComponent(mgr.getMessage("DIALOG-UNAVAILABLE")));
+                return true;
+            }
             sender.sendMessage(ColorUtils.toComponent(mgr.getMessage("GIVE-USAGE")));
             return true;
         }
@@ -80,13 +90,14 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             String targetName = args[1];
-            String typeName   = args[2];
-            long duration = args.length >= 4 ? parseLong(args[3]) : -1L;
-
-            Player target = Bukkit.getPlayer(targetName);
-            if (target == null) {
-                sender.sendMessage(ColorUtils.toComponent("&cPlayer not found: " + targetName));
-                return true;
+            String typeName = args[2];
+            long duration = -1L;
+            if (args.length >= 4) {
+                duration = AmethystDuration.parseSeconds(joinDuration(args, 3));
+                if (duration <= 0L) {
+                    sender.sendMessage(ColorUtils.toComponent(mgr.getMessage("DURATION-INVALID")));
+                    return true;
+                }
             }
 
             AmethystToolsManager.ShardToolVariant variant = mgr.resolveVariant(typeName);
@@ -95,17 +106,27 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            ItemStack item = mgr.createTool(variant, target.getUniqueId(), duration);
-            if (item == null) {
-                sender.sendMessage(ColorUtils.toComponent("&cFailed to create item (check config)."));
+            var account = plugin.getEconomyManager() == null
+                    ? null
+                    : plugin.getEconomyManager().resolveAccount(targetName);
+            if (account == null) {
+                sender.sendMessage(ColorUtils.toComponent(mgr.getMessage(
+                        "GIVE-PLAYER-NOT-FOUND", "{player}", targetName)));
                 return true;
             }
 
-            target.getInventory().addItem(item);
-            sender.sendMessage(ColorUtils.toComponent(
-                    mgr.getMessage("GIVE-SUCCESS",
-                            "{type}", variant.getFriendlyName(),
-                            "{player}", target.getName())));
+            AmethystToolsManager.GrantOutcome outcome = mgr.grant(account.uuid(), variant, duration);
+            long granted = duration > 0L ? duration : variant.getDefaultDuration();
+            String key = switch (outcome) {
+                case ONLINE -> "GIVE-SUCCESS";
+                case QUEUED -> "GIVE-QUEUED";
+                case FAILED -> "GIVE-FAILED";
+            };
+            sender.sendMessage(ColorUtils.toComponent(mgr.getMessage(
+                    key,
+                    "{type}", mgr.getDialogName(variant),
+                    "{player}", account.displayName() == null ? targetName : account.displayName(),
+                    "{time}", AmethystDuration.formatDhM(granted))));
             return true;
         }
 
@@ -118,7 +139,7 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
         if (commandMap == null) {
             return;
         }
-        Command dynamicCommand = new Command("shardtool", "Shard tool admin command", "/shardtool give <player> <type> [duration]", List.of("shardtools", "stool")) {
+        Command dynamicCommand = new Command("shardtool", "Shard tool admin command", "/shardtool [give <player> <type> [duration]]", List.of("shardtools", "stool")) {
             @Override
             public boolean execute(CommandSender sender, String label, String[] args) {
                 return AmethystToolCommand.this.onCommand(sender, this, label, args);
@@ -161,24 +182,31 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
-            return partialMatches(args[1], onlinePlayerNames());
+            return partialMatches(args[1], knownPlayerNames());
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {
             return partialMatches(args[2], TYPE_COMPLETIONS);
         }
 
-        if (args.length == 4 && args[0].equalsIgnoreCase("give")) {
-            return partialMatches(args[3], DURATION_COMPLETIONS);
+        if (args.length >= 4 && args[0].equalsIgnoreCase("give")) {
+            return partialMatches(args[args.length - 1], DURATION_COMPLETIONS);
         }
 
         return Collections.emptyList();
     }
 
-    private List<String> onlinePlayerNames() {
+    private List<String> knownPlayerNames() {
         List<String> names = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             names.add(player.getName());
+        }
+        if (plugin.getDatabaseManager() != null) {
+            for (String name : plugin.getDatabaseManager().loadKnownPlayerNames()) {
+                if (name != null && !name.isBlank() && names.stream().noneMatch(existing -> existing.equalsIgnoreCase(name))) {
+                    names.add(name);
+                }
+            }
         }
         names.sort(String.CASE_INSENSITIVE_ORDER);
         return names;
@@ -191,7 +219,14 @@ public class AmethystToolCommand implements CommandExecutor, TabCompleter {
         return matches;
     }
 
-    private long parseLong(String s) {
-        try { return Long.parseLong(s); } catch (NumberFormatException e) { return -1L; }
+    private static String joinDuration(String[] args, int start) {
+        StringBuilder builder = new StringBuilder();
+        for (int index = start; index < args.length; index++) {
+            if (index > start) {
+                builder.append(' ');
+            }
+            builder.append(args[index]);
+        }
+        return builder.toString();
     }
 }

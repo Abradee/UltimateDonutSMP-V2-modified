@@ -46,6 +46,11 @@ public final class DialogSession {
     private FriendFilter friendFilter = FriendFilter.ALL;
     private String friendSearch;
     private String overlayReturnAction;
+    private com.bx.ultimateDonutSmp2.amethyst.AmethystToolsManager.ShardToolVariant amethystVariant;
+    private UUID amethystTarget;
+    private String amethystTargetName;
+    private String amethystSearch;
+    private int amethystPlayerPage;
     private UUID payTarget;
     private UUID teleportTarget;
     private double payAmount;
@@ -147,6 +152,58 @@ public final class DialogSession {
         return overlayReturnAction.indexOf(':') >= 0
                 ? overlayReturnAction
                 : DialogActions.NAMESPACE + ':' + overlayReturnAction;
+    }
+
+    public com.bx.ultimateDonutSmp2.amethyst.AmethystToolsManager.ShardToolVariant getAmethystVariant() {
+        return amethystVariant;
+    }
+
+    public void setAmethystVariant(com.bx.ultimateDonutSmp2.amethyst.AmethystToolsManager.ShardToolVariant amethystVariant) {
+        this.amethystVariant = amethystVariant;
+    }
+
+    public UUID getAmethystTarget() {
+        return amethystTarget;
+    }
+
+    public void setAmethystTarget(UUID amethystTarget) {
+        this.amethystTarget = amethystTarget;
+    }
+
+    public String getAmethystTargetName() {
+        return amethystTargetName;
+    }
+
+    public void setAmethystTargetName(String amethystTargetName) {
+        this.amethystTargetName = amethystTargetName == null || amethystTargetName.isBlank()
+                ? null
+                : amethystTargetName;
+    }
+
+    public String getAmethystSearch() {
+        return amethystSearch;
+    }
+
+    public void setAmethystSearch(String amethystSearch) {
+        this.amethystSearch = amethystSearch == null || amethystSearch.isBlank()
+                ? null
+                : amethystSearch.trim();
+    }
+
+    public int getAmethystPlayerPage() {
+        return amethystPlayerPage;
+    }
+
+    public void setAmethystPlayerPage(int amethystPlayerPage) {
+        this.amethystPlayerPage = Math.max(0, amethystPlayerPage);
+    }
+
+    public void clearAmethyst() {
+        amethystVariant = null;
+        amethystTarget = null;
+        amethystTargetName = null;
+        amethystSearch = null;
+        amethystPlayerPage = 0;
     }
 
     public UUID getPayTarget() {

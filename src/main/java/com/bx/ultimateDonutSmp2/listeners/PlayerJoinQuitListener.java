@@ -180,6 +180,13 @@ public class PlayerJoinQuitListener implements Listener {
             );
         }
         plugin.getKeyAllManager().handleJoin(player);
+        if (plugin.getAmethystToolsManager() != null) {
+            plugin.getSpigotScheduler().runEntityLater(player, () -> {
+                if (player.isOnline()) {
+                    plugin.getAmethystToolsManager().deliverPending(player);
+                }
+            }, 5L);
+        }
         if (plugin.getHideManager() != null) {
             if (snapshot != null && snapshot.hideState() != null) {
                 plugin.getHideManager().rememberState(snapshot.hideState());

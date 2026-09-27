@@ -1368,8 +1368,16 @@ CONFIG:
       BOOSTER-ALREADY: "{prefix}&#BDC3C7You already have an active shard booster!"
       NO-PERMISSION: '{prefix}&#BDC3C7You do not have permission to use this item.'
       WRONG-OWNER: "{prefix}&#BDC3C7This amethyst tool is bound to another player."
-      GIVE-SUCCESS: "{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7."
-      GIVE-USAGE: "{prefix}&#BDC3C7Usage: &e/amethysttool da <player> <type> [duration_seconds]"
+      GIVE-SUCCESS: "{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7. &8({time})"
+      GIVE-QUEUED: "{prefix}&#BDC3C7Queued &e{type} &7for &e{player}&7. They will receive it for &e{time} &7when they join."
+      GIVE-FAILED: "{prefix}&#BDC3C7Failed to create &e{type}&7. Check the amethyst-tools config."
+      GIVE-PLAYER-NOT-FOUND: "{prefix}&#BDC3C7Player not found: &e{player}"
+      RECEIVED: "{prefix}&#BDC3C7You received &e{type} &7for &e{time}&7."
+      PLAYER-ONLINE: "&aOnline"
+      PLAYER-OFFLINE: "&7Offline ({time} last online)"
+      DURATION-INVALID: "{prefix}&#BDC3C7Invalid duration. Use &e1h&7, &e5h&7, &e1d&7, or a number of seconds."
+      DIALOG-UNAVAILABLE: "{prefix}&#BDC3C7Dialogs are unavailable. Usage: &e/amethysttool give <player> <type> [duration]"
+      GIVE-USAGE: "{prefix}&#BDC3C7Usage: &e/amethysttool &7or &e/amethysttool da <player> <type> [duration]"
       GIVE-INVALID-TYPE: "{prefix}&#BDC3C7Invalid tool type. types: taladro, picador,
         sell_axe, pala, cubo, shard_booster"
       RELOAD-SUCCESS: "{prefix}&#BDC3C7Configuration reloaded."
