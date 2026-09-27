@@ -55,7 +55,8 @@ public class StaffModeManager {
             StaffToolType.FREEZE,
             StaffToolType.STAFF_LIST,
             StaffToolType.BETTER_VIEW,
-            StaffToolType.RANDOM_TELEPORT
+            StaffToolType.RANDOM_TELEPORT,
+            StaffToolType.SPECTATOR
     };
 
     private final UltimateDonutSmp2 plugin;
@@ -154,6 +155,10 @@ public class StaffModeManager {
         return getConfig().getString("STAFF-MODE.RANDOM-TELEPORT-PERMISSION", "ULTIMATEDONUTSMP2.STAFF.MODE.RANDOMTP");
     }
 
+    public String getSpectatorPermission() {
+        return getConfig().getString("STAFF-MODE.SPECTATOR-PERMISSION", "ULTIMATEDONUTSMP2.STAFF.MODE.SPECTATOR");
+    }
+
     public String getSeeVanishedPermission() {
         return getConfig().getString("STAFF-MODE.SEE-VANISHED-PERMISSION", "ULTIMATEDONUTSMP2.STAFF.MODE.SEEVANISHED");
     }
@@ -184,6 +189,10 @@ public class StaffModeManager {
 
     public boolean canUseRandomTeleport(Player player) {
         return player != null && PermissionUtils.has(player, getRandomTeleportPermission());
+    }
+
+    public boolean canUseSpectator(Player player) {
+        return player != null && PermissionUtils.has(player, getSpectatorPermission());
     }
 
     public boolean canManageOthers(CommandSender sender) {
@@ -369,6 +378,30 @@ public class StaffModeManager {
         refreshTool(player, StaffToolType.BETTER_VIEW);
         player.sendMessage(ColorUtils.toComponent(getMessage("BETTER-VIEW-OFF", "&cBetter view disabled."), player));
         PlayerSettingUtils.sendActionBar(plugin, player, getMessage("BETTER-VIEW-OFF", "&cBetter view disabled."));
+        return true;
+    }
+
+    public boolean toggleSpectator(Player player) {
+        if (player == null || !isInStaffMode(player.getUniqueId()) || !canUseSpectator(player)) {
+            return false;
+        }
+
+        boolean enable = player.getGameMode() != GameMode.SPECTATOR;
+        if (enable) {
+            player.setGameMode(GameMode.SPECTATOR);
+            player.sendMessage(ColorUtils.toComponent(getMessage("SPECTATOR-ON", "&aSpectator enabled."), player));
+        } else {
+            player.setGameMode(GameMode.CREATIVE);
+            player.setAllowFlight(true);
+            StaffModeState state = getState(player.getUniqueId());
+            if (state != null && state.isBetterViewActive()
+                    && isBetterViewFlightEnabled()
+                    && isBetterViewAutoFlyEnabled()) {
+                player.setFlying(true);
+            }
+            player.sendMessage(ColorUtils.toComponent(getMessage("SPECTATOR-OFF", "&cSpectator disabled."), player));
+        }
+        refreshTool(player, StaffToolType.SPECTATOR);
         return true;
     }
 
@@ -1230,6 +1263,15 @@ public class StaffModeManager {
             material = parseMaterial(getConfig().getString(path + ".MATERIAL", "GRAY_DYE"), Material.GRAY_DYE);
             displayName = getConfig().getString(path + ".NAME", "&7Unvanished");
             lore = getConfig().getStringList(path + ".LORE");
+        } else if (toolType == StaffToolType.SPECTATOR) {
+            boolean spectating = player.getGameMode() == GameMode.SPECTATOR;
+            path = path + "." + (spectating ? "ENABLED" : "DISABLED");
+            material = parseMaterial(getConfig().getString(path + ".MATERIAL", "ENDER_EYE"), Material.ENDER_EYE);
+            displayName = getConfig().getString(path + ".NAME", spectating ? "&aSpectating" : "&7Spectator");
+            lore = getConfig().getStringList(path + ".LORE");
+            if (lore == null || lore.isEmpty()) {
+                lore = List.of(spectating ? "&7Sneak to go back to creative" : "&7Click to spectate");
+            }
         } else {
             material = parseMaterial(getConfig().getString(path + ".MATERIAL", "STONE"), Material.STONE);
             displayName = getConfig().getString(path + ".NAME", "&fTool");
@@ -1467,6 +1509,7 @@ public class StaffModeManager {
             case STAFF_LIST -> 4;
             case BETTER_VIEW -> 7;
             case RANDOM_TELEPORT -> 8;
+            case SPECTATOR -> 6;
             // Custom items carry their own SLOT, so this branch only exists to keep the switch exhaustive.
             case CUSTOM -> 0;
         };

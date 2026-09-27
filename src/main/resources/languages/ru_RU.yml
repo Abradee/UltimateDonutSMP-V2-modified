@@ -1645,6 +1645,15 @@ CONFIG:
         NAME: '&eRandom teleport'
         LORE:
         - '&7Click to teleport to a random player'
+      SPECTATOR:
+        ENABLED:
+          NAME: '&aSpectating'
+          LORE:
+          - '&7Sneak to go back to creative'
+        DISABLED:
+          NAME: '&7Spectator'
+          LORE:
+          - '&7Click to spectate'
     MENUS:
       STAFF-LIST:
         TITLE: "&8Online staff"
@@ -1670,6 +1679,8 @@ CONFIG:
       FAKE-JOIN-MESSAGE: "&e{player} joined the game"
       BETTER-VIEW-ON: "&aBetter view enabled."
       BETTER-VIEW-OFF: "&cBetter view disabled."
+      SPECTATOR-ON: '&aSpectator enabled.'
+      SPECTATOR-OFF: '&cSpectator disabled.'
       RANDOM-TELEPORT-NO-TARGET: "&cNo eligible player found."
       RANDOM-TELEPORT-SUCCESS: "&eTeleported to &f{player}&e."
       RESTORE-FAILED: "&cStaff mode restore failed. contact an admin."

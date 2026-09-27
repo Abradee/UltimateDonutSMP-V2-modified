@@ -46,6 +46,8 @@ STAFF-MODE:
   STAFF-LIST-PERMISSION: ultimatedonutsmp2.staff.mode.stafflist
   # The text or value for Random Teleport Permission. Available options: Any valid string text
   RANDOM-TELEPORT-PERMISSION: ultimatedonutsmp2.staff.mode.randomtp
+  # The text or value for Spectator Permission. Available options: Any valid string text
+  SPECTATOR-PERMISSION: ultimatedonutsmp2.staff.mode.spectator
   # The text or value for See Vanished Permission. Available options: Any valid string text
   SEE-VANISHED-PERMISSION: ultimatedonutsmp2.staff.mode.seevanished
   # The text or value for Others Permission. Available options: Any valid string text
@@ -62,6 +64,8 @@ STAFF-MODE:
     BETTER_VIEW: 7
     # The numerical value for Random Teleport. Available options: Any valid integer
     RANDOM_TELEPORT: 8
+    # The numerical value for Spectator. Available options: Any valid integer
+    SPECTATOR: 6
   # Configuration section for Better View.
   BETTER-VIEW:
     # Determines whether Enable Night Vision is enabled or disabled. Available options: true, false
@@ -124,6 +128,17 @@ ITEMS:
     NAME: '&eRandom Teleport'
     LORE:
     - '&7Click to teleport to a random player'
+  SPECTATOR:
+    ENABLED:
+      MATERIAL: ENDER_EYE
+      NAME: '&aSpectating'
+      LORE:
+      - '&7Sneak to go back to creative'
+    DISABLED:
+      MATERIAL: ENDER_EYE
+      NAME: '&7Spectator'
+      LORE:
+      - '&7Click to spectate'
 # Configuration section for Custom Items.
 # Admin defined hotbar items that run commands. Each entry is free-form: the key is the item id,
 # and the id is what identifies the item in-game, so keep it unique.
@@ -255,6 +270,10 @@ MESSAGES:
   BETTER-VIEW-ON: '&aBetter View enabled.'
   # The text or value for Better View Off. Available options: Any valid string text
   BETTER-VIEW-OFF: '&cBetter View disabled.'
+  # The text or value for Spectator On. Available options: Any valid string text
+  SPECTATOR-ON: '&aSpectator enabled.'
+  # The text or value for Spectator Off. Available options: Any valid string text
+  SPECTATOR-OFF: '&cSpectator disabled.'
   # The text or value for Random Teleport No Target. Available options: Any valid string text
   RANDOM-TELEPORT-NO-TARGET: '&cNo eligible player found.'
   # The text or value for Random Teleport Success. Available options: Any valid string text
