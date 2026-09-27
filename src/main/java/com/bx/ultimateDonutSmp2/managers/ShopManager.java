@@ -623,6 +623,30 @@ public class ShopManager {
         return findServerShopPrice(sample != null ? sample : new ItemStack(material));
     }
 
+    static boolean canFitQuickBuyStack(ItemStack[] storage, ItemStack incoming, int maxStackSize) {
+        if (incoming == null || incoming.getType() == Material.AIR || incoming.getAmount() <= 0) {
+            return true;
+        }
+        if (storage == null || storage.length == 0) {
+            return false;
+        }
+        int stackLimit = Math.max(1, maxStackSize);
+        int remaining = incoming.getAmount();
+        ItemStack comparison = incoming.clone();
+        comparison.setAmount(1);
+        for (ItemStack current : storage) {
+            if (current == null || current.getType() == Material.AIR) {
+                remaining -= stackLimit;
+            } else if (current.isSimilar(comparison) && current.getAmount() < stackLimit) {
+                remaining -= stackLimit - current.getAmount();
+            }
+            if (remaining <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public CompletableFuture<QuickBuyExecutionResult> executeQuickBuy(Player buyer, QuickBuyEntry entry) {
         if (buyer == null || entry == null || entry.isEmpty() || !entry.active()) {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false, "&cInvalid item.", 0, 0));
@@ -654,7 +678,8 @@ public class ShopManager {
                 return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                         plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
             }
-            if (buyer.getInventory().firstEmpty() == -1) {
+            ItemStack stack = entry.createItem(entry.buyAmount());
+            if (!canFitQuickBuyStack(buyer.getInventory().getStorageContents(), stack, stack.getMaxStackSize())) {
                 return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                         plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
             }
@@ -663,7 +688,6 @@ public class ShopManager {
                 return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                         plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
             }
-            ItemStack stack = entry.createItem(entry.buyAmount());
             buyer.getInventory().addItem(stack);
             PlayerData data = plugin.getPlayerDataManager().get(buyer);
             if (data != null) {

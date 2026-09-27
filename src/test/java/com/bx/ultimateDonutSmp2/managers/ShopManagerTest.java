@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,6 +82,114 @@ class ShopManagerTest {
         assertFalse(ShopManager.isManagedSpawnerRewardCommand(
                 "give {username} spawner {amount}"
         ));
+    }
+
+    @Test
+    void partialStackAcceptsABuyWhenNoSlotIsEmpty() throws Exception {
+        withItemFactory(() -> {
+            ItemStack[] storage = filled(Material.COBBLESTONE, new ItemStack(Material.END_CRYSTAL, 10));
+
+            assertTrue(ShopManager.canFitQuickBuyStack(storage, new ItemStack(Material.END_CRYSTAL, 1), 64));
+            assertTrue(ShopManager.canFitQuickBuyStack(storage, new ItemStack(Material.END_CRYSTAL, 54), 64));
+            assertFalse(ShopManager.canFitQuickBuyStack(storage, new ItemStack(Material.END_CRYSTAL, 55), 64));
+        });
+    }
+
+    @Test
+    void fullStackAndUnrelatedItemsLeaveNoRoom() throws Exception {
+        withItemFactory(() -> {
+            ItemStack[] fullCrystals = filled(Material.COBBLESTONE, new ItemStack(Material.END_CRYSTAL, 64));
+            ItemStack[] noCrystals = filled(Material.COBBLESTONE);
+
+            assertFalse(ShopManager.canFitQuickBuyStack(fullCrystals, new ItemStack(Material.END_CRYSTAL, 1), 64));
+            assertFalse(ShopManager.canFitQuickBuyStack(noCrystals, new ItemStack(Material.END_CRYSTAL, 1), 64));
+        });
+    }
+
+    @Test
+    void emptySlotFitsANewStackAndPartialStacksCombine() throws Exception {
+        withItemFactory(() -> {
+            ItemStack[] withGap = filled(Material.COBBLESTONE);
+            withGap[0] = null;
+            ItemStack[] split = filled(
+                    Material.COBBLESTONE,
+                    new ItemStack(Material.END_CRYSTAL, 40),
+                    new ItemStack(Material.END_CRYSTAL, 40)
+            );
+
+            assertTrue(ShopManager.canFitQuickBuyStack(withGap, new ItemStack(Material.END_CRYSTAL, 64), 64));
+            assertFalse(ShopManager.canFitQuickBuyStack(withGap, new ItemStack(Material.END_CRYSTAL, 65), 64));
+            assertTrue(ShopManager.canFitQuickBuyStack(split, new ItemStack(Material.END_CRYSTAL, 48), 64));
+            assertFalse(ShopManager.canFitQuickBuyStack(
+                    filled(Material.TOTEM_OF_UNDYING),
+                    new ItemStack(Material.TOTEM_OF_UNDYING, 1),
+                    1
+            ));
+        });
+    }
+
+    private static ItemStack[] filled(Material filler, ItemStack... overrides) {
+        ItemStack[] storage = new ItemStack[36];
+        ItemStack fill = new ItemStack(filler, 64);
+        for (int slot = 0; slot < storage.length; slot++) {
+            storage[slot] = fill.clone();
+        }
+        for (int slot = 0; slot < overrides.length; slot++) {
+            storage[slot] = overrides[slot];
+        }
+        return storage;
+    }
+
+    private static void withItemFactory(Runnable checks) throws Exception {
+        Field serverField = org.bukkit.Bukkit.class.getDeclaredField("server");
+        serverField.setAccessible(true);
+        Object previous = serverField.get(null);
+        serverField.set(null, itemFactoryServer());
+        try {
+            checks.run();
+        } finally {
+            serverField.set(null, previous);
+        }
+    }
+
+    private static org.bukkit.Server itemFactoryServer() {
+        Object itemFactory = Proxy.newProxyInstance(
+                org.bukkit.inventory.ItemFactory.class.getClassLoader(),
+                new Class<?>[]{org.bukkit.inventory.ItemFactory.class},
+                (proxy, method, args) -> switch (method.getName()) {
+                    case "getItemMeta" -> null;
+                    case "equals" -> args != null && args.length == 2 && java.util.Objects.equals(args[0], args[1]);
+                    default -> defaultValue(method);
+                });
+        Object[] registry = new Object[1];
+        return (org.bukkit.Server) Proxy.newProxyInstance(
+                org.bukkit.Server.class.getClassLoader(),
+                new Class<?>[]{org.bukkit.Server.class},
+                (proxy, method, args) -> switch (method.getName()) {
+                    case "getItemFactory" -> itemFactory;
+                    case "getRegistry" -> {
+                        if (registry[0] == null) {
+                            Class<?> registryClass = Class.forName("org.bukkit.Registry");
+                            registry[0] = Proxy.newProxyInstance(
+                                    registryClass.getClassLoader(),
+                                    new Class<?>[]{registryClass},
+                                    (registryProxy, registryMethod, registryArgs) -> defaultValue(registryMethod));
+                        }
+                        yield registry[0];
+                    }
+                    default -> defaultValue(method);
+                });
+    }
+
+    private static Object defaultValue(Method method) {
+        Class<?> returnType = method.getReturnType();
+        if (returnType == boolean.class) {
+            return false;
+        }
+        if (returnType == int.class) {
+            return 0;
+        }
+        return null;
     }
 
     @Test
