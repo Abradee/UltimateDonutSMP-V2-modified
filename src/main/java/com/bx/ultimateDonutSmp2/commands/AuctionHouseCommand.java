@@ -103,6 +103,10 @@ public final class AuctionHouseCommand implements CommandExecutor, TabCompleter 
             }
             default -> {
                 if (requirePermission(player, "use")) {
+                    String query = clipSearch(String.join(" ", args));
+                    if (!query.isEmpty()) {
+                        plugin.getAuctionHouseManager().setSearchQuery(player.getUniqueId(), query);
+                    }
                     openBrowse(player);
                 }
             }
@@ -338,10 +342,18 @@ public final class AuctionHouseCommand implements CommandExecutor, TabCompleter 
             return "";
         }
         String joined = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).trim();
-        if (joined.length() > 64) {
-            return joined.substring(0, 64);
+        return clipSearch(joined);
+    }
+
+    static String clipSearch(String query) {
+        if (query == null) {
+            return "";
         }
-        return joined;
+        String trimmed = query.trim();
+        if (trimmed.length() > 64) {
+            return trimmed.substring(0, 64);
+        }
+        return trimmed;
     }
 
     static List<String> searchTabComplete(String token) {

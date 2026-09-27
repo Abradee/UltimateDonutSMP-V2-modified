@@ -189,6 +189,8 @@ price source Quick Buy reads from, so its health directly affects what `/shop` c
 | `/ah fastbuy`, `/ah fastsell` | Skip the confirmation steps (`ultimatedonutsmp2.auctionhouse.fastbuy` / `.fastsell`) |
 | `/ah reload` | Reload auction settings (`ultimatedonutsmp2.admin.auctionhouse`) |
 
+`/ah neth boot prot 4` is that search without the word `search`. Each word has to show up inside the item name, so `neth` matches netherite and `boot` matches boots. An enchant abbreviation followed by a number, such as `prot 4` or `prot iv`, keeps items with that enchant at that level or higher. `/ah search` uses the same rules.
+
 The `ultimatedonutsmp2.auctionhouse.*` nodes gate individual actions and default to `true`; the
 `donutauction.*` family mirrors them as legacy aliases.
 
