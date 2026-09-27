@@ -297,6 +297,14 @@ The flag defaults to `false`, so nothing changes on a preset that does not menti
 
 It only fires on a real ban. A `MUTE`, `WARN` or `KICK` preset ignores it, and so does a tier of `"0s"`, since that tier is issued as a warning rather than a ban. Staff running the command see the number of records removed underneath the usual punishment confirmation.
 
+Staff can also override whether to wipe per-command with an optional 4th argument:
+
+```
+/offend <player> <reason> [time] [wipe]
+```
+
+Argument 4 accepts `wipe` or `true` to force a wipe on a BAN/BLACKLIST, and `nowipe` or `false` to prevent wiping even if the preset configured `wipe: true`. Leaving the argument off falls back to the preset's configured `wipe` setting.
+
 The wipe itself is the same one `/playerwipe` performs, down to what survives it and the backup it leaves behind, so `/playerunwipe` undoes it the same way. Turning it on for an offence your team hands out often still fills the backup folder with accounts you meant to keep, so it suits things like duping or botting rather than a first-strike chat rule.
 
 ---

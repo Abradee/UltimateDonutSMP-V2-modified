@@ -46,7 +46,7 @@ public class OffendCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sendMessage(sender, "&cUsage: /offend <player> <reason> [time]");
+            sendMessage(sender, "&cUsage: /offend <player> <reason> [time] [wipe]");
             return true;
         }
 
@@ -78,6 +78,15 @@ public class OffendCommand implements CommandExecutor, TabCompleter {
 
         if (args.length >= 3) {
             durationStr = args[2];
+        }
+
+        Boolean wipeOverride = null;
+        if (args.length >= 4) {
+            wipeOverride = parseWipeOverride(args[3]);
+            if (wipeOverride == null) {
+                sendMessage(sender, "&cInvalid wipe option: '" + args[3] + "'. Use wipe, true, nowipe, or false.");
+                return true;
+            }
         }
 
         if (ruleOpt.isPresent()) {
@@ -134,7 +143,8 @@ public class OffendCommand implements CommandExecutor, TabCompleter {
         String durationDisplay = expiresAt == null ? "Permanent" : NumberUtils.formatCountdown(Math.max(0L, (expiresAt - System.currentTimeMillis()) / 1000L));
         sendMessage(sender, "&aSuccessfully issued &f" + type.name() + " &apunishment to &b" + target.name() + "&a! [Duration: &f" + durationDisplay + "&a, Reason: &f" + reasonDisplay + "&a]");
 
-        if (ruleOpt.isPresent() && ruleOpt.get().wipe() && isBan(type)) {
+        boolean presetWipe = ruleOpt.isPresent() && ruleOpt.get().wipe();
+        if (shouldWipe(wipeOverride, presetWipe, type)) {
             wipeTarget(sender, target);
         }
         return true;
@@ -166,7 +176,34 @@ public class OffendCommand implements CommandExecutor, TabCompleter {
                     .collect(Collectors.toList());
         }
 
+        if (args.length == 4) {
+            String partial = args[3].toLowerCase(Locale.ROOT);
+            List<String> options = List.of("wipe", "true", "nowipe", "false");
+            return options.stream()
+                    .filter(d -> d.startsWith(partial))
+                    .collect(Collectors.toList());
+        }
+
         return Collections.emptyList();
+    }
+
+    static Boolean parseWipeOverride(String input) {
+        if (input == null) {
+            return null;
+        }
+        String normalized = input.trim().toLowerCase(Locale.ROOT);
+        if (normalized.equals("wipe") || normalized.equals("true")) {
+            return Boolean.TRUE;
+        }
+        if (normalized.equals("nowipe") || normalized.equals("false")) {
+            return Boolean.FALSE;
+        }
+        return null;
+    }
+
+    static boolean shouldWipe(Boolean wipeOverride, boolean presetWipe, PunishmentType type) {
+        boolean requested = wipeOverride != null ? wipeOverride : presetWipe;
+        return requested && isBan(type);
     }
 
     private static boolean isBan(PunishmentType type) {

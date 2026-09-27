@@ -447,7 +447,7 @@ All punishment commands share one executor, which dispatches on the command labe
 | `/unblacklist` | — | `/unblacklist <player> [reason]` | `ultimatedonutsmp2.staff.punishments.unblacklist` | Remove active blacklist records. |
 | `/warn` | — | `/warn <player> [reason]` | `ultimatedonutsmp2.staff.punishments.create` | Warn a player and record the punishment. |
 | `/kick` | — | `/kick <player> [reason]` | `ultimatedonutsmp2.staff.punishments.create` | Kick a player and record the punishment. |
-| `/offend` | — | `/offend <player> <reason> [time]` | `ultimatedonutsmp2.staff.punishments.offend`; also checks `ultimatedonutsmp2.staff.punishments.create` | Apply a preset offence from `offenses.yml`. |
+| `/offend` | — | `/offend <player> <reason> [time] [wipe]` | `ultimatedonutsmp2.staff.punishments.offend`; also checks `ultimatedonutsmp2.staff.punishments.create` | Apply a preset offence from `offenses.yml`, with an optional duration and wipe override (`wipe`/`true`/`nowipe`/`false`). |
 | `/punishments` | `/phistory` | `/punishments [player]` | `ultimatedonutsmp2.command.punishments`; GUI actions use `ultimatedonutsmp2.staff.punishments.view` and `.delete` | Browse punishment history, server-wide or per player. |
 
 Two nodes govern who may be punished: a target holding `ultimatedonutsmp2.admin.punishments.exempt` cannot be punished, unless the issuing staff member holds `ultimatedonutsmp2.admin.punishments.exempt.bypass`.
