@@ -145,7 +145,10 @@ anything unpriced.
 Selling is not a flat rate. Each sale accumulates progress in that item's sell category, and the
 category's current multiplier is applied to the payout, which is what `/sellprogress` and
 `/sellmulti` display. The same multiplier path is used when a spawner's stored loot is sold, so a
-player cannot dodge progression by farming through a spawner.
+player cannot dodge progression by farming through a spawner. To disable multipliers server-wide
+and pin every payout to base worth (`1.0x`), set `PROGRESS-MENU.ENABLED: false` in `menus.yml`. While
+disabled, payouts never scale, sales pause progress recording, and `/sellmulti` informs players the
+system is off.
 
 `CONTAINER` in `worth.yml` decides how shulker boxes and other containers are priced:
 `INCLUDE-CONTAINER-BASE-PRICE` adds the container itself on top of its contents, and

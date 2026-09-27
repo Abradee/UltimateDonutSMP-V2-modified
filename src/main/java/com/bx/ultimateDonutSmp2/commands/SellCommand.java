@@ -44,6 +44,10 @@ public class SellCommand implements CommandExecutor, TabCompleter {
         switch (sub) {
             case "sell" -> new SellMenu(plugin).open(player);
             case "sellmulti", "sellmultiplier", "sellprogress" -> {
+                if (!plugin.getShopManager().isSellMultiplierEnabled()) {
+                    player.sendMessage(ColorUtils.toComponent("&cSell multipliers are currently disabled."));
+                    return true;
+                }
                 SellCategory category = SellCategory.CROPS;
                 if (args.length > 0) {
                     category = SellCategory.fromConfigKey(args[0]).orElse(SellCategory.CROPS);
