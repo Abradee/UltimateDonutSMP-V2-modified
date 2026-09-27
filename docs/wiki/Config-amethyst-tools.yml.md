@@ -7,13 +7,14 @@ the player's inventory when that timer runs out — which is why every tool has 
 as well as the usual enchantment and behaviour settings.
 
 `AMETHYST-TOOLS` defines the tools themselves; `AMETHYST-MESSAGES` holds the chat and
-action-bar strings the feature sends. Tools are granted by `/amethysttool` or by a Shard
-Shop entry in `shop.yml` that sets `AMETHYST-TOOL` and `AMETHYST-DURATION`.
+action-bar strings the feature sends. Tools are granted by `/amethysttool` (Dialog API: pick type, player, duration) or by a Shard
+Shop entry in `shop.yml` that sets `AMETHYST-TOOL` and `AMETHYST-DURATION`. `{type}` and `{time}`
+are replaced in the received-chat line; `{time}` is `1h` / `5d`, never `3600`.
 
 | | |
 | :--- | :--- |
 | **On disk** | `plugins/UltimateDonutSmp2/amethyst-tools.yml` |
-| **Commands** | `/amethysttool give <player> <type> [duration]`, `/amethysttool reload` |
+| **Commands** | `/amethysttool` opens the Dialog API give flow. `/amethysttool give <player> <type> [duration]`, `/amethysttool reload`. `/shardtool` is the same command. Duration accepts `1h`, `5d`, `1d 5h`, or seconds. |
 | **Player-facing text** | Edit `CONFIG.AMETHYST_TOOLS` in `languages/<locale>.yml` — not this file |
 | **Reload** | `/ultimatedonutsmp2 reload` |
 
@@ -22,7 +23,7 @@ Shop entry in `shop.yml` that sets `AMETHYST-TOOL` and `AMETHYST-DURATION`.
 | Section | Type | Contents |
 | :--- | :--- | :--- |
 | [`AMETHYST-TOOLS`](#section-amethyst-tools) | section | 11 keys |
-| [`AMETHYST-MESSAGES`](#section-amethyst-messages) | section | 19 keys |
+| [`AMETHYST-MESSAGES`](#section-amethyst-messages) | section | 27 keys |
 
 ---
 
@@ -204,8 +205,16 @@ AMETHYST-TOOLS:
 | `AMETHYST-MESSAGES.BOOSTER-ALREADY` | `string` | Any text | `{prefix}&#BDC3C7You already have an active shard booster!` | Booster already. |
 | `AMETHYST-MESSAGES.NO-PERMISSION` | `string` | Any text | `{prefix}&#BDC3C7You do not have permission to use this it…` | Permission node. Leave empty to allow everyone. |
 | `AMETHYST-MESSAGES.WRONG-OWNER` | `string` | Any text | `{prefix}&#BDC3C7This Amethyst Tool is bound to another pl…` | Wrong owner. |
-| `AMETHYST-MESSAGES.GIVE-SUCCESS` | `string` | Any text | `{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7.` | Give success. |
-| `AMETHYST-MESSAGES.GIVE-USAGE` | `string` | Any text | `{prefix}&#BDC3C7Usage: &e/amethysttool give &lt;player&gt; &lt;typ…` | Give usage. |
+| `AMETHYST-MESSAGES.GIVE-SUCCESS` | `string` | Any text | `{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7. &8({time})` | Admin confirmation after an online grant. `{type}` `{player}` `{time}` |
+| `AMETHYST-MESSAGES.GIVE-QUEUED` | `string` | Any text | `{prefix}&#BDC3C7Queued &e{type} &7for &e{player}&7. They w…` | Admin confirmation when the target is offline. `{type}` `{player}` `{time}` |
+| `AMETHYST-MESSAGES.GIVE-FAILED` | `string` | Any text | `{prefix}&#BDC3C7Failed to create &e{type}&7. Check the am…` | Item creation failed. `{type}` |
+| `AMETHYST-MESSAGES.GIVE-PLAYER-NOT-FOUND` | `string` | Any text | `{prefix}&#BDC3C7Player not found: &e{player}` | Unknown player. `{player}` |
+| `AMETHYST-MESSAGES.RECEIVED` | `string` | Any text | `{prefix}&#BDC3C7You received &e{type} &7for &e{time}&7.` | Chat to the player who got the tool, including on join. `{type}` `{time}` |
+| `AMETHYST-MESSAGES.PLAYER-ONLINE` | `string` | Any text | `&aOnline` | Player-picker lore while the target is online. |
+| `AMETHYST-MESSAGES.PLAYER-OFFLINE` | `string` | Any text | `&7Offline ({time} last online)` | Player-picker lore while offline. `{time}` is `d`/`h`/`m`. |
+| `AMETHYST-MESSAGES.DURATION-INVALID` | `string` | Any text | `{prefix}&#BDC3C7Invalid duration. Use &e1h&7, &e5h&7, &e1…` | Custom duration could not be parsed. |
+| `AMETHYST-MESSAGES.DIALOG-UNAVAILABLE` | `string` | Any text | `{prefix}&#BDC3C7Dialogs are unavailable. Usage: &e/amethy…` | Shown when `/amethysttool` is used without Dialog API. |
+| `AMETHYST-MESSAGES.GIVE-USAGE` | `string` | Any text | `{prefix}&#BDC3C7Usage: &e/amethysttool &7or &e/amethystto…` | Chat usage. |
 | `AMETHYST-MESSAGES.GIVE-INVALID-TYPE` | `string` | Any text | `{prefix}&#BDC3C7Invalid tool type. Types: DRILL, CHOPPER,…` | Give invalid type. |
 | `AMETHYST-MESSAGES.RELOAD-SUCCESS` | `string` | Any text | `{prefix}&#BDC3C7Configuration reloaded.` | Reload success. |
 
@@ -247,13 +256,18 @@ AMETHYST-MESSAGES:
   # The text or value for Wrong Owner. Available options: Any valid string text
   WRONG-OWNER: '{prefix}&#BDC3C7This Amethyst Tool is bound to another player.'
   # The text or value for Give Success. Available options: Any valid string text
-  GIVE-SUCCESS: '{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7.'
-  # The text or value for Give Usage. Available options: Any valid string text
-  GIVE-USAGE: '{prefix}&#BDC3C7Usage: &e/amethysttool give <player> <type> [duration_seconds]'
-  # The text or value for Give Invalid Type. Available options: Any valid string text
+  GIVE-SUCCESS: '{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7. &8({time})'
+  GIVE-QUEUED: '{prefix}&#BDC3C7Queued &e{type} &7for &e{player}&7. They will receive it for &e{time} &7when they join.'
+  GIVE-FAILED: '{prefix}&#BDC3C7Failed to create &e{type}&7. Check the amethyst-tools config.'
+  GIVE-PLAYER-NOT-FOUND: '{prefix}&#BDC3C7Player not found: &e{player}'
+  RECEIVED: '{prefix}&#BDC3C7You received &e{type} &7for &e{time}&7.'
+  PLAYER-ONLINE: '&aOnline'
+  PLAYER-OFFLINE: '&7Offline ({time} last online)'
+  DURATION-INVALID: '{prefix}&#BDC3C7Invalid duration. Use &e1h&7, &e5h&7, &e1d&7, or a number of seconds.'
+  DIALOG-UNAVAILABLE: '{prefix}&#BDC3C7Dialogs are unavailable. Usage: &e/amethysttool give <player> <type> [duration]'
+  GIVE-USAGE: '{prefix}&#BDC3C7Usage: &e/amethysttool &7or &e/amethysttool give <player> <type> [duration]'
   GIVE-INVALID-TYPE: '{prefix}&#BDC3C7Invalid tool type. Types: DRILL, CHOPPER, SELL_AXE,
     SHOVEL, BUCKET, SHARD_BOOSTER, HASTE_POTION'
-  # The text or value for Reload Success. Available options: Any valid string text
   RELOAD-SUCCESS: '{prefix}&#BDC3C7Configuration reloaded.'
 ```
 

@@ -122,7 +122,10 @@ class DialogFileTest {
             DialogActions.FRIENDS_FOLLOW_PROMPT, DialogActions.FRIENDS_FOLLOW_EXECUTE,
             DialogActions.TPA, DialogActions.TPA_EXECUTE, DialogActions.TPA_ADD_PROMPT, DialogActions.TPA_ADD_EXECUTE,
             DialogActions.RTP_QUEUE, DialogActions.RTP_QUEUE_ACCEPT, DialogActions.RTP_QUEUE_DENY,
-            DialogActions.ORDERS, DialogActions.ORDERS_MENU
+            DialogActions.ORDERS, DialogActions.ORDERS_MENU,
+            DialogActions.AMETHYST_MENU, DialogActions.AMETHYST_TYPES, DialogActions.AMETHYST_PLAYERS,
+            DialogActions.AMETHYST_SEARCH, DialogActions.AMETHYST_SEARCH_GO, DialogActions.AMETHYST_SEARCH_CAN,
+            DialogActions.AMETHYST_TIMES, DialogActions.AMETHYST_TIME_CUSTOM, DialogActions.AMETHYST_TIME_CUSTOM_GO
     );
 
     private static final List<String> PREFIXES = List.of(
@@ -139,7 +142,9 @@ class DialogFileTest {
             DialogActions.FRIENDS_FOLLOW_ADD, DialogActions.FRIENDS_VIEW,
             DialogActions.FRIENDS_UNFOLLOW, DialogActions.FRIENDS_SETTINGS,
             DialogActions.FRIENDS_SETTING_TOGGLE,
-            DialogActions.TPA_TARGET, DialogActions.TPA_TO, DialogActions.TPA_HERE
+            DialogActions.TPA_TARGET, DialogActions.TPA_TO, DialogActions.TPA_HERE,
+            DialogActions.AMETHYST_TYPE, DialogActions.AMETHYST_PLAYER,
+            DialogActions.AMETHYST_PAGE, DialogActions.AMETHYST_TIME
     );
 
     @Test

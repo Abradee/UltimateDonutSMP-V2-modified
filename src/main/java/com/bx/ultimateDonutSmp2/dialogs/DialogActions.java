@@ -108,6 +108,19 @@ public final class DialogActions {
     public static final String ORD_REV_CREATE = "ord_rev_create";
     public static final String BOUNTY_SEARCH_GO = "bty_srch_go";
     public static final String BOUNTY_SEARCH_CAN = "bty_srch_can";
+    public static final String AMETHYST_MENU = "amy_menu";
+    public static final String AMETHYST_TYPES = "amy_types";
+    public static final String AMETHYST_TYPE = "amy_type_";
+    public static final String AMETHYST_PLAYERS = "amy_players";
+    public static final String AMETHYST_PLAYER = "amy_player_";
+    public static final String AMETHYST_PAGE = "amy_page_";
+    public static final String AMETHYST_SEARCH = "amy_search";
+    public static final String AMETHYST_SEARCH_GO = "amy_search_go";
+    public static final String AMETHYST_SEARCH_CAN = "amy_search_can";
+    public static final String AMETHYST_TIMES = "amy_times";
+    public static final String AMETHYST_TIME = "amy_time_";
+    public static final String AMETHYST_TIME_CUSTOM = "amy_time_custom";
+    public static final String AMETHYST_TIME_CUSTOM_GO = "amy_time_go";
 
 
     private DialogActions() {

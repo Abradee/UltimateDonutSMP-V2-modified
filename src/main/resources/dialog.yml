@@ -1,5 +1,5 @@
 # ==============================================================================
-# UltimateDonutSMP2 - Dialog Configuration
+# UltimateDonutSMP V2 - Dialog Configuration
 # ==============================================================================
 #
 # Dialogs are the client-side menus introduced in Minecraft 1.21.6. They need a
@@ -53,6 +53,7 @@ SCREENS:
   FRIENDS: true
   TELEPORT: true
   RTP-QUEUE: true
+  AMETHYST: true
 
 DONUT_SMP_DIALOG:
   TITLE: "UltimateDonutSmp V2"
@@ -705,3 +706,81 @@ RTP_QUEUE_DIALOG:
   NO-ACTION: "ultimatedonutsmp2:rtp_queue_deny"
   YES-LABEL: "&#00FC00Yes"
   YES-ACTION: "ultimatedonutsmp2:rtp_queue_accept"
+
+AMETHYST_TYPE_DIALOG:
+  TITLE: "Amethyst Tools"
+  EXTERNAL-TITLE: "Amethyst Tools"
+  DESCRIPTION: "&7Choose an amethyst tool to give"
+  COLUMNS: 2
+  BUTTON-WIDTH: 200
+  ENTRY-FORMAT: "%icon% %name%"
+
+AMETHYST_PLAYER_DIALOG:
+  TITLE: "Give %type%"
+  EXTERNAL-TITLE: "Give %type%"
+  DESCRIPTION: "&7Online and last-online players  &8(%page%/%pages%)"
+  COLUMNS: 3
+  BUTTON-WIDTH: 150
+  PAGE-SIZE: 21
+  SEARCH-LABEL: "&7Search"
+  SEARCH-TOOLTIP: "&7Filter by player name"
+  PREV-LABEL: "&7Previous"
+  NEXT-LABEL: "&7Next"
+  BACK-LABEL: "&7Back"
+  EMPTY-TEXT: "&7No players matched that name."
+
+AMETHYST_PLAYER_SEARCH_DIALOG:
+  TITLE: "Search players"
+  EXTERNAL-TITLE: "Search players"
+  DESCRIPTION: "&7Type a name to filter the list"
+  COLUMNS: 2
+  BUTTON-WIDTH: 150
+  INPUTS:
+    - ID: "query"
+      LABEL: "Player name"
+      WIDTH: 300
+      MAX-LENGTH: 16
+  BUTTONS:
+    - LABEL: "&aSearch"
+      ACTION: "ultimatedonutsmp2:amy_search_go"
+    - LABEL: "&7Back"
+      ACTION: "ultimatedonutsmp2:amy_search_can"
+
+AMETHYST_DURATION_DIALOG:
+  TITLE: "Duration for %target%"
+  EXTERNAL-TITLE: "Duration for %target%"
+  DESCRIPTION: "&7How long should %type% last?"
+  COLUMNS: 2
+  BUTTON-WIDTH: 150
+  CUSTOM-LABEL: "Custom"
+  BACK-LABEL: "&7Back"
+  DURATIONS:
+    - LABEL: "1h"
+      SECONDS: 3600
+    - LABEL: "5h"
+      SECONDS: 18000
+    - LABEL: "10h"
+      SECONDS: 36000
+    - LABEL: "1d"
+      SECONDS: 86400
+    - LABEL: "5d"
+      SECONDS: 432000
+    - LABEL: "Custom"
+      ACTION: custom
+
+AMETHYST_DURATION_CUSTOM_DIALOG:
+  TITLE: "Custom duration"
+  EXTERNAL-TITLE: "Custom duration"
+  DESCRIPTION: "&7Type a duration such as &e1h&7, &e5h&7, &e10h&7, &e1d&7, or &e1d 5h"
+  COLUMNS: 1
+  BUTTON-WIDTH: 250
+  INPUTS:
+    - ID: "duration"
+      LABEL: "Duration"
+      WIDTH: 250
+      MAX-LENGTH: 16
+  BUTTONS:
+    - LABEL: "&aGive"
+      ACTION: "ultimatedonutsmp2:amy_time_go"
+    - LABEL: "&7Back"
+      ACTION: "ultimatedonutsmp2:amy_times"

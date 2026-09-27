@@ -92,6 +92,8 @@ Every camel-case name above also accepts an all-lowercase form, for example
 | `%economy_keyall_countdown%` | Time until the next Key-All |
 | `%economy_booster_countdown%` | Remaining shard booster time, or `inactive` |
 | `%economy_rtp_countdown%` | RTP zone countdown, or `disabled` when the RTP zone is off |
+| `%economy_amethyst_pending%` | Number of amethyst tools waiting to be delivered on join |
+| `%economy_last_online%` | `online`, or last-seen age as `d`/`h`/`m` (for example `2d 3h`) |
 | `%economy_shard_cuboid_display%` | Shard cuboid HUD line; `-` when offline |
 | `%economy_shard_cuboid_status%` | `inside` or `outside` |
 | `%economy_shard_cuboid_name%` | Active shard cuboid name, or `none` |
@@ -219,7 +221,8 @@ own configuration. These are not PlaceholderAPI placeholders and will not work i
 available depends on the message. Commonly supplied: `{player}`, `{target}`, `{amount}`,
 `{price}`, `{item}`, `{reason}`, `{issuer}`, `{staff}`, `{expires}`, `{world}`, `{x}`, `{y}`,
 `{z}`, `{crate}`, `{keys}`, `{order_id}`, `{team}`, `{server}`, `{page}` and `{max_page}`.
-`{quantity}` also matches `{Quantity}`.
+`{quantity}` also matches `{Quantity}`. Amethyst grant messages also supply `{type}`, `{time}`
+(`1h`, `5d`, never raw seconds), `{last_online}`, and `{status}`.
 
 ### Punishment tokens
 
@@ -280,8 +283,8 @@ Without either of these the plugin logs an error during `onEnable()` and disable
 | **LuckPerms** | Tab list refresh on permission changes, a staff-mode context, and `%luckperms_*%` in chat | Prefixes resolve empty and the tab list does not refresh on rank changes |
 | **SkinsRestorer** | Skins for disguises, fake players and tab list heads | Falls back to Mojang profile lookups |
 | **Apollo (Lunar Client)** | Rich presence and the teammate overlay for Lunar users | Logged as unavailable and skipped |
-| **Floodgate** | Native Bedrock forms for Orders and Homes | Bedrock players get the Java chest GUIs |
-| **Geyser** | More accurate ping for Bedrock players | Falls back to the Spigot ping value |
+| **Floodgate** | Native Bedrock forms for Orders and Homes | Bedrock players get the Java chest GUIs. They still cannot render Java Dialog API screens — see [Dialog API & older clients](Dialog-API-and-Older-Clients). |
+| **Geyser** | More accurate ping for Bedrock players | Falls back to the Spigot ping value. Bedrock clients do not implement Java dialogs. |
 | **Simple Voice Chat** | Gates the microphone behind the consent menu and enables voice mutes | The consent menu still records an answer but has nothing to gate |
 | **WorldEdit or FAWE** | Pastes the arena schematic on a scheduled ranked-arena reset | The reset does not happen |
 | **Multiverse-Core** | Load-order only | No behavioural difference |
@@ -310,7 +313,7 @@ maintenance behaviour.
 ## Vault economy
 
 The plugin **provides** a Vault economy rather than consuming one. `VaultEconomyHook` is registered
-at `ServicePriority.Highest` during startup when Vault is installed, which means UltimateDonutSMP2
+at `ServicePriority.Highest` during startup when Vault is installed, which means UltimateDonutSMP V2
 becomes the economy other plugins see.
 
 Only **money** is exposed through Vault. Shards are deliberately internal — a shop plugin reading
