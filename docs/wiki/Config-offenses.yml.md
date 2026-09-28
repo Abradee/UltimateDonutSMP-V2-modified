@@ -10,7 +10,8 @@ a tier of `0s` is issued as a warning instead of a ban.
 
 Treat `wipe: true` with care. It only fires when the offence actually bans someone, and it
 clears that player's stats, balance, homes, ender chest, keys, auctions and orders — the
-same thing `/playerwipe` does, with no undo. Punishment history, IP history and placed
+same thing `/playerwipe` does. `/playerunwipe <player> confirm` puts those records back from
+`plugins/UltimateDonutSmp2/player-wipe-backups/`. Punishment history, IP history and placed
 spawners are kept.
 
 Comment at the top of the shipped file:
@@ -29,9 +30,10 @@ Syntax per offense:
 
 wipe only fires when the offense actually bans someone. It clears their stats, balance, homes,
 ender chest, crate keys, auctions, orders and the rest of their progress, the same thing
-/playerwipe does, and there is no undo. Their punishment history, IP history and any spawners
-they placed are kept. A tier of "0s" is issued as a warning rather than a ban, so it does not
-wipe, and neither do MUTE, WARN or KICK offenses.
+/playerwipe does. That wipe writes a backup under plugins/UltimateDonutSmp2/player-wipe-backups/
+first, and /playerunwipe <player> confirm puts those records back. Their punishment history,
+IP history and any spawners they placed are kept. A tier of "0s" is issued as a warning rather
+than a ban, so it does not wipe, and neither do MUTE, WARN or KICK offenses.
 ```
 
 | | |

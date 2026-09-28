@@ -336,13 +336,14 @@ offenses.yml:
 
     Treat `wipe: true` with care. It only fires when the offence actually bans someone, and it
     clears that player's stats, balance, homes, ender chest, keys, auctions and orders — the
-    same thing `/playerwipe` does, with no undo. Punishment history, IP history and placed
+    same thing `/playerwipe` does. `/playerunwipe <player> confirm` puts those records back from
+    `plugins/UltimateDonutSmp2/player-wipe-backups/`. Punishment history, IP history and placed
     spawners are kept.
   keys:
     'offenses.*.name': 'Display name shown to staff in `/offend` and in punishment messages.'
     'offenses.*.type': 'Punishment applied: `BAN`, `MUTE`, `WARN` or `KICK`.'
     'offenses.*.durations': 'Escalation ladder, one duration per prior offence. Accepts `30d`, `24h`, `perm`, and `0s` for a warning. The final entry repeats for all later offences.'
-    'offenses.*.wipe': 'Also wipe the player''s progress when this offence results in a ban. Irreversible; ignored for `MUTE`, `WARN`, `KICK` and `0s` tiers.'
+    'offenses.*.wipe': 'Also wipe the player''s progress when this offence results in a ban. `/playerunwipe` puts the backup back; ignored for `MUTE`, `WARN`, `KICK` and `0s` tiers.'
 
 orders.yml:
   manager: '`OrdersManager`, `OrdersBedrockManager`, `OrdersExpiryTask`, `AuctionOrderBotManager`'
