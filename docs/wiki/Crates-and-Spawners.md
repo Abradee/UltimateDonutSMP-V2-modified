@@ -82,6 +82,11 @@ actions re-check `ultimatedonutsmp2.admin.spawner`.
 | `/spawner remove` / `forcebreak` | Admin | Remove the targeted block |
 | `/spawner reload` | Admin | Reload [spawners.yml](Config-spawners.yml) |
 
+Breaking a managed spawner puts it in your inventory. Without crouching, that is one spawner.
+Crouching takes a stack of up to 64, and anything past that stays on the block.
+`SETTINGS.DROP_ON_BREAK_IF_INVENTORY_FULL` (default `true` in [spawners.yml](Config-spawners.yml))
+drops only what does not fit.
+
 `SETTINGS.REQUIRE_SILK_TOUCH` defaults to `true`. `ultimatedonutsmp2.spawner.bypass` (default
 `false`) waives it; operators are not exempt. Creative breaks delete the spawner instead of
 returning the item.

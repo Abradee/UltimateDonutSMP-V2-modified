@@ -35,6 +35,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -63,6 +64,8 @@ public class SpawnerManager {
 
     public static final String SILK_TOUCH_BYPASS_PERMISSION = "ultimatedonutsmp2.spawner.bypass";
     public static final String SILK_TOUCH_REQUIRED_MESSAGE = "&cYou need Silk Touch to break this spawner!";
+    /** Vanilla spawner items stack to 64. A crouch break pays out one of these stacks. */
+    static final int SPAWNER_ITEM_STACK_LIMIT = 64;
 
     public record ActionResult(boolean success, String message, int consumedAmount, boolean fullyDestroyed) {
         public ActionResult(boolean success, String message, int consumedAmount) {
@@ -342,15 +345,7 @@ public class SpawnerManager {
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(spawnerItemMarkerKey, PersistentDataType.BYTE, (byte) 1);
         container.set(spawnerItemTypeKey, PersistentDataType.STRING, definition.key());
-        if (amount <= 64) {
-            container.set(spawnerItemAmountKey, PersistentDataType.LONG, 1L);
-            item.setItemMeta(meta);
-            item.setAmount((int) amount);
-        } else {
-            container.set(spawnerItemAmountKey, PersistentDataType.LONG, amount);
-            item.setItemMeta(meta);
-            item.setAmount(1);
-        }
+        applySpawnerStack(item, meta, amount);
         return item;
     }
 
@@ -372,15 +367,113 @@ public class SpawnerManager {
                 "",
                 "&ePlace to create or stack this spawner."
         )));
-        if (newAmount <= 64) {
+        applySpawnerStack(item, meta, newAmount);
+    }
+
+    /**
+     * A stack of 64 or less is a normal item stack. Anything larger stays one item with the count
+     * in the persistent tag, and that item must not stack or the tag would be counted twice.
+     * The block-entity tag that {@link ItemMeta} copies off a spawner is cleared either way:
+     * it makes the item unstackable, so a crouch break came back as one spawner with NBT.
+     */
+    private void applySpawnerStack(ItemStack item, ItemMeta meta, long amount) {
+        clearCopiedSpawnerBlockState(meta);
+        if (amount <= SPAWNER_ITEM_STACK_LIMIT) {
+            meta.setMaxStackSize(SPAWNER_ITEM_STACK_LIMIT);
             meta.getPersistentDataContainer().set(spawnerItemAmountKey, PersistentDataType.LONG, 1L);
             item.setItemMeta(meta);
-            item.setAmount((int) newAmount);
-        } else {
-            meta.getPersistentDataContainer().set(spawnerItemAmountKey, PersistentDataType.LONG, newAmount);
-            item.setItemMeta(meta);
-            item.setAmount(1);
+            item.setAmount((int) amount);
+            return;
         }
+        meta.setMaxStackSize(1);
+        meta.getPersistentDataContainer().set(spawnerItemAmountKey, PersistentDataType.LONG, amount);
+        item.setItemMeta(meta);
+        item.setAmount(1);
+    }
+
+    /**
+     * Paper copies the spawner's block entity onto the item. That tag is what shows up as one
+     * spawner with NBT, and it stops the pile stacking. Spigot's {@link BlockStateMeta} does not
+     * expose {@code clearBlockState}, so this only runs where the server actually has it.
+     */
+    private static void clearCopiedSpawnerBlockState(ItemMeta meta) {
+        if (!(meta instanceof BlockStateMeta)) {
+            return;
+        }
+        try {
+            meta.getClass().getMethod("clearBlockState").invoke(meta);
+        } catch (ReflectiveOperationException ignored) {
+            // The stack size set in applySpawnerStack is what makes a crouch break a normal stack.
+        }
+    }
+
+    static long breakAmountFor(boolean sneaking, long stackAmount) {
+        if (stackAmount <= 0L) {
+            return 0L;
+        }
+        if (!sneaking) {
+            return 1L;
+        }
+        return Math.min(SPAWNER_ITEM_STACK_LIMIT, stackAmount);
+    }
+
+    private int spawnerRoom(Player player, ItemStack stack) {
+        if (player == null || stack == null || stack.getType().isAir()) {
+            return 0;
+        }
+        PlayerInventory inventory = player.getInventory();
+        int max = Math.max(1, Math.min(SPAWNER_ITEM_STACK_LIMIT, stack.getMaxStackSize()));
+        int room = 0;
+        for (int slot = 0; slot < 36; slot++) {
+            ItemStack current = inventory.getItem(slot);
+            if (current == null || current.getType().isAir()) {
+                room += max;
+                continue;
+            }
+            if (!current.isSimilar(stack) || current.getAmount() >= max) {
+                continue;
+            }
+            room += max - current.getAmount();
+        }
+        return room;
+    }
+
+    /**
+     * @return how many of {@code stack} did not fit in the storage slots
+     */
+    private int giveSpawnerItem(Player player, ItemStack stack) {
+        if (player == null || stack == null || stack.getType().isAir()) {
+            return stack == null ? 0 : stack.getAmount();
+        }
+        PlayerInventory inventory = player.getInventory();
+        int max = Math.max(1, Math.min(SPAWNER_ITEM_STACK_LIMIT, stack.getMaxStackSize()));
+        int remaining = stack.getAmount();
+        for (int slot = 0; slot < 36 && remaining > 0; slot++) {
+            ItemStack current = inventory.getItem(slot);
+            if (current == null || current.getType().isAir() || !current.isSimilar(stack)) {
+                continue;
+            }
+            int space = max - current.getAmount();
+            if (space <= 0) {
+                continue;
+            }
+            int move = Math.min(space, remaining);
+            current.setAmount(current.getAmount() + move);
+            inventory.setItem(slot, current);
+            remaining -= move;
+        }
+        for (int slot = 0; slot < 36 && remaining > 0; slot++) {
+            ItemStack current = inventory.getItem(slot);
+            if (current != null && !current.getType().isAir()) {
+                continue;
+            }
+            int move = Math.min(max, remaining);
+            ItemStack placed = stack.clone();
+            placed.setAmount(move);
+            inventory.setItem(slot, placed);
+            remaining -= move;
+        }
+        return remaining;
     }
 
     public boolean isSpawnerItem(ItemStack item) {
@@ -929,8 +1022,25 @@ public class SpawnerManager {
 
         long totalStack = instance.getStackAmount();
         boolean stackAll = player != null && player.isSneaking();
-        long breakAmount = stackAll ? Math.min(64L, totalStack) : 1L;
+        long breakAmount = breakAmountFor(stackAll, totalStack);
         long remainingStack = totalStack - breakAmount;
+
+        boolean returnedItem = player != null && returnsSpawnerItemOnBreak(player.getGameMode());
+        if (returnedItem) {
+            ItemStack item = createSpawnerItem(instance.getMobTypeKey(), breakAmount);
+            if (item == null) {
+                return fail("&cfailed to create the spawner item.");
+            }
+            if (item.getAmount() > spawnerRoom(player, item) && !dropOnBreakIfInventoryFull) {
+                return fail("&cyour inventory is full.");
+            }
+            int unstored = giveSpawnerItem(player, item);
+            if (unstored > 0 && dropOnBreakIfInventoryFull) {
+                ItemStack dropped = item.clone();
+                dropped.setAmount(unstored);
+                player.getWorld().dropItemNaturally(player.getLocation(), dropped);
+            }
+        }
 
         boolean fullyDestroyed;
         if (remainingStack <= 0L) {
@@ -957,30 +1067,6 @@ public class SpawnerManager {
                     "Broke " + breakAmount + "x " + spawnerName + " spawner (Remaining: " + remainingStack + "x) at "
                             + block.getWorld().getName() + " " + block.getX() + ", " + block.getY() + ", " + block.getZ()
             );
-        }
-
-        boolean returnedItem = player != null && returnsSpawnerItemOnBreak(player.getGameMode());
-        if (returnedItem) {
-            long remaining = breakAmount;
-            List<ItemStack> itemsToGive = new ArrayList<>();
-            while (remaining > 0) {
-                int amount = (int) Math.min(64, remaining);
-                ItemStack item = createSpawnerItem(instance.getMobTypeKey(), amount);
-                if (item != null) {
-                    itemsToGive.add(item);
-                }
-                remaining -= amount;
-            }
-
-            PlayerInventory inventory = player.getInventory();
-            for (ItemStack item : itemsToGive) {
-                Map<Integer, ItemStack> leftovers = inventory.addItem(item);
-                if (dropOnBreakIfInventoryFull) {
-                    leftovers.values().forEach(leftover -> player.getWorld().dropItemNaturally(player.getLocation(), leftover));
-                } else if (!leftovers.isEmpty()) {
-                    leftovers.values().forEach(leftover -> inventory.addItem(leftover));
-                }
-            }
         }
 
         String verb = returnedItem ? "&apicked up &f" : "&aremoved &f";
