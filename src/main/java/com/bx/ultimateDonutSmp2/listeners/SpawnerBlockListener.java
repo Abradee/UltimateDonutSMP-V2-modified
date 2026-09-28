@@ -122,14 +122,14 @@ public class SpawnerBlockListener implements Listener {
             return;
         }
 
-        if (!result.fullyDestroyed()) {
-            event.setCancelled(true);
-            if (player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
-                damageHeldTool(player);
-            }
-        } else {
-            event.setDropItems(false);
-            event.setExpToDrop(0);
+        event.setCancelled(true);
+        event.setDropItems(false);
+        event.setExpToDrop(0);
+        if (result.fullyDestroyed()) {
+            block.setType(Material.AIR);
+        }
+        if (player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
+            damageHeldTool(player);
         }
         player.sendMessage(ColorUtils.toComponent(result.message()));
     }
