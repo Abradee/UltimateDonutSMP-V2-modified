@@ -9,3 +9,7 @@ node_modules/
 discord-bot-example/data/links.db
 discord-bot-example/data/links.db-shm
 discord-bot-example/data/links.db-wal
+
+*.DS_Store
+src/.DS_Store
+src/main/.DS_Store
