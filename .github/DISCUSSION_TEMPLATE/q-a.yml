@@ -1,15 +1,18 @@
-title: "[Q&A] "
+title: "[Help] "
 body:
   - type: markdown
     attributes:
       value: |
-        ### Ask the community
-        Post a question about installing, configuring, or running UltimateDonutSMP V2.
+        ### Help & FAQ
+        Use this category **only** for setup help or questions answered in the [wiki FAQ](https://github.com/BeestoXd/UltimateDonutSMP-V2/blob/main/docs/wiki/FAQ.md).
 
-        - **Bugs with reproducible steps** → [Bug report](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=bug_report.yml)  
-        - **Live help** → [Discord](https://dsc.gg/hellstarr)
+        | Topic | Where to go |
+        | --- | --- |
+        | Bug with steps to reproduce | [Bug report issue](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=bug_report.yml) |
+        | Feature you want tracked | [Feature request issue](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=feature_request.yml) |
+        | Casual chat / live support | [Discord](https://dsc.gg/hellstarr) |
 
-        Mark the **answer** when someone solves your question (Q&A category).
+        When someone answers your question, mark their comment as **Answer**.
 
   - type: input
     id: environment
@@ -23,18 +26,18 @@ body:
   - type: textarea
     id: question
     attributes:
-      label: Your question
-      description: What are you trying to do, and where are you stuck?
+      label: What do you need help with?
+      description: Describe your question or what you could not find in the FAQ or README.
     validations:
       required: true
 
   - type: textarea
     id: tried
     attributes:
-      label: What you've already tried
-      description: Config changes, commands, logs you've checked, etc.
+      label: What you already checked
+      description: FAQ sections, config files, console output, etc.
       placeholder: |
-        - Read README section ...
-        - Set config.yml ...
+        - docs/wiki/FAQ.md — ...
+        - config.yml — ...
     validations:
       required: false
