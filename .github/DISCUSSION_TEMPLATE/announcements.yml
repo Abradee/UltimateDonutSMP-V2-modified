@@ -1,0 +1,36 @@
+title: "[Announcement] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Maintainer announcement
+        Only maintainers can start threads in this category. Use it for releases, breaking changes, and official updates.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: The main message in a few sentences.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: announcement_type
+    attributes:
+      label: Type
+      options:
+        - New release
+        - Breaking change / migration
+        - Maintenance notice
+        - Community update
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: action_required
+    attributes:
+      label: Action required (if any)
+      description: What should server owners do after reading this?
+    validations:
+      required: false
