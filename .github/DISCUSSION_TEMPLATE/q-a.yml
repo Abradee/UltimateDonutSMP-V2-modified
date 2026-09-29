@@ -1,0 +1,42 @@
+title: "[Help] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Help & FAQ
+        Use this category **only** for setup help or questions answered in the [wiki FAQ](https://github.com/BeestoXd/UltimateDonutSMP-V2/blob/main/docs/wiki/FAQ.md).
+
+        | Topic | Where to go |
+        | --- | --- |
+        | Bug with steps to reproduce | [Bug report issue](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=bug_report.yml) |
+        | Feature you want tracked | [Feature request issue](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=feature_request.yml) |
+
+        When someone answers your question, mark their comment as **Answer**.
+
+  - type: input
+    id: environment
+    attributes:
+      label: Server environment
+      description: Server software, Minecraft version, Java version, and plugin version.
+      placeholder: "Paper 1.21.1 / Java 21 / UltimateDonutSMP V2 v1.x.x"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you need help with?
+      description: Describe your question or what you could not find in the FAQ or README.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you already checked
+      description: FAQ sections, config files, console output, etc.
+      placeholder: |
+        - docs/wiki/FAQ.md — ...
+        - config.yml — ...
+    validations:
+      required: false

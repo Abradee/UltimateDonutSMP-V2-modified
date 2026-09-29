@@ -1,0 +1,60 @@
+name: Route community discussions to Help (Q&A)
+
+on:
+  discussion:
+    types: [created]
+
+permissions:
+  discussions: write
+
+jobs:
+  move-to-help-category:
+    if: >-
+      github.event.discussion.category.slug != 'q-a' &&
+      github.event.discussion.category.slug != 'announcements' &&
+      contains(fromJSON('["NONE","FIRST_TIMER","FIRST_TIME_CONTRIBUTOR","CONTRIBUTOR"]'), github.event.discussion.author_association)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move discussion to Q&A and leave a note
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCUSSION_NODE_ID: ${{ github.event.discussion.node_id }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          CATEGORY_ID="$(gh api graphql -f owner="${REPOSITORY%/*}" -f name="${REPOSITORY#*/}" -f query='
+            query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                discussionCategories(first: 25) {
+                  nodes { id slug }
+                }
+              }
+            }' --jq '.data.repository.discussionCategories.nodes[] | select(.slug=="q-a") | .id')"
+
+          if [ -z "$CATEGORY_ID" ]; then
+            echo "Q&A category (slug q-a) not found; skipping."
+            exit 0
+          fi
+
+          gh api graphql -f discussionId="$DISCUSSION_NODE_ID" -f categoryId="$CATEGORY_ID" -f query='
+            mutation($discussionId: ID!, $categoryId: ID!) {
+              updateDiscussion(input: {discussionId: $discussionId, categoryId: $categoryId}) {
+                discussion { number }
+              }
+            }'
+
+          BODY="$(cat <<'EOF'
+          This thread was moved to **Q&A (Help & FAQ)**. Community members can only open discussions here for setup help and FAQ-style questions.
+
+          - **Bugs** → [Bug report](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=bug_report.yml)
+          - **Features** → [Feature request](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=feature_request.yml)
+          EOF
+          )"
+
+          gh api graphql -f discussionId="$DISCUSSION_NODE_ID" -f body="$BODY" -f query='
+            mutation($discussionId: ID!, $body: String!) {
+              addDiscussionComment(input: {discussionId: $discussionId, body: $body}) {
+                comment { url }
+              }
+            }'
