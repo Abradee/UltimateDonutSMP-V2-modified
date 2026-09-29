@@ -6,3 +6,6 @@ contact_links:
   - name: 📖 Documentation & Guides
     url: https://github.com/BeestoXd/UltimateDonutSMP-V2#readme
     about: Read the project documentation and setup guides before opening an issue.
+  - name: 💡 Ideas & Q&A (Discussions)
+    url: https://github.com/BeestoXd/UltimateDonutSMP-V2/discussions
+    about: Brainstorm features, ask setup questions, or share your server — use Issues for bugs and tracked requests.

@@ -1,0 +1,38 @@
+title: "[Poll] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Community poll
+        After you create this discussion, add a **Poll** in the GitHub UI with your options.
+
+        Use this form to explain *why* you're polling and what you'll do with the results.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Poll question
+      description: The question you will add as a poll (and any context in the post body).
+      placeholder: "Which default language should we prioritize for new GUI text?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Planned poll options
+      description: List the choices you intend to add (one per line).
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: duration
+    attributes:
+      label: How long should the poll run?
+      description: e.g. 1 week, until next release, etc.
+    validations:
+      required: false

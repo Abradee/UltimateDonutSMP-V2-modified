@@ -1,0 +1,51 @@
+title: "[Idea] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Share an idea
+        Propose a new feature or improvement for UltimateDonutSMP V2. Well-described ideas are easier for maintainers and the community to evaluate.
+
+        For **bugs**, use a [bug report issue](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=bug_report.yml).  
+        For **formal feature tracking**, you can also use a [feature request issue](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=feature_request.yml).
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Idea summary
+      description: One or two sentences describing what you want added or changed.
+      placeholder: "Add a way to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What limitation or pain point does this idea address?
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: How it could work
+      description: Describe the behaviour you imagine (commands, GUI, config keys, etc.).
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this mainly affect?
+      options:
+        - Economy / shops
+        - Combat / PvP
+        - Teleport / homes / RTP
+        - Social (friends, chat, mail)
+        - Staff / moderation
+        - Auction / orders / trading
+        - Performance / compatibility
+        - Other
+    validations:
+      required: false

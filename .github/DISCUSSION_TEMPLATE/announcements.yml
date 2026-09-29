@@ -1,0 +1,40 @@
+title: "[Announcement] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Maintainer announcements
+        Use this category for official updates (releases, breaking changes, maintenance windows).
+
+        Community members: prefer **General** or **Q&A** for questions; reply in the thread rather than opening a duplicate.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Announcement summary
+      description: The main message in a few sentences.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: announcement_type
+    attributes:
+      label: Type
+      options:
+        - New release
+        - Breaking change / migration
+        - Security notice
+        - Maintenance / downtime
+        - Community / event
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: action_required
+    attributes:
+      label: Action required (if any)
+      description: What should server owners do after reading this?
+      placeholder: "Update to v..., run /migrate, change config key ..."
+    validations:
+      required: false

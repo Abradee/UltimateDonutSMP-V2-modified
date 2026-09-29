@@ -1,0 +1,40 @@
+title: "[Q&A] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Ask the community
+        Post a question about installing, configuring, or running UltimateDonutSMP V2.
+
+        - **Bugs with reproducible steps** → [Bug report](https://github.com/BeestoXd/UltimateDonutSMP-V2/issues/new?template=bug_report.yml)  
+        - **Live help** → [Discord](https://dsc.gg/hellstarr)
+
+        Mark the **answer** when someone solves your question (Q&A category).
+
+  - type: input
+    id: environment
+    attributes:
+      label: Server environment
+      description: Server software, Minecraft version, Java version, and plugin version.
+      placeholder: "Paper 1.21.1 / Java 21 / UltimateDonutSMP V2 v1.x.x"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What are you trying to do, and where are you stuck?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you've already tried
+      description: Config changes, commands, logs you've checked, etc.
+      placeholder: |
+        - Read README section ...
+        - Set config.yml ...
+    validations:
+      required: false
