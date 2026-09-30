@@ -240,7 +240,7 @@ public final class QuickBuyBedrockManager {
         int generation = draft.generation;
         form.validResultHandler(response -> {
             draft.generation++;
-            String typed = response.asInput(0);
+            String typed = response.asInput(1);
             schedule(player, () -> confirmAmount(player, typed));
         });
         form.closedResultHandler(() -> {
