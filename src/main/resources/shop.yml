@@ -594,6 +594,24 @@ QUICK-BUY:
       - SUSPICIOUS_GRAVEL
       - '*_SPAWN_EGG'
       - 'INFESTED_*'
+      - HEAVY_CORE
+      - NETHERITE_BLOCK
+      - NETHERITE_INGOT
+      - NETHERITE_SCRAP
+      - NETHERITE_SHOVEL
+      - NETHERITE_PICKAXE
+      - NETHERITE_AXE
+      - NETHERITE_HOE
+      - NETHERITE_SWORD
+      - NETHERITE_HELMET
+      - NETHERITE_CHESTPLATE
+      - NETHERITE_LEGGINGS
+      - NETHERITE_BOOTS
+      - ELYTRA
+      - DRAGON_HEAD
+      - DRAGON_EGG
+      - BEACON
+      - MACES
 
   # Configuration for empty grid slots (slots 0-44)
   EMPTY-SLOT:

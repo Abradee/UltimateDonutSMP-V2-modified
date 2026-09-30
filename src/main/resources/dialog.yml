@@ -360,10 +360,10 @@ HOMES_DIALOG:
   NEW-HOME-TOOLTIP: "Click to set new home"
   TEAM-HOME-LABEL: "Team Home"
   LOCKED-LABEL: "&cLocked"
-  LOCKED-TOOLTIP: "Buy Donut&#00A4FC+ &7for more home slots"
-  LOCKED-TOOLTIP-PLUS: "Buy Donut&#00A4FC+ &7for more home slots"
-  LOCKED-TOOLTIP-PLUS-PLUS: "Buy Donut&#00A4FC++ &7for more home slots"
-  LOCKED-TOOLTIP-PLUS-PLUS-PLUS: "Buy Donut&#00A4FC+++ &7for more home slots"
+  LOCKED-TOOLTIP: "Buy Quasar&#00A4FC+ &7for more home slots"
+  LOCKED-TOOLTIP-PLUS: "Buy Quasar&#00A4FC+ &7for more home slots"
+  LOCKED-TOOLTIP-PLUS-PLUS: "Buy Quasar&#00A4FC++ &7for more home slots"
+  LOCKED-TOOLTIP-PLUS-PLUS-PLUS: "Buy Quasar&#00A4FC+++ &7for more home slots"
   SHOW-MORE-LABEL: "Show More"
   TOTAL-SLOTS: 90
   TIERS:

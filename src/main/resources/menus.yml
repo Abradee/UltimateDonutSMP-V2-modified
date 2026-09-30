@@ -20,8 +20,8 @@ TEAM-MENUS:
     SIZE: 54
     MAX-ITEMS-PER-PAGE: 45
     PLAYER-BUTTON:
-      ONLINE-SYMBOL: "&a■"
-      OFFLINE-SYMBOL: "&4■"
+      ONLINE-SYMBOL: '&a■'
+      OFFLINE-SYMBOL: '&4■'
       LORE: '&fClick to edit'
     SEARCH-BUTTON:
       TITLE: '&#6BF18DSearch'
@@ -36,7 +36,7 @@ TEAM-MENUS:
       SLOT: 46
       SELECTED-PREFIX: '&a'
       UNSELECTED-PREFIX: '&f'
-      SYMBOL: "▪"
+      SYMBOL: ▪
     REFRESH-BUTTON:
       TITLE: '&#6BF18DTeam {team_name}'
       MATERIAL: IRON_HELMET
@@ -66,8 +66,8 @@ TEAM-MENUS:
     SIZE: 54
     MAX-ITEMS-PER-PAGE: 45
     PLAYER-BUTTON:
-      ONLINE-SYMBOL: "&a■"
-      OFFLINE-SYMBOL: "&4■"
+      ONLINE-SYMBOL: '&a■'
+      OFFLINE-SYMBOL: '&4■'
       LEADER-LORE: '&6Leader'
     SUMMARY-BUTTON:
       TITLE: '&#6BF18DTeam {team_name}'
@@ -816,7 +816,7 @@ LEADERBOARDS-MENU:
       LORE:
       - '&fClick to view BOUNTIES leaderboard'
 PROGRESS-MENU:
-  PROGRESS-BAR: "■"
+  PROGRESS-BAR: ■
   LEVEL:
   - 25000
   - 150000
@@ -934,7 +934,7 @@ SELL-MENU:
   # and closing the menu hands them straight back. Everything before SLOT is the sellable grid,
   # so lowering SLOT shrinks the menu.
   SELL-BUTTON:
-    MATERIAL: 'LIME_STAINED_GLASS_PANE'
+    MATERIAL: LIME_STAINED_GLASS_PANE
     SLOT: 53
     TITLE: '&#00FC00$ &f{worth}'
     LORE:
@@ -1382,7 +1382,7 @@ SERVER-INFO-MENU:
           - '&7You drop your items on death here, so gear up before taking big fights.'
           - '&7Keep backup armor and food if you plan to PvP often.'
         SPAWN:
-          MATERIAL: COMPASS
+          MATERIAL: BEACON
           SLOT: 15
           NAME: '&#00A4FCSpawn'
           LORE:
@@ -1487,47 +1487,47 @@ RULES-MENU:
       SLOT: 12
       NAME: '&#00A4FCServer Rules'
       LORE:
-      - "&#00A4FC● &fNo Hacked Clients"
-      - "&#00A4FC● &fNo Movement Mods"
-      - "&#00A4FC● &fNo Inventory Mods"
-      - "&#00A4FC● &fNo Health Indicators"
-      - "&#00A4FC● &fNo Radar"
-      - "&#00A4FC● &fNo Freecam"
-      - "&#00A4FC● &fNo Auto Place"
-      - "&#00A4FC● &fNo Easy Place"
-      - "&#00A4FC● &fNo Macros or Scripts"
-      - "&#00A4FC● &fNo Abusing bugs"
-      - "&#00A4FC● &fNo Using dupe methods"
-      - "&#00A4FC● &fNo Irl trading"
-      - "&#00A4FC● &fNo Invite Rewards"
-      - "&#00A4FC● &fNo Cross Server Trading"
-      - "&#00A4FC● &fNo Finding or Using the seed"
-      - "&#00A4FC● &fNo Using More Than 5 Accounts"
-      - "&#00A4FC● &fNo Mouse Tweaks / Scrollers"
-      - "&#00A4FC● &fNo Nitro Boost Rewards"
-      - "&#00A4FC● &fNo Crafting Modifications"
-      - "&#00A4FC● &fNo Staff Impersonation"
-      - "&#00A4FC● &fNo EXternal Gambling"
+      - '&#00A4FC● &fNo Hacked Clients'
+      - '&#00A4FC● &fNo Movement Mods'
+      - '&#00A4FC● &fNo Inventory Mods'
+      - '&#00A4FC● &fNo Health Indicators'
+      - '&#00A4FC● &fNo Radar'
+      - '&#00A4FC● &fNo Freecam'
+      - '&#00A4FC● &fNo Auto Place'
+      - '&#00A4FC● &fNo Easy Place'
+      - '&#00A4FC● &fNo Macros or Scripts'
+      - '&#00A4FC● &fNo Abusing bugs'
+      - '&#00A4FC● &fNo Using dupe methods'
+      - '&#00A4FC● &fNo Irl trading'
+      - '&#00A4FC● &fNo Invite Rewards'
+      - '&#00A4FC● &fNo Cross Server Trading'
+      - '&#00A4FC● &fNo Finding or Using the seed'
+      - '&#00A4FC● &fNo Using More Than 5 Accounts'
+      - '&#00A4FC● &fNo Mouse Tweaks / Scrollers'
+      - '&#00A4FC● &fNo Nitro Boost Rewards'
+      - '&#00A4FC● &fNo Crafting Modifications'
+      - '&#00A4FC● &fNo Staff Impersonation'
+      - '&#00A4FC● &fNo EXternal Gambling'
     RULE_2:
       MATERIAL: KNOWLEDGE_BOOK
       SLOT: 14
       NAME: '&#00A4FC&lChat Rules'
       LORE:
       - ''
-      - "&#00A4FC● &fNo Spamming or getting others to spam"
-      - "&#00A4FC● &fNo Harassing"
-      - "&#00A4FC● &fNo Advertising or Promotion"
-      - "&#00A4FC● &fNo Discrimination or Hate Speech"
-      - "&#00A4FC● &fNo Death Threats"
-      - "&#00A4FC● &fNo Sharing Others Private Information"
-      - "&#00A4FC● &fNo Pretending to be someone else"
-      - "&#00A4FC● &fNo Ban Evasion"
-      - "&#00A4FC● &fNo Lying to Staff Members"
-      - "&#00A4FC● &fReport All Bugs, Glitches, and Cheaters"
-      - '  &fin the discord &&#F97603(discord.gg/donutsmp)'
+      - '&#00A4FC● &fNo Spamming or getting others to spam'
+      - '&#00A4FC● &fNo Harassing'
+      - '&#00A4FC● &fNo Advertising or Promotion'
+      - '&#00A4FC● &fNo Discrimination or Hate Speech'
+      - '&#00A4FC● &fNo Death Threats'
+      - '&#00A4FC● &fNo Sharing Others Private Information'
+      - '&#00A4FC● &fNo Pretending to be someone else'
+      - '&#00A4FC● &fNo Ban Evasion'
+      - '&#00A4FC● &fNo Lying to Staff Members'
+      - '&#00A4FC● &fReport All Bugs, Glitches, and Cheaters'
+      - '  &fin the discord &&#F97603(dsc.gg/quasarsmp)'
 AFK-MENU:
   TITLE: '&8AFK Areas'
-  SIZE: 54
+  SIZE: 20
   RANDOM-BUTTON:
     SLOT: 49
     MATERIAL: AMETHYST_BLOCK
@@ -1536,15 +1536,14 @@ AFK-MENU:
     - '&fClick to teleport to a random afk area'
   AREAS:
     '1':
-      SLOT: 0
-      MATERIAL: ITEM_FRAME
+      SLOT: 13
+      MATERIAL: AMETHYST_BLOCK
       DISPLAY-NAME: '&#A303F9AFK #1'
       LORE:
       - '&8{players}/200'
       - '&7Click to go to this'
       - '&7AFK zone area.'
-      CUBOID: afk1
-      LOCATION: 1
+      LOCATION: Quasar,-33.27826041321372,125.0,-8.530753519337926,-91.04962,90.0
     '2':
       SLOT: 1
       MATERIAL: ITEM_FRAME
@@ -1553,11 +1552,9 @@ AFK-MENU:
       - '&8{players}/200'
       - '&7Click to go to this'
       - '&7AFK zone area.'
-      CUBOID: afk2
-      LOCATION: 2
 SPAWN-MENU:
   TITLE: '&8Spawn Areas'
-  SIZE: 54
+  SIZE: 20
   RANDOM-BUTTON:
     SLOT: 49
     MATERIAL: LIGHT_BLUE_GLAZED_TERRACOTTA
@@ -1566,15 +1563,14 @@ SPAWN-MENU:
     - '&fClick to teleport to a random spawn area'
   AREAS:
     '1':
-      SLOT: 0
-      MATERIAL: ITEM_FRAME
+      SLOT: 13
+      MATERIAL: BEACON
       DISPLAY-NAME: '&#00A4FCSpawn #1'
       LORE:
       - '&8{players}/200'
       - '&7Click to go to this'
       - '&7Spawn area.'
-      CUBOID: spawn1
-      LOCATION: 1
+      LOCATION: Quasar,0.36920535938777665,103.0,0.6238169201716368,-0.2258606,90.0
     '2':
       SLOT: 1
       MATERIAL: ITEM_FRAME
@@ -1583,8 +1579,6 @@ SPAWN-MENU:
       - '&8{players}/200'
       - '&7Click to go to this'
       - '&7Spawn area.'
-      CUBOID: spawn2
-      LOCATION: 2
 PROFILE-VIEWER-MENU:
   TITLE: '&8{username}''s Profile'
   SIZE: 54
@@ -1763,8 +1757,8 @@ PUNISHMENTS-LIST-MENU:
     INPUT-LINE: 0
     LINES:
     - ''
-    - '↑↑↑↑↑'
-    - 'Player Name'
+    - ↑↑↑↑↑
+    - Player Name
     - ''
   PUNISHMENT-ITEM:
     MATERIALS:
@@ -1991,7 +1985,7 @@ SPAWNER-MENUS:
       LORE:
       - '&7Disable storing all drops.'
   SELL-CONFIRM-MENU:
-    TITLE: 'Confirm Sell'
+    TITLE: Confirm Sell
     SIZE: 27
     CANCEL-BUTTON:
       SLOT: 11

@@ -102,9 +102,9 @@ TYPE:
     # The decimal value for Wheat Seeds. Available options: Any decimal number
     WHEAT_SEEDS: 2.0
     # The decimal value for Pumpkin Seeds. Available options: Any decimal number
-    PUMPKIN_SEEDS: 8.0
+    PUMPKIN_SEEDS: 2.0
     # The decimal value for Melon Seeds. Available options: Any decimal number
-    MELON_SEEDS: 4.0
+    MELON_SEEDS: 0.6
     # The decimal value for Beetroot Seeds. Available options: Any decimal number
     BEETROOT_SEEDS: 2.0
     # The decimal value for Torchflower Seeds. Available options: Any decimal number
@@ -802,13 +802,13 @@ TYPE:
     # The decimal value for Bucket. Available options: Any decimal number
     BUCKET: 15.0
     # The decimal value for Milk Bucket. Available options: Any decimal number
-    MILK_BUCKET: 60.0
+    MILK_BUCKET: 15.0
     # The decimal value for Powder Snow Bucket. Available options: Any decimal number
     POWDER_SNOW_BUCKET: 5.0
     # The decimal value for Lava Bucket. Available options: Any decimal number
-    LAVA_BUCKET: 60.0
+    LAVA_BUCKET: 15.0
     # The decimal value for Water Bucket. Available options: Any decimal number
-    WATER_BUCKET: 50.0
+    WATER_BUCKET: 15.0
     # The decimal value for Sentry Armor Trim Smithing Template. Available options: Any decimal number
     SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE: 250.0
     # The decimal value for Vex Armor Trim Smithing Template. Available options: Any decimal number
@@ -2682,7 +2682,7 @@ TYPE:
     # The decimal value for Filled Map. Available options: Any decimal number
     FILLED_MAP: 1.0
     # The decimal value for Melon Slice. Available options: Any decimal number
-    MELON_SLICE: 6.0
+    MELON_SLICE: 0.2
     # The decimal value for Dried Kelp. Available options: Any decimal number
     DRIED_KELP: 18.0
     # The decimal value for Glass Bottle. Available options: Any decimal number
@@ -2698,7 +2698,7 @@ TYPE:
     # The decimal value for Ender Eye. Available options: Any decimal number
     ENDER_EYE: 4.5
     # The decimal value for Glistering Melon Slice. Available options: Any decimal number
-    GLISTERING_MELON_SLICE: 4.5
+    GLISTERING_MELON_SLICE: 0.2
     # The decimal value for Experience Bottle. Available options: Any decimal number
     EXPERIENCE_BOTTLE: 15.0
     # The decimal value for Fire Charge. Available options: Any decimal number

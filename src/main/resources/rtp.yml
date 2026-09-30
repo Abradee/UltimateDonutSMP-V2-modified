@@ -196,7 +196,7 @@ WORLD-SETTINGS:
     MIN-PLAYER-DISTANCE: 200
     COOLDOWN: 30
     # Required playtime in hours to use RTP in the Nether (0.0 = no requirement)
-    REQUIRED-PLAYTIME-HOURS: 5.0
+    REQUIRED-PLAYTIME-HOURS: 0
 
   # The End configuration
   world_the_end:
@@ -207,7 +207,7 @@ WORLD-SETTINGS:
     MIN-PLAYER-DISTANCE: 750
     COOLDOWN: 30
     # Required playtime in hours to use RTP in The End (0.0 = no requirement)
-    REQUIRED-PLAYTIME-HOURS: 10.0
+    REQUIRED-PLAYTIME-HOURS: 3.0
 
 # RTP GUI Menu configuration
 RTP-MENU:

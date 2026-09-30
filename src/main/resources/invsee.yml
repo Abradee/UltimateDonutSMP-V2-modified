@@ -10,10 +10,10 @@ INVSEE:
   TITLE: '&8Inventory of {player}'
 
   # Require target player to be online to open invsee (true / false)
-  REQUIRE-ONLINE: true
+  REQUIRE-ONLINE: false
 
   # Allow staff members with modify permission to edit target inventory items (true / false)
-  ALLOW-EDIT: false
+  ALLOW-EDIT: true
 
   # Allow staff members to view their own inventory via /invsee (true / false)
   ALLOW-SELF-VIEW: false

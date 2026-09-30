@@ -12,9 +12,9 @@ LANGUAGE:
 # Configuration section for Locations.
 LOCATIONS:
   # The text or value for Spawn Location. Available options: Any valid string text
-  SPAWN-LOCATION: ''
+  SPAWN-LOCATION: Quasar,0.36920535938777665,103.0,0.6238169201716368,-0.2258606,90.0
   # The text or value for Afk Location. Available options: Any valid string text
-  AFK-LOCATION: ''
+  AFK-LOCATION: Quasar,-33.27826041321372,125.0,-8.530753519337926,-91.04962,90.0
 # Configuration section for Portal System.
 PORTAL-SYSTEM:
   # Determines whether Enabled is enabled or disabled. Available options: true, false
@@ -33,8 +33,6 @@ PORTAL-SYSTEM:
     DEFAULT-REGION: NA East
     # The text or value for Default Server Id. Available options: Any valid string text
     DEFAULT-SERVER-ID: ''
-    # The text or value for Portals. Available options: Any valid string text
-    PORTALS: null
     # The decimal value for Offset Y. Available options: Any decimal number
     OFFSET-Y: 1.2
     # The decimal value for Set Here Offset Y. Available options: Any decimal number
@@ -69,18 +67,20 @@ SETTINGS:
     # The highest value the player has wins
     # Players without any of these permissions keep HOME-DEFAULT above
     PERMISSIONS:
-      "ultimatedonutsmp2.donutplusplusplus": 90
-      "donutplusplusplus": 90
-      "ultimatedonutsmp2.homes.donutplusplusplus": 90
-      "ultimatedonutsmp2.donutplusplus": 27
-      "donutplusplus": 27
-      "ultimatedonutsmp2.homes.donutplusplus": 27
-      "ultimatedonutsmp2.donutplus": 9
-      "donutplus": 9
-      "ultimatedonutsmp2.homes.donutplus": 9
-      "ultimatedonutsmp2.homes.vip++": 90
-      "ultimatedonutsmp2.homes.vip+": 27
-      "ultimatedonutsmp2.homes.vip": 9
+      ultimatedonutsmp2:
+        donutplusplusplus: 90
+        homes:
+          donutplusplusplus: 90
+          donutplusplus: 27
+          donutplus: 9
+          vip++: 90
+          vip+: 27
+          vip: 9
+        donutplusplus: 27
+        donutplus: 9
+      donutplusplusplus: 90
+      donutplusplus: 27
+      donutplus: 9
   # The numerical value for Shards Per Kill. Available options: Any valid integer
   SHARDS-PER-KILL: 1
   # The text or value for Shards Kill Message. Available options: Any valid string text
@@ -116,7 +116,7 @@ SETTINGS:
   # The decimal value for Worth Default Value. Available options: Any decimal number
   WORTH-DEFAULT-VALUE: 1.0
   # The numerical value for Mob Spawn Radius. Available options: Any valid integer
-  MOB-SPAWN-RADIUS: 50
+  MOB-SPAWN-RADIUS: 128
   # The numerical value for Phantom Spawn Radius. Available options: Any valid integer
   PHANTOM-SPAWN-RADIUS: 40
   # The numerical value for Disable Mob Spawn Limit Seconds. Set to -1 for no limit. Available options: Any valid integer
@@ -135,7 +135,7 @@ FEATURES_SETTINGS:
   # - "MESSAGE": Shows "The <feature> feature is currently disabled."
   # - "UNKNOWN": Shows default unknown command message.
   # - "UNREGISTER": Dynamically unregister command from Bukkit command map.
-  DISABLED_COMMAND_ACTION: "MESSAGE"
+  DISABLED_COMMAND_ACTION: MESSAGE
 # Configuration section for Chat.
 CHAT:
   # Determines whether Format Enabled is enabled or disabled. Available options: true, false
@@ -280,9 +280,12 @@ SERVER-NOTIFICATIONS:
     # Per-rank wording, resolved from permissions. Supports {player} like MESSAGE above.
     # Delete the examples you do not want; they are never merged back once removed.
     BY-PERMISSION:
-      "ultimatedonutsmp2.notifications.join.vip++": '&8[&a+&8] &6{player} &7joined the server.'
-      "ultimatedonutsmp2.notifications.join.vip+": '&8[&a+&8] &b{player} &7joined the server.'
-      "ultimatedonutsmp2.notifications.join.vip": '&8[&a+&8] &e{player} &7joined the server.'
+      ultimatedonutsmp2:
+        notifications:
+          join:
+            vip++: '&8[&a+&8] &6{player} &7joined the server.'
+            vip+: '&8[&a+&8] &b{player} &7joined the server.'
+            vip: '&8[&a+&8] &e{player} &7joined the server.'
   # The line everyone sees when a player disconnects. While this is off the server's own quit
   # message is relayed instead, exactly as it is today.
   LEAVE:
@@ -293,9 +296,12 @@ SERVER-NOTIFICATIONS:
     # Per-rank wording, resolved from permissions. Supports {player} like MESSAGE above.
     # Delete the examples you do not want; they are never merged back once removed.
     BY-PERMISSION:
-      "ultimatedonutsmp2.notifications.leave.vip++": '&8[&c-&8] &6{player} &7left the server.'
-      "ultimatedonutsmp2.notifications.leave.vip+": '&8[&c-&8] &b{player} &7left the server.'
-      "ultimatedonutsmp2.notifications.leave.vip": '&8[&c-&8] &e{player} &7left the server.'
+      ultimatedonutsmp2:
+        notifications:
+          leave:
+            vip++: '&8[&c-&8] &6{player} &7left the server.'
+            vip+: '&8[&c-&8] &b{player} &7left the server.'
+            vip: '&8[&c-&8] &e{player} &7left the server.'
   # Sent in place of the join line the very first time a player ever connects. It replaces the
   # join message rather than arriving alongside it, so nobody gets announced twice.
   FIRST-JOIN:
@@ -306,9 +312,12 @@ SERVER-NOTIFICATIONS:
     # Per-rank wording, resolved from permissions. Supports {player} like MESSAGE above.
     # Delete the examples you do not want; they are never merged back once removed.
     BY-PERMISSION:
-      "ultimatedonutsmp2.notifications.first-join.vip++": '&aWelcome &6{player} &ato the server for the first time!'
-      "ultimatedonutsmp2.notifications.first-join.vip+": '&aWelcome &b{player} &ato the server for the first time!'
-      "ultimatedonutsmp2.notifications.first-join.vip": '&aWelcome &e{player} &ato the server for the first time!'
+      ultimatedonutsmp2:
+        notifications:
+          first-join:
+            vip++: '&aWelcome &6{player} &ato the server for the first time!'
+            vip+: '&aWelcome &b{player} &ato the server for the first time!'
+            vip: '&aWelcome &e{player} &ato the server for the first time!'
   # Announcements for the Auction House. Bot listings are never announced.
   AUCTION-HOUSE:
     # Determines whether Auction House announcements are enabled or disabled. Turning this off
@@ -340,7 +349,8 @@ SERVER-NOTIFICATIONS:
       # The text or value for Message. Supports {player}, {item}, {amount}, {price},
       # {price_formatted}, {total} and {total_formatted}.
       # Available options: Any valid string text
-      MESSAGE: '&8[&6ORDER&8] &f{player} &7created an order for &e{amount}x {item} &7at &a{price_formatted} &7each.'
+      MESSAGE: '&8[&6ORDER&8] &f{player} &7created an order for &e{amount}x {item}
+        &7at &a{price_formatted} &7each.'
     # Sent once an order has been filled all the way, not on every partial delivery. {player}
     # is whoever handed over the last of it and {owner} is whoever opened the order.
     COMPLETE:
@@ -349,7 +359,8 @@ SERVER-NOTIFICATIONS:
       # The text or value for Message. Supports {player}, {owner}, {item}, {amount}, {price},
       # {price_formatted}, {total} and {total_formatted}.
       # Available options: Any valid string text
-      MESSAGE: '&8[&6ORDER&8] &f{player} &7completed &e{owner}&7''s order for &e{amount}x {item}&7.'
+      MESSAGE: '&8[&6ORDER&8] &f{player} &7completed &e{owner}&7''s order for &e{amount}x
+        {item}&7.'
 # Configuration section for Afk System.
 AFK-SYSTEM:
   # Determines whether Enabled is enabled or disabled. Available options: true, false
@@ -357,7 +368,7 @@ AFK-SYSTEM:
   # The numerical value for Time. Available options: Any valid integer
   TIME: 180
   # The text or value for Spawn Cuboid Name. Available options: Any valid string text
-  SPAWN-CUBOID-NAME: spawn
+  SPAWN-CUBOID-NAME: ''
   # The text or value for Afk Cuboid Name. Available options: Any valid string text
   AFK-CUBOID-NAME: ''
   # The text or value for Message. Available options: Any valid string text
@@ -369,7 +380,7 @@ PREVENT-ITEM-DROP:
   # Prevent players from dropping items while AFK (either in the AFK area or has AFK status).
   AFK: true
   # Bypass permission for admins/staff to allow item dropping.
-  BYPASS-PERMISSION: 'ultimatedonutsmp2.preventdrop.bypass'
+  BYPASS-PERMISSION: ultimatedonutsmp2.preventdrop.bypass
   # Message sent to player when their drop is cancelled. Set to '' to disable message.
   MESSAGE: '&c✗ You are not allowed to drop items in spawn or AFK areas!'
 # Configuration section for Cuboid Binds.
@@ -381,7 +392,7 @@ CUBOID-BINDS:
 # Configuration section for Fly System.
 FLY-SYSTEM:
   # The permission required for regular players/ranks to fly in spawn or cuboids.
-  PLAYER-FLY-PERMISSION: 'ultimatedonutsmp2.player.fly'
+  PLAYER-FLY-PERMISSION: ultimatedonutsmp2.player.fly
   # Disable flight automatically when the player leaves the allowed areas or enters combat.
   AUTO-DISABLE-OUTSIDE: true
   # Minimum allowed flying speed (integer/decimal between 1 and 10)
@@ -547,18 +558,18 @@ SHARDS:
         # Determines whether Enabled is enabled or disabled. Available options: true, false
         ENABLED: true
         # Determines whether Bound is enabled or disabled. Available options: true, false
-        BOUND: false
+        BOUND: true
         # The numerical value for Priority. Available options: Any valid integer
         PRIORITY: 100
         # The text or value for Cuboid. Available options: Any valid string text
         CUBOID: ''
         # The text or value for World. Available options: Any valid string text
-        WORLD: world
+        WORLD: ''
         # Radius in blocks for the point-based fallbacks. LOCATION gets a sphere this wide
         # that pays shards alongside CUBOID, and the AFK point gets one that counts as the
         # AFK area when no AFK cuboid is bound. One number covers both. Set 0 to switch the
         # shard sphere off and leave the AFK sphere at its built-in 16.
-        RADIUS: 400
+        RADIUS: 40
         # The numerical value for Interval. Available options: Any valid integer
         INTERVAL: 60
         # The numerical value for Amount. Available options: Any valid integer
@@ -568,17 +579,19 @@ SHARDS:
         # The text or value for Reward Message. Available options: Any valid string text
         REWARD-MESSAGE: '&#A303F9You received %amount% Shard &7(Total: &#A303F9%total%&7)'
         # The text or value for Boosted Reward Message. Available options: Any valid string text
-        BOOSTED-REWARD-MESSAGE: '&#A303F9You received %amount% Shards &7(&ax%multiplier%&7) &7(Total: &#A303F9%total%&7)'
+        BOOSTED-REWARD-MESSAGE: '&#A303F9You received %amount% Shards &7(&ax%multiplier%&7)
+          &7(Total: &#A303F9%total%&7)'
         # The text or value for Leave Message. Available options: Any valid string text
         LEAVE-MESSAGE: '&cShard reward cancelled &7(Left %cuboid% zone)'
         # The numerical value for Afk Time. Available options: Any valid integer
         AFK-TIME: 120
         # The text or value for Afk Cuboid. Available options: Any valid string text
-        AFK-CUBOID: ''
+        AFK-CUBOID: afk1
         # The text or value for Afk Location. Available options: Any valid string text
-        AFK-LOCATION: ''
+        AFK-LOCATION: Quasar,-33.27826041321372,125.0,-8.530753519337926,-91.04962,90.0
         # The text or value for Afk Message. Available options: Any valid string text
-        AFK-MESSAGE: '&7You have been moved to the AFK area for being inactive in the shard zone.'
+        AFK-MESSAGE: '&7You have been moved to the AFK area for being inactive in
+          the shard zone.'
         # Determines whether Teleport On Afk is enabled or disabled. Available options: true, false
         TELEPORT-ON-AFK: true
         # Configuration section for Excluded Worlds.
@@ -596,14 +609,15 @@ SHARDS:
         AFK-PAUSED-MESSAGE: '&cYou are AFK. Move to resume shard gain'
         # The text or value for Excluded World Message. Available options: Any valid string text
         EXCLUDED-WORLD-MESSAGE: '&cShards are disabled in this world'
+        LOCATION: Quasar,25.394428595401923,103.0,-30.30000001192093,111.52406,12.149977
   # Configuration section for Everywhere.
   EVERYWHERE:
     # Determines whether Enabled is enabled or disabled. Available options: true, false
-    ENABLED: false
+    ENABLED: true
     # The numerical value for Every. Available options: Any valid integer
     EVERY: 3
     # The numerical value for Amount. Available options: Any valid integer
-    AMOUNT: 1
+    AMOUNT: 5
     # The text or value for Required Permission. Available options: Any valid string text
     REQUIRED-PERMISSION: ultimatedonutsmp2.shards.everywhere
     # The numerical value for Recent Movement Window. Available options: Any valid integer
@@ -613,7 +627,8 @@ SHARDS:
     # The text or value for Received. Available options: Any valid string text
     RECEIVED: '&#A303F9You received %amount% Shard &8[Everywhere] &7(Total: &#A303F9%total%&7)'
     # The text or value for Received Boosted. Available options: Any valid string text
-    RECEIVED-BOOSTED: '&#A303F9You received %amount% Shards &7(&ax%multiplier%&7) &8[Everywhere] &7(Total: &#A303F9%total%&7)'
+    RECEIVED-BOOSTED: '&#A303F9You received %amount% Shards &7(&ax%multiplier%&7)
+      &8[Everywhere] &7(Total: &#A303F9%total%&7)'
     # Configuration section for Excluded Worlds.
     EXCLUDED-WORLDS:
     - duels
@@ -676,7 +691,7 @@ LEADERBOARD:
 # Configuration section for Tablist.
 TABLIST:
   # Determines whether Enabled is enabled or disabled. Available options: true, false
-  ENABLED: true
+  ENABLED: false
   # Determines whether Luckperms Priority is enabled or disabled. Available options: true, false
   LUCKPERMS-PRIORITY: true
   # Determines whether Show Team Name is enabled or disabled. Available options: true, false
@@ -686,17 +701,17 @@ TABLIST:
   # The text or value for Icon Media. Available options: Any valid string text
   ICON-MEDIA: 📹
   # The text or value for Media Badge Format. Available options: Any valid string text
-  MEDIA-BADGE-FORMAT: '<#FF00A6><icon_media>'
+  MEDIA-BADGE-FORMAT: <#FF00A6><icon_media>
   # The text or value for Media Badge Permission. Available options: Any valid string text
   MEDIA-BADGE-PERMISSION: media
   # The text or value for Donut+ Badge Format. Available options: Any valid string text
-  DONUT-PLUS-FORMAT: '<#00A4FC>+'
+  DONUT-PLUS-FORMAT: <#00A4FC>+
   # The text or value for Donut++ Badge Format. Available options: Any valid string text
-  DONUT-PLUS-PLUS-FORMAT: '<#00A4FC>++'
+  DONUT-PLUS-PLUS-FORMAT: <#00A4FC>++
   # The text or value for Donut+++ Badge Format. Available options: Any valid string text
-  DONUT-PLUS-PLUS-PLUS-FORMAT: '<#00A4FC>+++'
+  DONUT-PLUS-PLUS-PLUS-FORMAT: <#00A4FC>+++
   # The text or value for Name Format. Available options: Any valid string text
-  NAME-FORMAT: '<media_badge>%prefix%<donut_badge>&f<nick>%team_suffix%'
+  NAME-FORMAT: <media_badge>%prefix%<donut_badge>&f<nick>%team_suffix%
   # Configuration section for Header.
   HEADER:
   - ''
@@ -706,7 +721,8 @@ TABLIST:
   # Configuration section for Footer.
   FOOTER:
   - ''
-  - '&#002B5C/discord  &#005FA5Money: &#0099CC%economy_nicestMoney%  &#005FA5Ping: &#0099CC%economy_ping%ms'
+  - '&#002B5C/discord  &#005FA5Money: &#0099CC%economy_nicestMoney%  &#005FA5Ping:
+    &#0099CC%economy_ping%ms'
   - ''
 # Configuration section for Server List.
 SERVER-LIST:
@@ -820,7 +836,7 @@ ENTITY-PRESSURE:
 # Configuration section for Clear Lag.
 CLEAR-LAG:
   # Determines whether Enabled is enabled or disabled. Available options: true, false
-  ENABLED: true
+  ENABLED: false
   # The numerical value for Every. Available options: Any valid integer
   EVERY: 5
   # Determines whether Animals is enabled or disabled. Available options: true, false
@@ -854,7 +870,7 @@ COMBAT-MANAGER:
   # Determines whether Kill On Logout is enabled or disabled. When true, a player who
   # disconnects while their combat tag is still running is killed, so logging out mid-fight
   # is not a way to escape a fight. Available options: true, false
-  KILL-ON-LOGOUT: false
+  KILL-ON-LOGOUT: true
   # The text or value for Action Bar. Available options: Any valid string text
   ACTION-BAR: '&fCombat: &b${time}s'
   # Determines whether Mobs is enabled or disabled. When true, damage from mobs also puts
@@ -863,7 +879,7 @@ COMBAT-MANAGER:
   # Determines whether Ender Crystal is enabled or disabled. Available options: true, false
   ENDER-CRYSTAL: true
   # Determines whether Ender Pearl is enabled or disabled. Available options: true, false
-  ENDER-PEARL: true
+  ENDER-PEARL: false
   # Determines whether Respawn Anchor is enabled or disabled. Available options: true, false
   RESPAWN-ANCHOR: true
   # The text or value for Block Message. Available options: Any valid string text
@@ -875,6 +891,7 @@ COMBAT-MANAGER:
   - /rtp
   - /homes
   - /tpa
+  - /shop
   # Configuration section for Excluded Worlds.
   EXCLUDED-WORLDS:
   - duels
@@ -983,17 +1000,17 @@ TELEPORT-COOLDOWN:
   # The numerical value for Home. Available options: Any valid integer
   HOME: 0
   # The numerical value for Team Home. Available options: Any valid integer
-  TEAM-HOME: 5
+  TEAM-HOME: 0
   # The numerical value for Spawn. Available options: Any valid integer
-  SPAWN: 5
+  SPAWN: 0
   # The numerical value for Afk. Available options: Any valid integer
-  AFK: 5
+  AFK: 0
   # The numerical value for Tpa. Available options: Any valid integer
-  TPA: 5
+  TPA: 0
   # The numerical value for Tpahere. Available options: Any valid integer
-  TPAHERE: 5
+  TPAHERE: 0
   # The numerical value for Warp. Available options: Any valid integer
-  WARP: 5
+  WARP: 0
   # The numerical value for Rtp. Available options: Any valid integer
   RTP: 0
 # Configuration section for Bounty.
@@ -1146,6 +1163,8 @@ VOICE-CHAT:
 # Configuration section for Features.
 FEATURES:
   TEAMS:
+    ENABLED: true
+  DUELS:
     ENABLED: false
 COMMANDS:
   # Determines whether Chat is enabled or disabled. Available options: true, false

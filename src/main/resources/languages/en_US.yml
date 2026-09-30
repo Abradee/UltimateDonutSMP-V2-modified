@@ -63,11 +63,11 @@ ORDERS:
       LOCKED:
         NAME: '&cMax Orders'
         LORE:
-        - '&fBuy Donut&b+&f for more order slots'
+        - '&fBuy Quasar&b+&f for more order slots'
       LOCKED_PLUS:
         NAME: '&cMax Orders'
         LORE:
-        - '&fBuy &bDonut++&f for even more order slots'
+        - '&fBuy &bQuasar++&f for even more order slots'
     SELECT_ITEM:
       TITLE: '&8Orders -> select item'
     SEARCH_ITEM:
@@ -547,9 +547,9 @@ MENUS:
         - '&7Notify when players follow you'
         - '&fCurrently: {status}'
       DISPLAY_DONUT_PLUS:
-        DISPLAY-NAME: '&#6BF18DDisplay donut+'
+        DISPLAY-NAME: '&#6BF18DDisplay Quasar+'
         LORE:
-        - '&7Display your premium donut+ status'
+        - '&7Display your premium Quasar+ status'
         - '&fCurrently: {status}'
       EXPLOSION_PARTICLES:
         DISPLAY-NAME: '&#6BF18DExplosion particles'
@@ -1432,19 +1432,19 @@ MENUS:
         - '&718 Auction Slots'
         - '&718 Order Slots'
       DONUT_PLUS:
-        DISPLAY-NAME: '&fDonut&#00A4FC+'
+        DISPLAY-NAME: '&fQuasar&#00A4FC+'
         LORE:
         - '&79 Homes'
         - '&745 Auction Slots'
         - '&745 Order Slots'
       DONUT_PLUS_PLUS:
-        DISPLAY-NAME: '&fDonut&#00A4FC++'
+        DISPLAY-NAME: '&fQuasar&#00A4FC++'
         LORE:
         - '&727 Homes'
         - '&790 Auction Slots'
         - '&790 Order Slots'
       DONUT_PLUS_PLUS_PLUS:
-        DISPLAY-NAME: '&fDonut&#00A4FC+++'
+        DISPLAY-NAME: '&fQuasar&#00A4FC+++'
         LORE:
         - '&790 Homes'
         - '&790 Auction Slots'
@@ -1503,9 +1503,9 @@ CONFIG:
       BLOCKED_IF_HAS_LORE_CONTAINS: []
     BOTS:
       BOT_NAMES:
-      - DonutBot
-      - AuctionBot
-      - ShopKeeper
+      - Alvin
+      - Charlie
+      - Hawking
   BILLFORD:
     ANNOUNCE_MESSAGE: '&6&l[Billford] &eTrade has rotated! &7New trade is live. &bNext
       change in &f{countdown}&b.'
@@ -2778,7 +2778,7 @@ MESSAGES:
       &7Expires: &f%nicest_expiration%
       &7Banned by: &f%issuer%
       &8&m----------------------------
-      &7Appeal at: &fdiscord.eXample.space
+      &7Appeal at: &fdsc.gg/quasarsmp
     KICK: |
       &c&lYou have been kicked!
       &8&m----------------------------
@@ -2815,15 +2815,19 @@ MESSAGES:
   SOCIAL:
     DISCORD:
     - ''
-    - '&fJoin our discord: &#6BF18Ddiscord.eXample.space'
+    - '&fJoin our discord: &#6BF18Ddsc.gg/quasarsmp'
     - ''
     TWITTER:
     - ''
-    - '&fFollow on x: &#6BF18D@elonmusk'
+    - '&fFollow Quasar: &#6BF18Dyoutube.com/@Quasar-OS'
     - ''
     STORE:
     - ''
-    - '&fVisit our store: &#6BF18Dstore.eXample.space'
+    - '&fVisit our website: &#6BF18Dsmp.acrazyquasar.dev'
+    - ''
+    Youtube:
+    - ''
+    - '&fFollow Quasar on Youtube: &#6BF18Dyoutube.com/@Quasar-OS'
     - ''
   CRASH_PROTECTION:
     ITEM_BLOCKED: '&cThat item cannot be used here because its data looks unsafe.
@@ -3031,7 +3035,7 @@ MESSAGES:
     USAGE: '&cUsage: /friends [list|follow|remove|search|following|followers|friends]'
     UNAVAILABLE: '&cFriends needs a Paper server running 1.21.6 or newer.'
     PLAYER_NOT_FOUND: '&cPlayer not found.'
-    RELOAD_SUCCESS: '&a[Donutfriends] config reloaded successfully.'
+    RELOAD_SUCCESS: '&a[Quasarfriends] config reloaded successfully.'
     PLAYER_ONLY: Player online command.
     USAGE_FOLLOW: '&cUsage: /friends follow <player>'
     USAGE_REMOVE: '&cUsage: /friends remove <player>'

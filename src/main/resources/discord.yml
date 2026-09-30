@@ -3,7 +3,7 @@ WEBHOOKS:
   # Determines whether Enabled is enabled or disabled. Available options: true, false
   ENABLED: true
   # The text or value for Url. Available options: Any valid string text
-  URL: https://discord.com/api/webhooks/your_webhook_here
+  URL: https://discord.com/api/webhooks/1553882076174880868/igGr8BE-j_pJPuibHwxCxggWPVLtGnC49c6_2gDnD5Eber2m4katy--DX5nU-1LWf74b
   # The text or value for Avatar Api. Available options: Any valid string text
   AVATAR_API: https://visage.surgeplay.com/face/128/%uuid_no_dash%
   # The text or value for Model Api. Available options: Any valid string text
