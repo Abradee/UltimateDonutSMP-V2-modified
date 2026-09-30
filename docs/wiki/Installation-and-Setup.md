@@ -13,7 +13,7 @@ Reload later with `/uds reload`. [config.yml](Config-config.yml) ·
 
 | Requirement | Supported | Notes |
 | :--- | :--- | :--- |
-| **Minecraft** | `26.1.2` – `26.3` | Folia: `26.1.2` – `26.2`. Checked in `onEnable()`. Outside this range the plugin disables itself. |
+| **Minecraft** | `26.1.2` – `26.2` | Checked in `onEnable()`. Outside this range the plugin disables itself. |
 | **Java client** | **1.21.6 or newer** | 1.21.5 and older cannot render Dialog API menus. Block them on the proxy or ViaVersion. See [Dialog API & older clients](Dialog-API-and-Older-Clients). |
 | **Server** | Paper, Purpur, Pufferfish, Spigot, Folia | Folia uses the plugin's own scheduler abstraction; everything else uses Bukkit's. |
 | **Java** | Java 21+ | The plugin is compiled with `--release 21`. Use the JDK your Paper or Folia build requires. `/ultimatedonutsmp2 setup` reports the running Java version. |
@@ -34,6 +34,16 @@ The chest-menu fallback in `menus.yml` is **server-wide**: it only runs when thi
 Paper's Dialog API. It does not switch per player. Require 1.21.6+ and block older protocol
 versions on Velocity, BungeeCord, or ViaVersion. Full detail:
 [Dialog API & older clients](Dialog-API-and-Older-Clients).
+
+### Bedrock (Geyser / Floodgate)
+
+Bedrock clients do not implement Java dialogs. Geyser does not change that — dialog-first commands
+(`/menu`, `/ah`, `/pay`, and similar) stay **Java-only**.
+
+If Bedrock players should use **Quick Buy pinning**, **Orders** text prompts, or **Homes** forms,
+install **Floodgate** on the backend and pair it with Geyser. `/shop` still opens a chest grid
+without Floodgate; pinning then uses the chest catalogue instead of Bedrock forms. See
+[Dialog API & older clients — Bedrock](Dialog-API-and-Older-Clients#bedrock-players-geyser--floodgate).
 
 ---
 

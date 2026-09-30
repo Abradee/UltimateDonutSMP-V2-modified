@@ -41,7 +41,7 @@ This README is the quick reference. The full documentation set lives in [`docs/w
 | [Placeholders & Integrations](docs/wiki/Placeholders-and-Integrations.md) | PlaceholderAPI expansions and third-party plugin support |
 | [Localization & Messages](docs/wiki/Localization-and-Messages.md) | 8-language translations, language selection, and message keys |
 | [FAQ](docs/wiki/FAQ.md) | Common questions and troubleshooting |
-| [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md) | Why 1.21.5-and-older Java clients cannot use the menus |
+| [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md) | Java 1.21.5-and-older clients and Bedrock (Geyser) limits; Quick Buy + Floodgate |
 
 ## Highlights
 
@@ -112,9 +112,10 @@ Gameplay clips:
 | --- | --- |
 | Plugin version | `1.0` |
 | Java | Bytecode targets Java 21. The supported Minecraft versions (26.1.2 and newer) require a Java 25 server runtime. |
-| Paper / Purpur / Pufferfish / Spigot | Minecraft `26.1.2` through `26.3` |
+| Paper / Purpur / Pufferfish / Spigot | Minecraft `26.1.2` through `26.2` |
 | Folia | Minecraft `26.1.2` through `26.2` |
 | Java client | **1.21.6 or newer.** 1.21.5 and older cannot render Dialog API menus. Block those versions on the proxy or ViaVersion. See [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md). |
+| Bedrock (Geyser) | **Dialog API menus do not work** (`/menu`, `/ah`, `/pay`, and similar). `/shop` opens a chest grid; pinning items needs **Floodgate** (Geyser alone is not enough). See [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md#bedrock-players-geyser--floodgate). |
 | Hard dependencies | PlaceholderAPI and ProtocolLib (declared under `depend` in `plugin.yml`; the plugin will not load without them) |
 | Default storage | SQLite, bundled through the shaded JDBC driver |
 | Alternative storage | MySQL or MongoDB |
@@ -144,6 +145,8 @@ The plugin starts without the optional integrations. Their related permission, e
 > This is not a plugin bug and cannot be fixed here. Other plugins that use Dialog API behave the same way. The chest-menu fallback in `menus.yml` only applies when the **server** lacks Paper's Dialog API (Spigot, or Paper older than 1.21.6). On the Paper versions this plugin supports, dialogs are sent to every player; there is no per-client switch to chest GUIs.
 >
 > **Require Java clients 1.21.6 or newer.** Block 1.21.5 and below on Velocity, BungeeCord, or ViaVersion. Full write-up: [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md).
+>
+> **Bedrock players (Geyser)** cannot use Java Dialog API screens. That is expected, not a plugin bug. Most hub and economy menus (`/menu`, `/ah`, `/pay`, `/homes` dialog flow, and similar) are Java-only. **`/shop` (Quick Buy)** uses a chest menu Geyser can show; to pin items from Bedrock install **Floodgate** alongside Geyser so the plugin can send Bedrock forms (`QUICK-BUY.BEDROCK` in `shop.yml`). Without Floodgate, pinning falls back to a chest catalogue. Details: [Bedrock players (Geyser / Floodgate)](docs/wiki/Dialog-API-and-Older-Clients.md#bedrock-players-geyser--floodgate).
 
 ## Building
 
