@@ -116,7 +116,7 @@ SETTINGS:
   # The decimal value for Worth Default Value. Available options: Any decimal number
   WORTH-DEFAULT-VALUE: 1.0
   # The numerical value for Mob Spawn Radius. Available options: Any valid integer
-  MOB-SPAWN-RADIUS: 50
+  MOB-SPAWN-RADIUS: 128
   # The numerical value for Phantom Spawn Radius. Available options: Any valid integer
   PHANTOM-SPAWN-RADIUS: 40
   # The numerical value for Disable Mob Spawn Limit Seconds. Set to -1 for no limit. Available options: Any valid integer
