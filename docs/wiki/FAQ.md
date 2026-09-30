@@ -4,11 +4,13 @@ Reload is `/ultimatedonutsmp2 reload` (`/uds reload`, `/udsmp reload`).
 
 Jump: [won't start](#the-plugin-disabled-itself-on-startup) ·
 [old clients](#menus-are-broken-on-1215-or-older) ·
+[Bedrock / Geyser](#shop-or-menus-do-not-work-on-bedrock-geyser) ·
 [placeholders](#economy_money-shows-as-raw-text) ·
 [Vault](#another-plugin-cannot-see-money-balances) ·
 [data reset](#balances-homes-or-keys-reset-after-a-restart) ·
 [portals](#portal-does-nothing--cuboid-binds-do-not-pay-shards) ·
 [spawners](#managed-spawners-drop-as-pig-spawners) ·
+[shard shop spawners](#adding-spawners-to-the-shard-shop) ·
 [crystals](#end-crystals-place-at-vanilla-speed) ·
 [messages.yml](#editing-messagesyml-does-nothing) ·
 [billford](#billford-and-billfordyml) ·
@@ -22,7 +24,7 @@ ProtocolLib and PlaceholderAPI are hard dependencies. If either is missing, `onE
 error and disables the plugin. Install both jars and restart.
 
 The other startup abort is an unsupported Minecraft version. The allowed range is `26.1.2` to
-`26.3` on Paper, Purpur, Pufferfish and Spigot. Folia stays `26.1.2` to `26.2`.
+`26.2` on Paper, Purpur, Pufferfish, Spigot and Folia.
 
 ---
 
@@ -40,6 +42,28 @@ gets dialogs. There is no per-client switch to chest GUIs.
 
 **Block Java clients below 1.21.6** on the proxy or ViaVersion. Do not allow 1.21.5-and-older
 players onto a live network. Full write-up: [Dialog API & older clients](Dialog-API-and-Older-Clients).
+
+---
+
+## Shop or menus do not work on Bedrock (Geyser)
+
+That is expected for anything that uses Mojang's **Java Dialog API**. Bedrock clients — including
+everyone joining through **Geyser** — do not render those screens. `/menu`, `/ah`, `/pay`,
+`/settings`, `/homes` (dialog path), and most other DonutSMP-style menus are **Java Edition only**.
+
+**`/shop` (Quick Buy)** is different: the main grid is a **chest menu**, which Geyser can display.
+To **pin a new item** from Bedrock without opening the Java Choose Item dialog:
+
+1. Install **Floodgate** on the backend (not Geyser alone) and link it to Geyser.
+2. Leave `QUICK-BUY.BEDROCK.ENABLED: true` in `shop.yml` (default).
+
+Floodgate players get a paged Bedrock form with search. Without Floodgate, the same action uses a
+chest catalogue instead. Some Quick Buy actions (for example **Search** on the main grid on Paper
+with Dialog API enabled) still open a Java dialog — use the Floodgate catalogue search when pinning
+items, or play on Java 1.21.6+ for the full UI.
+
+This cannot be "fixed" into full Bedrock parity while the network relies on Dialog API for Java.
+Full tables and operator steps: [Dialog API & older clients — Bedrock](Dialog-API-and-Older-Clients#bedrock-players-geyser--floodgate).
 
 ---
 
@@ -117,6 +141,18 @@ explicitly.
 
 Creative mode is exempt from the Silk Touch check; a Creative break removes the spawner instead of
 returning the item.
+
+---
+
+## Adding spawners to the Shard Shop
+
+`/shardshop` does not sell spawners until you add them. Each one is an entry under `SHARD-MENU` in
+[shop.yml](Config-shop.yml), and `COMMAND` has to be `spawner give {player} <type> {amount}` with
+`GIVE-ITEM: false`. `<type>` is the key under `TYPES` in [spawners.yml](Config-spawners.yml). The
+shipped keys, free slots, and a paste-ready block for all nine types are in
+[Adding spawners to the Shard Shop](Economy-and-Marketplaces#adding-spawners-to-the-shard-shop).
+
+Reload with `/shop reload`. A new type in `spawners.yml` also needs `/spawner reload`.
 
 ---
 

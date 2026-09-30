@@ -76,6 +76,17 @@ you want players trading shards between themselves.
 
 ## Shops
 
+### Bedrock and Geyser
+
+Dialog-based economy UIs (`/pay`, `/ah` browser, `/worth` pickers, and most hub menus) are
+**Java Edition only**. Bedrock cannot render them through Geyser.
+
+**`/shop` (Quick Buy)** is partly chest-based: the pinned grid works on Bedrock. Pinning a new
+item uses the Java Choose Item dialog unless **Floodgate** is installed — then Bedrock players get
+the paged form under `QUICK-BUY.BEDROCK` in `shop.yml`. Geyser without Floodgate falls back to the
+chest catalogue. Operator checklist and feature table:
+[Dialog API & older clients — Bedrock](Dialog-API-and-Older-Clients#bedrock-players-geyser--floodgate).
+
 ### `/shop` — Quick Buy
 
 `/shop` opens the DonutSMP-style Quick Buy grid, configured under `QUICK-BUY` in `shop.yml`. Players

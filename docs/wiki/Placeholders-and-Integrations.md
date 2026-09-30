@@ -283,8 +283,8 @@ Without either of these the plugin logs an error during `onEnable()` and disable
 | **LuckPerms** | Tab list refresh on permission changes, a staff-mode context, and `%luckperms_*%` in chat | Prefixes resolve empty and the tab list does not refresh on rank changes |
 | **SkinsRestorer** | Skins for disguises, fake players and tab list heads | Falls back to Mojang profile lookups |
 | **Apollo (Lunar Client)** | Rich presence and the teammate overlay for Lunar users | Logged as unavailable and skipped |
-| **Floodgate** | Native Bedrock forms for Orders and Homes | Bedrock players get the Java chest GUIs. They still cannot render Java Dialog API screens — see [Dialog API & older clients](Dialog-API-and-Older-Clients). |
-| **Geyser** | More accurate ping for Bedrock players | Falls back to the Spigot ping value. Bedrock clients do not implement Java dialogs. |
+| **Floodgate** | Native Bedrock forms for Quick Buy pinning (`QUICK-BUY.BEDROCK`), Orders, and Homes | Without it, those flows use chest menus where implemented. Java Dialog API screens (`/menu`, `/ah`, `/pay`, and similar) still do not work on Bedrock — see [Dialog API & older clients](Dialog-API-and-Older-Clients#bedrock-players-geyser--floodgate). |
+| **Geyser** | Lets Bedrock players join; more accurate ping when present | Does not add Dialog API support. Install **Floodgate** as well if Bedrock players should use Quick Buy forms or Orders / Homes Bedrock UI. |
 | **Simple Voice Chat** | Gates the microphone behind the consent menu and enables voice mutes | The consent menu still records an answer but has nothing to gate |
 | **WorldEdit or FAWE** | Pastes the arena schematic on a scheduled ranked-arena reset | The reset does not happen |
 | **Multiverse-Core** | Load-order only | No behavioural difference |

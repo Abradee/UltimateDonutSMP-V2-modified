@@ -10,7 +10,8 @@ plugin disables itself.
 
 **Java clients must be 1.21.6 or newer.** Minecraft 1.21.5 and older cannot render the Dialog API
 menus (broken `/ah`, `/menu`, `/homes`, and similar). That is a Mojang client limit, not a plugin
-bug — block those versions on the proxy or ViaVersion. See
+bug — block those versions on the proxy or ViaVersion. **Bedrock players on Geyser** have the same
+Dialog API limit; `/shop` uses chest menus but pinning items needs **Floodgate**. See
 [Dialog API & older clients](Dialog-API-and-Older-Clients).
 
 ---
@@ -44,7 +45,7 @@ Stuck? Start at the [FAQ](FAQ). If menus look broken on an older client, read
 
 - [Placeholders & Integrations](Placeholders-and-Integrations) — `%economy_*%`, Vault, Redis, Discord
 - [Localization & Messages](Localization-and-Messages) — 8 languages; there is no `messages.yml`
-- [Dialog API & older clients](Dialog-API-and-Older-Clients) — why 1.21.5-and-older Java clients cannot use the menus
+- [Dialog API & older clients](Dialog-API-and-Older-Clients) — Java 1.21.5-and-older clients and Bedrock (Geyser) dialog limits; `/shop` + Floodgate
 
 `/billford` is listed in the jar but does nothing. Do not configure it. Details in the [FAQ](FAQ).
 
@@ -56,7 +57,7 @@ Stuck? Start at the [FAQ](FAQ). If menus look broken on an older client, read
 | :--- | :--- |
 | Version | `1.0` |
 | Servers | Paper, Purpur, Pufferfish, Spigot, Folia |
-| Minecraft | Paper/Purpur/Pufferfish/Spigot: `26.1.2`–`26.3`. Folia: `26.1.2`–`26.2` (checked on startup). Java **clients 1.21.6+** — see [Dialog API & older clients](Dialog-API-and-Older-Clients) |
+| Minecraft | Server `26.1.2`–`26.2` (checked on startup). Java **clients 1.21.6+** — see [Dialog API & older clients](Dialog-API-and-Older-Clients) |
 | Java | Compiled for 21. Use the JDK your server build needs. |
 | Storage | SQLite (default), MySQL, or MongoDB |
 | Network | Redis, optional |
