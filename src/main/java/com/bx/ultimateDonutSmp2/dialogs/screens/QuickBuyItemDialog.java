@@ -348,7 +348,10 @@ public final class QuickBuyItemDialog extends DialogScreen {
                 if (mat != null) {
                     if (!isBlacklisted(plugin, mat)) {
                         session(player).startQuickBuy(slot, mat);
-                        if (isEnchantable(mat)) {
+                        boolean enchantsEnabled = plugin.getConfigManager().getShop()
+                                .getBoolean("QUICK-BUY.CHOOSE-ENCHANTMENTS.ENABLED", true);
+
+                        if (enchantsEnabled && isEnchantable(mat)) {
                             openEnchantments(player, slot, mat);
                         } else {
                             openAmount(player, slot, mat);

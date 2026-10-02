@@ -531,6 +531,12 @@ QUICK-BUY:
   # Master toggle for Quick Buy system
   ENABLED: true
 
+  CHOOSE-ENCHANTMENTS:
+    ENABLED: true
+
+    CHOOSE-ENCHANTMENTS:
+      ENABLED: false
+
   # Action bar message displayed above the hotbar when purchasing an item
   # Placeholders: {amount}, {item}, {price}, {price_formatted}
   ACTION-BAR: "&fYou bought {amount} {item} for &a$ &f{price}"
