@@ -4,9 +4,7 @@ import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.menus.SellAllConfirmMenu;
 import com.bx.ultimateDonutSmp2.menus.SellHistoryMenu;
 import com.bx.ultimateDonutSmp2.menus.SellMenu;
-import com.bx.ultimateDonutSmp2.menus.SellProgressMenu;
 import com.bx.ultimateDonutSmp2.menus.SellStatsAdminMenu;
-import com.bx.ultimateDonutSmp2.models.SellCategory;
 import com.bx.ultimateDonutSmp2.utils.CommandLabelUtils;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import org.bukkit.command.Command;
@@ -15,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,18 +41,14 @@ public class SellCommand implements CommandExecutor, TabCompleter {
         switch (sub) {
             case "sell" -> new SellMenu(plugin).open(player);
             case "sellmulti", "sellmultiplier", "sellprogress" -> {
-                SellCategory category = SellCategory.CROPS;
-                if (args.length > 0) {
-                    category = SellCategory.fromConfigKey(args[0]).orElse(SellCategory.CROPS);
-                }
-                new SellProgressMenu(plugin, category).open(player);
+                player.sendMessage(ColorUtils.toComponent("&cThis command is temporarily disabled"));
             }
-            case "sellhand"    -> {
+            case "sellhand" -> {
                 double total = plugin.getShopManager().sellInventory(player, true);
                 if (total <= 0) player.sendMessage(ColorUtils.toComponent(
                         plugin.getConfigManager().getMessage("WORTH.NO-SELLABLE")));
             }
-            case "sellall"     -> new SellAllConfirmMenu(plugin).open(player);
+            case "sellall" -> new SellAllConfirmMenu(plugin).open(player);
             case "sellhistory" -> {
                 if (args.length > 0 && args[0].equalsIgnoreCase("admin")) {
                     new SellStatsAdminMenu(plugin).open(player);
@@ -69,17 +62,6 @@ public class SellCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1 && (alias.equalsIgnoreCase("sellmulti") || alias.equalsIgnoreCase("sellmultiplier") || alias.equalsIgnoreCase("sellprogress"))) {
-            List<String> completions = new ArrayList<>();
-            String input = args[0].toLowerCase();
-            for (SellCategory category : SellCategory.values()) {
-                if (category.name().toLowerCase().startsWith(input) || category.getConfigKey().toLowerCase().startsWith(input)) {
-                    completions.add(category.getConfigKey().toLowerCase());
-                }
-            }
-            return completions;
-        }
         return Collections.emptyList();
     }
 }
-
