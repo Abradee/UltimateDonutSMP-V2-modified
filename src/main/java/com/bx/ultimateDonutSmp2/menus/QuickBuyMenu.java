@@ -4,6 +4,8 @@ import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.QuickBuyItemDialog;
 import com.bx.ultimateDonutSmp2.managers.AuctionHouseManager;
+import com.bx.ultimateDonutSmp2.managers.QuickBuyBedrockManager;
+import com.bx.ultimateDonutSmp2.managers.QuickBuySearchPrompt;
 import com.bx.ultimateDonutSmp2.managers.ShopManager;
 import com.bx.ultimateDonutSmp2.models.QuickBuyEntry;
 import com.bx.ultimateDonutSmp2.utils.BedrockPlayers;
@@ -314,6 +316,17 @@ public class QuickBuyMenu extends BaseMenu {
                 return;
             }
             click(player);
+            if (BedrockPlayers.isBedrock(player)) {
+                QuickBuyBedrockManager bedrock = plugin.getQuickBuyBedrockManager();
+                if (bedrock != null && bedrock.openListingSearch(player, filter, editMode, searchQuery)) {
+                    return;
+                }
+                QuickBuySearchPrompt prompt = plugin.getQuickBuySearchPrompt();
+                if (prompt != null) {
+                    prompt.askListing(player, filter, editMode, searchQuery);
+                }
+                return;
+            }
             if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
                 QuickBuyItemDialog dialog = plugin.getDialogManager().getScreen(QuickBuyItemDialog.class);
                 if (dialog != null) {

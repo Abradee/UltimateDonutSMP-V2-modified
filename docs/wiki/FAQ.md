@@ -57,10 +57,9 @@ To **pin a new item** from Bedrock without opening the Java Choose Item dialog:
 1. Install **Floodgate** on the backend (not Geyser alone) and link it to Geyser.
 2. Leave `QUICK-BUY.BEDROCK.ENABLED: true` in `shop.yml` (default).
 
-Floodgate players get a paged Bedrock form with search. Without Floodgate, the same action uses a
-chest catalogue instead. Some Quick Buy actions (for example **Search** on the main grid on Paper
-with Dialog API enabled) still open a Java dialog — use the Floodgate catalogue search when pinning
-items, or play on Java 1.21.6+ for the full UI.
+Floodgate players get a paged Bedrock form with search. Without Floodgate, pinning uses the chest
+catalogue, and search asks for the item name in chat. Search does not open a Java dialog or a sign
+on Bedrock. Either one can leave the player unable to open the shop until they rejoin.
 
 This cannot be "fixed" into full Bedrock parity while the network relies on Dialog API for Java.
 Full tables and operator steps: [Dialog API & older clients — Bedrock](Dialog-API-and-Older-Clients#bedrock-players-geyser--floodgate).
