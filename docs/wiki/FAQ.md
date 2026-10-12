@@ -13,7 +13,6 @@ Jump: [won't start](#the-plugin-disabled-itself-on-startup) ·
 [shard shop spawners](#adding-spawners-to-the-shard-shop) ·
 [crystals](#end-crystals-place-at-vanilla-speed) ·
 [messages.yml](#editing-messagesyml-does-nothing) ·
-[billford](#billford-and-billfordyml) ·
 [v1 import](#migrating-from-ultimatedonutsmp-v1)
 
 ---
@@ -315,14 +314,6 @@ There is no shipped `messages.yml`. Player-facing text lives under `MESSAGES` in
 fallback for keys the language files do not define — and every bundled key is defined.
 
 See [Localization & Messages](Localization-and-Messages).
-
----
-
-## `/billford` and `billford.yml`
-
-`/billford` is declared in `plugin.yml` but has **no Java handler**. There is no `billford.yml`.
-`sounds.yml` still has a `BILLFORD` group and the language files still mention the feature. None of
-that runs. Do not spend time configuring it.
 
 ---
 

@@ -47,8 +47,6 @@ Stuck? Start at the [FAQ](FAQ). If menus look broken on an older client, read
 - [Localization & Messages](Localization-and-Messages) — 8 languages; there is no `messages.yml`
 - [Dialog API & older clients](Dialog-API-and-Older-Clients) — Java 1.21.5-and-older clients and Bedrock (Geyser) dialog limits; `/shop` + Floodgate
 
-`/billford` is listed in the jar but does nothing. Do not configure it. Details in the [FAQ](FAQ).
-
 ---
 
 ## At a glance
@@ -62,4 +60,4 @@ Stuck? Start at the [FAQ](FAQ). If menus look broken on an older client, read
 | Storage | SQLite (default), MySQL, or MongoDB |
 | Network | Redis, optional |
 | Config | 31 YAML files, 8 language files |
-| Commands | 143 declared; `/billford` has no handler |
+| Commands | 142 declared |

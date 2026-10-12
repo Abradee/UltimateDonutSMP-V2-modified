@@ -652,11 +652,6 @@ commands:
     usage: /servers
     permission: ultimatedonutsmp2.command.servers
     permission-message: "&cYou do not have permission to use /servers."
-  billford:
-    description: Open Billford trade
-    usage: /billford
-    permission: ultimatedonutsmp2.command.billford
-    permission-message: "&cYou do not have permission to use /billford."
   spawner:
     description: Manage Donut-style spawners
     usage: /spawner [give|info|panel|reload|remove|split]
@@ -1390,7 +1385,6 @@ permissions:
       ultimatedonutsmp2.command.rules: true
       ultimatedonutsmp2.command.help: true
       ultimatedonutsmp2.command.servers: true
-      ultimatedonutsmp2.command.billford: true
       ultimatedonutsmp2.command.spawner: true
       ultimatedonutsmp2.command.clearlag: true
       ultimatedonutsmp2.command.cuboid: true
@@ -1776,9 +1770,6 @@ permissions:
   ultimatedonutsmp2.command.servers:
     description: Access to /servers command
     default: op
-  ultimatedonutsmp2.command.billford:
-    description: Access to /billford command
-    default: true
   ultimatedonutsmp2.command.spawner:
     description: Access to /spawner command
     default: true
