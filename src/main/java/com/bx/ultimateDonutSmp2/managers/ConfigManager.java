@@ -63,6 +63,11 @@ public class ConfigManager {
             "anvil-moderation.yml"
     );
 
+    /** Yaml files synced into the data folder. Language files are not in this list. */
+    public static List<String> bundledConfigurationNames() {
+        return CONFIGURATION_RESOURCES;
+    }
+
     private static final DateTimeFormatter BACKUP_TIMESTAMP_FORMAT =
             DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS");
     private static final Map<String, String> MISCASED_PLACEHOLDERS = createMiscasedPlaceholders();
