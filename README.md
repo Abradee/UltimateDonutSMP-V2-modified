@@ -248,7 +248,6 @@ Commands can be disabled through their related feature toggle. Arguments in `<an
 | `/auctionhouse` | `/ah` | `/auctionhouse [sell\|my\|claims\|cancel\|limit\|fastbuy\|fastsell\|reload]` | `ultimatedonutsmp2.command.auctionhouse` |
 | `/balance` | `/bal`, `/money` | `/balance [player]` | `ultimatedonutsmp2.command.balance` |
 | `/ban` | - | `/ban <player> [reason]` | `ultimatedonutsmp2.command.ban` |
-| `/billford` | - | `/billford` | `ultimatedonutsmp2.command.billford` (no Java handler; inactive) |
 | `/blacklist` | - | `/blacklist <player> [reason]` | `ultimatedonutsmp2.command.blacklist` |
 | `/bounty` | - | `/bounty <add\|set\|info\|list> [player] [amount]` | `ultimatedonutsmp2.command.bounty` |
 | `/chat` | - | `/chat <help\|mute\|unmute\|delay\|clear>` | `ultimatedonutsmp2.command.chat` |

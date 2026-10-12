@@ -301,20 +301,6 @@ each per-material section maps an enchantment and level to a slot and page.
 
 ---
 
-## Billford
-
-`/billford` is declared in `plugin.yml` and holds the permission
-`ultimatedonutsmp2.command.billford`, but **the feature does not exist in this build**. No Java class
-registers or handles it, there is no `billford.yml` anywhere in the plugin, and nothing reads a
-Billford config key. What remains is dead weight from a removed or planned feature: an unused
-`BILLFORD_REWARD` enum constant, orphaned `BILLFORD` sound keys in `sounds.yml`, and stale
-`MENUS.BILLFORD-MENU` and `MESSAGES.BILLFORD` strings in the language files. Running the command does
-nothing, and any older documentation describing rotating Billford NPC trades is describing a feature
-that is not present. Either remove the command from `plugin.yml` or leave it as a no-op; there is
-nothing to configure.
-
----
-
 ## Configuration files
 
 | File | What it drives |

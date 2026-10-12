@@ -88,7 +88,6 @@ Tab completion is suppressed for any command whose feature group is disabled, re
 | `/topsell` | `/sellstats` | `/topsell [gui\|items\|volume\|sellers\|export\|web\|html\|reset]` | `ultimatedonutsmp2.command.topsell`; action check `ultimatedonutsmp2.admin.sellstats` or `ultimatedonutsmp2.admin` | Admin sell statistics and economy metrics. |
 | `/worth` | `/prices` | `/worth [browse\|hand\|reload\|<amount> <item>]` | `ultimatedonutsmp2.command.worth`; `reload` requires `ultimatedonutsmp2.admin.worth` | Open the worth browser or price a specific item. |
 | `/meta` | `/farmingmeta` | `/meta` | `ultimatedonutsmp2.command.meta` | Show the item that is currently the farming meta. |
-| `/billford` | — | `/billford` | `ultimatedonutsmp2.command.billford` | Declared in `plugin.yml` as "Open Billford trade" but has no Java executor; see [Known inconsistencies](#known-inconsistencies). |
 
 The five sell commands (`/sell`, `/sellall`, `/sellhand`, `/sellhistory`, `/sellmulti` and its aliases) are all served by one executor, which also accepts `admin`, `stats` and `top` as a first argument to redirect into the sell statistics view.
 
@@ -594,11 +593,11 @@ Every node below is declared in `src/main/resources/plugin.yml`, 260 in total. D
 
 ### `ultimatedonutsmp2.command.*`
 
-`ultimatedonutsmp2.command.*` (default `op`) is a wildcard granting all 140 declared children. Defaults split into two groups.
+`ultimatedonutsmp2.command.*` (default `op`) is a wildcard granting all 136 declared children. Defaults split into two groups.
 
 Nodes with default `true` (available to everyone):
 
-`afk`, `auctionhouse`, `balance`, `billford`, `bounty`, `chat`, `crates`, `delhome`, `discord`, `draw`, `duel`, `enderchest`, `ffa`, `ffastats`, `friend`, `friends`, `help`, `helpop`, `home`, `homes`, `ignore`, `keys`, `leaderboard`, `leave`, `menu`, `meta`, `msg`, `nightvision`, `orders`, `pay`, `phantom`, `ping`, `playtime`, `pm`, `pvp`, `queue`, `ranks`, `renamehome`, `reply`, `report`, `rtp`, `rtpq`, `rules`, `sell`, `sellall`, `sellhand`, `sellhistory`, `sellmulti`, `sellprogress`, `sethome`, `settings`, `shardpay`, `shards`, `shardshop`, `shop`, `social`, `spawn`, `spawner`, `stats`, `store`, `team`, `tpa`, `tpacancel`, `tpaccept`, `tpadeny`, `tpahere`, `tpahereauto`, `tpauto`, `twitter`, `unignore`, `voicechatconsent`, `warp`, `worth`.
+`afk`, `auctionhouse`, `balance`, `bounty`, `chat`, `crates`, `delhome`, `discord`, `draw`, `duel`, `enderchest`, `ffa`, `ffastats`, `friend`, `friends`, `help`, `helpop`, `home`, `homes`, `ignore`, `keys`, `leaderboard`, `leave`, `menu`, `meta`, `msg`, `nightvision`, `orders`, `pay`, `phantom`, `ping`, `playtime`, `pm`, `pvp`, `queue`, `ranks`, `renamehome`, `reply`, `report`, `rtp`, `rtpq`, `rules`, `sell`, `sellall`, `sellhand`, `sellhistory`, `sellmulti`, `sellprogress`, `sethome`, `settings`, `shardpay`, `shards`, `shardshop`, `shop`, `social`, `spawn`, `spawner`, `stats`, `store`, `team`, `tpa`, `tpacancel`, `tpaccept`, `tpadeny`, `tpahere`, `tpahereauto`, `tpauto`, `twitter`, `unignore`, `voicechatconsent`, `warp`, `worth`.
 
 Nodes with default `op`:
 
@@ -780,8 +779,6 @@ These 38 nodes are enforced at runtime but have no declaration, so they have no 
 ## Known inconsistencies
 
 These are real, verified mismatches between `plugin.yml` and the Java source. They are documented here so that administrators building permission groups are not surprised by them; none of them prevents the plugin from starting.
-
-**`/billford` does nothing.** The command is declared in `plugin.yml` with the description "Open Billford trade" and the permission `ultimatedonutsmp2.command.billford` (default `true`), and the node is also a child of `ultimatedonutsmp2.command.*`. There is no executor registered for it anywhere in the source. The Billford system itself exists in the language files, `sounds.yml` and the `BILLFORD_REWARD` economy reason, but the command is not wired to it, so running `/billford` produces Bukkit's default "unknown command" style response rather than a menu. Do not advertise it to players.
 
 **`/fakeplayer` checks a legacy permission prefix.** The command gate is `ultimatedonutsmp2.command.fakeplayer`, but `FakePlayerManager` checks `ultimatedonutsmp.staff.fakeplayer` — the older namespace without the trailing `2`. The related alert and bypass nodes are `ultimatedonutsmp.staff.fakeplayer.alert` and `ultimatedonutsmp.staff.fakeplayer.bypass`, and fake player alerts are also delivered to holders of `ultimatedonutsmp.staff.alerts.receive`. Staff who need `/fakeplayer` therefore require nodes from both namespaces, and `ultimatedonutsmp2.*` wildcards will not cover them.
 
