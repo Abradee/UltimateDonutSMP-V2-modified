@@ -607,7 +607,8 @@ QUICK-BUY:
       - 'INFESTED_*'
 
   # Bedrock freezes on the Choose Item dialog, which is one button per material.
-  # Floodgate players get a paged form with search. false uses the chest catalogue instead.
+  # Floodgate players get a paged form with search. Submitting search stays on that form.
+  # Without Floodgate, search asks in chat. false uses the chest catalogue for pinning.
   BEDROCK:
     ENABLED: true
     PAGE-SIZE: 20

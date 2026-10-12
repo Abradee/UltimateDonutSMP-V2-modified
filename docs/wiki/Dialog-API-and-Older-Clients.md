@@ -75,7 +75,6 @@ includes most of the DonutSMP-style hub, not only one command:
 | Hub / navigation | `/menu`, `/settings`, `/stats`, `/friends`, leaderboards | Dialog — not usable |
 | Economy UI | `/pay`, `/ah` (dialog browser), `/worth` choose-item | Dialog — not usable |
 | Teleport / social | `/homes` (dialog path), `/rtp` queue, teleport menus | Dialog — not usable |
-| Shop search (Java path) | Search button in Quick Buy when the server sends a dialog | Dialog — not usable |
 
 Tell Bedrock players to use **Java Edition 1.21.6+** for the full experience, or accept that
 dialog-first features stay Java-only.
@@ -90,15 +89,17 @@ that Geyser can display. Pinning a new item is different:
    (`QUICK-BUY.BEDROCK` in [shop.yml](Config-shop.yml)). Geyser alone is not enough; install
    **Floodgate** on the backend and link it to Geyser.
 3. **Bedrock without Floodgate** — the plugin falls back to the **chest item catalogue**
-   (45 materials per page) instead of the dialog.
+   (45 materials per page) instead of the dialog. Search on that screen, and Search on the
+   main Quick Buy grid, asks for the item name in chat.
 
 If someone reports "the shop does not work on Bedrock," check:
 
 - Is **only Geyser** installed? Install **Floodgate** for Quick Buy pinning and for Orders /
   Homes Bedrock forms (see [Placeholders & Integrations](Placeholders-and-Integrations)).
-- Are they using **Search** in Quick Buy? That button still opens a Java dialog on current
-  Paper; use the Floodgate catalogue's search button when pinning items, or clear search with
-  right-click on the search control in the chest menu where that applies.
+- Are they using **Search**? With Floodgate, search is a form. Without it, they type the item
+  name in chat (`cancel` goes back). It does not open a Java dialog or a sign. Either of those
+  can leave Bedrock unable to open the shop until the player rejoins. Right-click still clears
+  an active search on the chest buttons.
 - Are they expecting `/menu`, `/ah`, or `/pay` dialogs? Those remain **Java-only**.
 
 ### What operators should do for Bedrock

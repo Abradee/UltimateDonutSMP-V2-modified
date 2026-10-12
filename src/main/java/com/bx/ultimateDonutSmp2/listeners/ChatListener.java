@@ -3,6 +3,7 @@ package com.bx.ultimateDonutSmp2.listeners;
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.managers.ChatManager;
 import com.bx.ultimateDonutSmp2.managers.FeatureManager;
+import com.bx.ultimateDonutSmp2.managers.QuickBuySearchPrompt;
 import com.bx.ultimateDonutSmp2.models.PunishmentRecord;
 import com.bx.ultimateDonutSmp2.models.PunishmentType;
 import com.bx.ultimateDonutSmp2.models.Team;
@@ -30,6 +31,13 @@ public class ChatListener implements Listener {
         ChatManager chatManager = plugin.getChatManager();
 
         String rawMessage = event.getMessage();
+
+        QuickBuySearchPrompt quickBuySearch = plugin.getQuickBuySearchPrompt();
+        if (quickBuySearch != null && quickBuySearch.hasPending(player.getUniqueId())) {
+            event.setCancelled(true);
+            plugin.getSpigotScheduler().runEntity(player, () -> quickBuySearch.handle(player, rawMessage));
+            return;
+        }
 
         if (plugin.getTeamManager().hasPendingSearchInput(player.getUniqueId())) {
             event.setCancelled(true);

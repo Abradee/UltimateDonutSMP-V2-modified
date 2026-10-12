@@ -3,6 +3,8 @@ package com.bx.ultimateDonutSmp2.menus;
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.QuickBuyItemDialog;
+import com.bx.ultimateDonutSmp2.managers.QuickBuyBedrockManager;
+import com.bx.ultimateDonutSmp2.managers.QuickBuySearchPrompt;
 import com.bx.ultimateDonutSmp2.models.QuickBuyEntry;
 import com.bx.ultimateDonutSmp2.utils.BedrockPlayers;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
@@ -120,8 +122,17 @@ public class QuickBuyItemSelectMenu extends BaseMenu {
                 return;
             }
             click(player);
-            if (!BedrockPlayers.isBedrock(player)
-                    && DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
+            if (BedrockPlayers.isBedrock(player)) {
+                QuickBuyBedrockManager bedrock = plugin.getQuickBuyBedrockManager();
+                if (bedrock == null || !bedrock.openItemSearch(player, targetSlot, query)) {
+                    QuickBuySearchPrompt prompt = plugin.getQuickBuySearchPrompt();
+                    if (prompt != null) {
+                        prompt.askPicker(player, targetSlot, query);
+                    }
+                }
+                return;
+            }
+            if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
                 QuickBuyItemDialog dialog = plugin.getDialogManager().getScreen(QuickBuyItemDialog.class);
                 if (dialog != null) {
                     player.closeInventory();

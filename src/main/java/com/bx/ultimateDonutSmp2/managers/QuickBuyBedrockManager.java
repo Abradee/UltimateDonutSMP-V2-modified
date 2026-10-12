@@ -7,9 +7,13 @@ import com.bx.ultimateDonutSmp2.menus.QuickBuyMenu;
 import com.bx.ultimateDonutSmp2.menus.QuickBuySounds;
 import com.bx.ultimateDonutSmp2.models.QuickBuyEntry;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.Form;
@@ -27,13 +31,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * Paged Floodgate catalogue for pinning a Quick Buy item. The Java Choose Item dialog sends one
  * button per material, and that form freezes a Bedrock client.
  */
-public final class QuickBuyBedrockManager {
+public final class QuickBuyBedrockManager implements Listener {
+
+    /**
+     * A chest opened in the same moment a Floodgate form closes leaves Bedrock unable to open
+     * any container until the player rejoins.
+     */
+    static final long CHEST_AFTER_FORM_TICKS = 10L;
 
     private final UltimateDonutSmp2 plugin;
     private final Map<UUID, Draft> drafts = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> listingGeneration = new ConcurrentHashMap<>();
 
     public QuickBuyBedrockManager(UltimateDonutSmp2 plugin) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
+        drafts.remove(playerId);
+        listingGeneration.remove(playerId);
     }
 
     public boolean openCatalogue(Player player, int targetSlot, String query, int page) {
@@ -46,14 +65,80 @@ public final class QuickBuyBedrockManager {
         draft.page = Math.max(0, page);
         draft.material = null;
         draft.enchants.clear();
-        closeMenu(player);
+        if (draft.formOpen) {
+            replaceCatalogue(player, draft);
+            return true;
+        }
         plugin.getSpigotScheduler().runEntityLater(player, () -> {
             if (!player.isOnline()) {
                 return;
             }
-            if (!send(player, catalogueForm(player, draft))) {
-                new QuickBuyItemSelectMenu(plugin, draft.slot, 0, draft.query).open(player);
+            closeMenu(player);
+            plugin.getSpigotScheduler().runEntityLater(player, () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+                replaceCatalogue(player, draft);
+            }, 1L);
+        }, 1L);
+        return true;
+    }
+
+    /**
+     * Search from the chest catalogue. Returns false when Floodgate cannot take the form, so the
+     * caller can ask in chat instead of opening a sign.
+     */
+    public boolean openItemSearch(Player player, int targetSlot, String query) {
+        if (!accepts(player)) {
+            return false;
+        }
+        Draft draft = draft(player);
+        draft.slot = targetSlot;
+        draft.query = query == null ? "" : query.trim();
+        draft.page = 0;
+        draft.material = null;
+        draft.enchants.clear();
+        draft.formOpen = false;
+        plugin.getSpigotScheduler().runEntityLater(player, () -> {
+            if (!player.isOnline()) {
+                return;
             }
+            closeMenu(player);
+            plugin.getSpigotScheduler().runEntityLater(player, () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+                draft.formOpen = true;
+                openSearch(player);
+            }, 1L);
+        }, 1L);
+        return true;
+    }
+
+    /**
+     * Search on the Quick Buy grid. The chest reopens only after the form has been gone for a bit.
+     */
+    public boolean openListingSearch(
+            Player player,
+            QuickBuyMenu.Filter filter,
+            boolean editMode,
+            String currentQuery
+    ) {
+        if (!accepts(player)) {
+            return false;
+        }
+        QuickBuyMenu.Filter safeFilter = filter == null ? QuickBuyMenu.Filter.DEFAULT : filter;
+        String query = currentQuery == null ? "" : currentQuery;
+        plugin.getSpigotScheduler().runEntityLater(player, () -> {
+            if (!player.isOnline()) {
+                return;
+            }
+            closeMenu(player);
+            plugin.getSpigotScheduler().runEntityLater(player, () -> {
+                if (player.isOnline()) {
+                    sendListingForm(player, safeFilter, editMode, query);
+                }
+            }, 1L);
         }, 1L);
         return true;
     }
@@ -127,9 +212,9 @@ public final class QuickBuyBedrockManager {
         form.validResultHandler(response -> {
             draft.generation++;
             schedule(player, () -> {
-                String typed = response.asInput(0);
+                String typed = readInput(response);
                 QuickBuySounds.play(player, plugin, QuickBuySounds.SEARCH);
-                openCatalogue(player, draft.slot, typed == null ? "" : typed, 0);
+                openCatalogue(player, draft.slot, typed, 0);
             });
         });
         form.closedResultHandler(() -> {
@@ -138,7 +223,80 @@ public final class QuickBuyBedrockManager {
             }
             schedule(player, () -> openCatalogue(player, draft.slot, draft.query, draft.page));
         });
-        send(player, form.build());
+        if (!send(player, form.build())) {
+            draft.formOpen = false;
+            openPickerLater(player, draft);
+        }
+    }
+
+    private void sendListingForm(Player player, QuickBuyMenu.Filter filter, boolean editMode, String currentQuery) {
+        CustomForm.Builder form = CustomForm.builder()
+                .title(text("QUICK_BUY.BEDROCK.SEARCH_TITLE", "Search items"))
+                .input(text("QUICK_BUY.BEDROCK.SEARCH_INPUT", "Item name"), "", currentQuery);
+        UUID playerId = player.getUniqueId();
+        int generation = listingGeneration.getOrDefault(playerId, 0);
+        form.validResultHandler(response -> {
+            listingGeneration.put(playerId, generation + 1);
+            schedule(player, () -> {
+                String query = readInput(response);
+                QuickBuySounds.play(player, plugin, QuickBuySounds.SEARCH);
+                openMenuLater(player, () -> new QuickBuyMenu(plugin, filter, editMode, query).open(player));
+            });
+        });
+        form.closedResultHandler(() -> {
+            if (listingGeneration.getOrDefault(playerId, 0) != generation) {
+                return;
+            }
+            schedule(player, () -> openMenuLater(player, () ->
+                    new QuickBuyMenu(plugin, filter, editMode, currentQuery).open(player)));
+        });
+        if (!send(player, form.build())) {
+            openMenuLater(player, () -> new QuickBuyMenu(plugin, filter, editMode, currentQuery).open(player));
+        }
+    }
+
+    private void replaceCatalogue(Player player, Draft draft) {
+        Form form;
+        try {
+            form = catalogueForm(player, draft);
+        } catch (Throwable throwable) {
+            plugin.getLogger().warning("Could not build Quick Buy Bedrock catalogue for " + player.getName()
+                    + ": " + throwable.getMessage());
+            draft.formOpen = false;
+            openPickerLater(player, draft);
+            return;
+        }
+        if (!send(player, form)) {
+            draft.formOpen = false;
+            openPickerLater(player, draft);
+            return;
+        }
+        draft.formOpen = true;
+    }
+
+    private void openPickerLater(Player player, Draft draft) {
+        openMenuLater(player, () ->
+                new QuickBuyItemSelectMenu(plugin, draft.slot, 0, draft.query).open(player));
+    }
+
+    private void openMenuLater(Player player, Runnable open) {
+        plugin.getSpigotScheduler().runEntityLater(player, () -> {
+            if (player.isOnline()) {
+                open.run();
+            }
+        }, CHEST_AFTER_FORM_TICKS);
+    }
+
+    private static String readInput(org.geysermc.cumulus.response.CustomFormResponse response) {
+        if (response == null) {
+            return "";
+        }
+        try {
+            String typed = response.asInput(0);
+            return typed == null ? "" : typed.trim();
+        } catch (RuntimeException exception) {
+            return "";
+        }
     }
 
     private void select(Player player, Material material) {
@@ -290,13 +448,13 @@ public final class QuickBuyBedrockManager {
                 new QuickBuyEntry(draft.slot, material, amount, serialized, true));
         drafts.remove(player.getUniqueId());
         QuickBuySounds.play(player, plugin, QuickBuySounds.PIN);
-        new QuickBuyMenu(plugin).open(player);
+        openMenuLater(player, () -> new QuickBuyMenu(plugin).open(player));
     }
 
     private void returnToShop(Player player) {
         drafts.remove(player.getUniqueId());
         QuickBuySounds.play(player, plugin, QuickBuySounds.CANCEL);
-        new QuickBuyMenu(plugin).open(player);
+        openMenuLater(player, () -> new QuickBuyMenu(plugin).open(player));
     }
 
     private String itemLabel(Player player, Material material) {
@@ -446,6 +604,7 @@ public final class QuickBuyBedrockManager {
         private String query = "";
         private int page;
         private int generation;
+        private boolean formOpen;
         private Material material;
         private final Map<Enchantment, Integer> enchants = new LinkedHashMap<>();
     }

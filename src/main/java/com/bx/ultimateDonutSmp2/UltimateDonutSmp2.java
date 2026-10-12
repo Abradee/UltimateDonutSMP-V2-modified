@@ -84,6 +84,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
     private OrdersManager ordersManager;
     private OrdersBedrockManager ordersBedrockManager;
     private QuickBuyBedrockManager quickBuyBedrockManager;
+    private QuickBuySearchPrompt quickBuySearchPrompt;
     private EnchantmentsManager enchantmentsManager;
     private FilterManager filterManager;
     private DuelManager duelManager;
@@ -241,6 +242,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         farmingMetaManager.load();
         moneyNametagManager = new MoneyNametagManager(this);
         shopManager = new ShopManager(this);
+        quickBuySearchPrompt = new QuickBuySearchPrompt(this);
         filterManager = new FilterManager(this);
         enchantmentsManager = new EnchantmentsManager(this);
         ordersManager = new OrdersManager(this);
@@ -1443,6 +1445,14 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
             return false;
         }
         return quickBuyBedrockManager.openCatalogue(player, targetSlot, "", 0);
+    }
+
+    public QuickBuyBedrockManager getQuickBuyBedrockManager() {
+        return quickBuyBedrockManager;
+    }
+
+    public QuickBuySearchPrompt getQuickBuySearchPrompt() {
+        return quickBuySearchPrompt;
     }
 
     public HomeBedrockManager getHomeBedrockManager() {
