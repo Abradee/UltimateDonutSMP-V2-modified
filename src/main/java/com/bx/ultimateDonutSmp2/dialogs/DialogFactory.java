@@ -7,6 +7,7 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
+import io.papermc.paper.registry.data.dialog.input.TextDialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -139,6 +140,46 @@ public final class DialogFactory {
             if (specs != null) {
                 specs.forEach(this::input);
             }
+            return this;
+        }
+
+        /**
+         * True/false as a full-width dropdown. A checkbox sits on the left of the dialog and the
+         * client draws its label in italic, so it does not line up with the text boxes.
+         */
+        public Screen boolInput(String id, String label, boolean initial) {
+            Component component = DialogText.tooltip(label, viewer);
+            List<SingleOptionDialogInput.OptionEntry> entries = List.of(
+                    SingleOptionDialogInput.OptionEntry.create("true", DialogText.of("true", viewer), initial),
+                    SingleOptionDialogInput.OptionEntry.create("false", DialogText.of("false", viewer), !initial)
+            );
+            inputs.add(DialogInput.singleOption(id, component == null ? Component.empty() : component, entries)
+                    .width(310)
+                    .labelVisible(true)
+                    .build());
+            return this;
+        }
+
+        /**
+         * A labelled text box. {@code multiline} is for block text such as a Discord description,
+         * where the line breaks are part of the value.
+         */
+        public Screen textInput(String id, String label, String initial, int maxLength, boolean multiline) {
+            Component component = DialogText.tooltip(label, viewer);
+            int limit = Math.min(1024, Math.max(1, maxLength));
+            String value = initial == null ? "" : initial;
+            if (value.length() > limit) {
+                value = value.substring(0, limit);
+            }
+            var builder = DialogInput.text(id, component == null ? Component.empty() : component)
+                    .width(310)
+                    .maxLength(limit)
+                    .labelVisible(true)
+                    .initial(value);
+            if (multiline) {
+                builder.multiline(TextDialogInput.MultilineOptions.create(8, 90));
+            }
+            inputs.add(builder.build());
             return this;
         }
 

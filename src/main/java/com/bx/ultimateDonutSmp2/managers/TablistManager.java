@@ -3,6 +3,7 @@ package com.bx.ultimateDonutSmp2.managers;
 import com.bx.ultimateDonutSmp2.utils.PermissionUtils;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
+import com.bx.ultimateDonutSmp2.admin.DonutRankSetup;
 import com.bx.ultimateDonutSmp2.models.PlayerData;
 import com.bx.ultimateDonutSmp2.utils.AdventureHeadComponentBridge;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
@@ -613,6 +614,9 @@ public class TablistManager {
         String mediaPlusBadge = resolveMediaPlusBadge(player, includeMediaBadge);
         String mediaBadge = resolveMediaBadge(mediaIconBadge, mediaPlusBadge, normalizedIconMedia);
         String donutBadge = resolveDonutPlusBadge(player);
+        if (!donutBadge.isEmpty() && DonutRankSetup.isBuiltInBadgePrefix(prefix)) {
+            prefix = "";
+        }
 
         if (showTeam && teamName != null && !teamName.isBlank()) {
             teamSuffix = " &7[&b" + teamName.toUpperCase() + "&7]";

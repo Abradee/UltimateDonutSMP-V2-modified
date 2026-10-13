@@ -870,6 +870,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         UltimateDonutSmp2Command ultimateDonutSmp2Command = new UltimateDonutSmp2Command(this);
         setExecutor("ultimatedonutsmp2", ultimateDonutSmp2Command);
         setTabCompleter("ultimatedonutsmp2", ultimateDonutSmp2Command);
+        setExecutor("uds2a", new AdminConfigCommand(this));
         MaintenanceCommand maintenanceCommand = new MaintenanceCommand(this);
         setExecutor("maintenance", maintenanceCommand, FeatureManager.Feature.MAINTENANCE);
         setTabCompleter("maintenance", maintenanceCommand);

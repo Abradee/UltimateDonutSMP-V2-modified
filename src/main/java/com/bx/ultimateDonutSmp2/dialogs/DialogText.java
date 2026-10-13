@@ -45,11 +45,28 @@ public final class DialogText {
         }
         String colorized = ColorUtils.colorize(raw, viewer);
         if (!hasSpriteTag(colorized)) {
-            return SERIALIZER.deserialize(colorized)
-                    .decoration(TextDecoration.ITALIC, false);
+            return upright(SERIALIZER.deserialize(colorized));
         }
-        return parseWithSprites(colorized)
-                .decoration(TextDecoration.ITALIC, false);
+        return upright(parseWithSprites(colorized));
+    }
+
+    /**
+     * Dialog labels and item text default to italic. Colour codes split a line into children, and
+     * a decoration on the parent alone does not reach those children, so the client still slants them.
+     */
+    public static Component upright(Component component) {
+        if (component == null) {
+            return Component.empty();
+        }
+        List<Component> children = new ArrayList<>();
+        for (Component child : component.children()) {
+            children.add(upright(child));
+        }
+        var style = component.style().decoration(TextDecoration.ITALIC, false);
+        if (component instanceof net.kyori.adventure.text.TextComponent text) {
+            return net.kyori.adventure.text.Component.text(text.content(), style).children(children);
+        }
+        return component.style(style).children(children);
     }
 
     private static boolean hasSpriteTag(String text) {

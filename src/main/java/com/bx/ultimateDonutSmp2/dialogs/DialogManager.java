@@ -50,6 +50,8 @@ public final class DialogManager {
     private final OrdersDialog orders;
     private final com.bx.ultimateDonutSmp2.dialogs.screens.BountyDialog bounty;
     private final AmethystToolDialog amethyst;
+    private final com.bx.ultimateDonutSmp2.dialogs.screens.AdminConfigDialog adminConfig;
+    private final com.bx.ultimateDonutSmp2.dialogs.screens.DonutRankDialog donutRanks;
     private final List<DialogScreen> screens;
     private final PauseScreenDatapack pauseScreen;
 
@@ -69,6 +71,8 @@ public final class DialogManager {
         this.orders = new OrdersDialog(plugin, config, sessions);
         this.bounty = new com.bx.ultimateDonutSmp2.dialogs.screens.BountyDialog(plugin, config, sessions);
         this.amethyst = new AmethystToolDialog(plugin, config, sessions);
+        this.adminConfig = new com.bx.ultimateDonutSmp2.dialogs.screens.AdminConfigDialog(plugin, config, sessions);
+        this.donutRanks = new com.bx.ultimateDonutSmp2.dialogs.screens.DonutRankDialog(plugin);
         // Ordered so the cheap exact-match screens answer before the prefix-matching ones.
         this.screens = List.of(main, settings, pay, stats, leaderboards, homes, friends, teleport, rtpQueue, bounty, amethyst, orders, quickBuyItem);
         this.pauseScreen = new PauseScreenDatapack(plugin);
@@ -163,12 +167,32 @@ public final class DialogManager {
         return config.isScreenEnabled("AMETHYST") && amethyst.open(player);
     }
 
+    /** Opens the in-game config editor. This stays available when player dialogs are turned off. */
+    public boolean openAdminConfig(Player player) {
+        return adminConfig.open(player);
+    }
+
+    public boolean openDonutRanks(Player player) {
+        return donutRanks.open(player);
+    }
+
     /** Routes one button press. Unknown ids are ignored rather than logged, to stay quiet. */
     public void handle(Player player, Key key, DialogResponseView response) {
-        if (player == null || !DialogActions.isOurs(key) || !config.isEnabled()) {
+        if (player == null || !DialogActions.isOurs(key)) {
             return;
         }
         String action = key.value();
+        if (action.startsWith("uds2a_rank")) {
+            donutRanks.handle(player, action, response);
+            return;
+        }
+        if (action.equals("uds2a") || action.startsWith("uds2a_")) {
+            adminConfig.handle(player, action, response);
+            return;
+        }
+        if (!config.isEnabled()) {
+            return;
+        }
         if (DialogActions.ORDERS.equals(action) || DialogActions.ORDERS_MENU.equals(action)) {
             main.openOrders(player);
             return;
@@ -210,6 +234,7 @@ public final class DialogManager {
 
     public void forget(UUID playerId) {
         sessions.remove(playerId);
+        adminConfig.forget(playerId);
         DialogSupport.forget(playerId);
         if (plugin.getPlayerSettingToggles() != null) {
             plugin.getPlayerSettingToggles().dropAuctionCache(playerId);
@@ -218,5 +243,6 @@ public final class DialogManager {
 
     public void clear() {
         sessions.clear();
+        adminConfig.clear();
     }
 }

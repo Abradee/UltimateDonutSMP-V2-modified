@@ -692,6 +692,11 @@ commands:
     - udsmp
     permission: ultimatedonutsmp2.command.ultimatedonutsmp2
     permission-message: "&cYou do not have permission to use /ultimatedonutsmp2."
+  uds2a:
+    description: Edit plugin yaml configuration in a dialog and reload after saving
+    usage: /uds2a [ranks]
+    permission: ultimatedonutsmp2.command.uds2a
+    permission-message: "&cYou do not have permission to use /uds2a."
   ecsee:
     description: ecsee
     usage: /ecsee <player>
@@ -1392,6 +1397,7 @@ permissions:
       ultimatedonutsmp2.command.delwarp: true
       ultimatedonutsmp2.command.amethysttool: true
       ultimatedonutsmp2.command.ultimatedonutsmp2: true
+      ultimatedonutsmp2.command.uds2a: true
       ultimatedonutsmp2.command.ecsee: true
       ultimatedonutsmp2.command.logs: true
       ultimatedonutsmp2.command.chatlog: true
@@ -1790,6 +1796,9 @@ permissions:
     default: op
   ultimatedonutsmp2.command.ultimatedonutsmp2:
     description: Access to /ultimatedonutsmp2 command
+    default: op
+  ultimatedonutsmp2.command.uds2a:
+    description: Edit plugin yaml configuration in game with /uds2a
     default: op
   ultimatedonutsmp2.command.ecsee:
     description: Access to /ecsee command
