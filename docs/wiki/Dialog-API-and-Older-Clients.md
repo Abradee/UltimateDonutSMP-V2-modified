@@ -38,7 +38,7 @@ UltimateDonutSMP V2 cannot:
 `DialogSupport` only checks whether **this server** exposes Paper's dialog classes. On
 Spigot, or on Paper older than 1.21.6, every command falls back to the chest menus in
 `menus.yml`. On a current Paper / Purpur / Pufferfish / Folia build (the versions this
-plugin actually supports: `26.1.2`–`26.2`), dialogs are on for everyone. The plugin does
+plugin actually supports: `26.1.2`–`26.3`), dialogs are on for everyone. The plugin does
 not look at ViaVersion protocol versions.
 
 Turning `ENABLED: false` in [dialog.yml](Config-dialog.yml) forces chest menus for the

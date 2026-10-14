@@ -55,7 +55,7 @@ Stuck? Start at the [FAQ](FAQ). If menus look broken on an older client, read
 | :--- | :--- |
 | Version | `1.0` |
 | Servers | Paper, Purpur, Pufferfish, Spigot, Folia |
-| Minecraft | Server `26.1.2`–`26.2` (checked on startup). Java **clients 1.21.6+** — see [Dialog API & older clients](Dialog-API-and-Older-Clients) |
+| Minecraft | Server `26.1.2`–`26.3` (checked on startup). Java **clients 1.21.6+** — see [Dialog API & older clients](Dialog-API-and-Older-Clients) |
 | Java | Compiled for 21. Use the JDK your server build needs. |
 | Storage | SQLite (default), MySQL, or MongoDB |
 | Network | Redis, optional |

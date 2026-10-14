@@ -20,7 +20,7 @@ Thank you for your interest in contributing to **UltimateDonutSmp2**! We welcome
 | Language level | Java 21 (`maven.compiler.release`) |
 | CI toolchain | JDK 25 (Temurin), as used by `.github/workflows/pr-checks.yml` |
 | Build system | Apache Maven (`mvn`) |
-| Target platforms | Paper/Spigot `26.1.2` – `26.3`, Folia `26.1.2` – `26.2` |
+| Target platforms | Paper/Spigot `26.1.2` – `26.3`, Folia `26.1.2` – `26.3` |
 | Hard dependencies | PlaceholderAPI, ProtocolLib (declared under `depend` in `plugin.yml`) |
 | Soft dependencies | LuckPerms, Vault, Apollo, Multiverse-Core, floodgate, voicechat (declared under `softdepend` in `plugin.yml`) |
 | Unit tests | JUnit 5, under `src/test/java` |

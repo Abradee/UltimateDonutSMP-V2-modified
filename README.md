@@ -112,8 +112,8 @@ Gameplay clips:
 | --- | --- |
 | Plugin version | `1.0` |
 | Java | Bytecode targets Java 21. The supported Minecraft versions (26.1.2 and newer) require a Java 25 server runtime. |
-| Paper / Purpur / Pufferfish / Spigot | Minecraft `26.1.2` through `26.2` |
-| Folia | Minecraft `26.1.2` through `26.2` |
+| Paper / Purpur / Pufferfish / Spigot | Minecraft `26.1.2` through `26.3` |
+| Folia | Minecraft `26.1.2` through `26.3` |
 | Java client | **1.21.6 or newer.** 1.21.5 and older cannot render Dialog API menus. Block those versions on the proxy or ViaVersion. See [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md). |
 | Bedrock (Geyser) | **Dialog API menus do not work** (`/menu`, `/ah`, `/pay`, and similar). `/shop` opens a chest grid; pinning items needs **Floodgate** (Geyser alone is not enough). See [Dialog API & older clients](docs/wiki/Dialog-API-and-Older-Clients.md#bedrock-players-geyser--floodgate). |
 | Hard dependencies | PlaceholderAPI and ProtocolLib (declared under `depend` in `plugin.yml`; the plugin will not load without them) |
