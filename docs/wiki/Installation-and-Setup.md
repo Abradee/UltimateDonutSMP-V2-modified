@@ -13,7 +13,7 @@ Reload later with `/uds reload`. [config.yml](Config-config.yml) ·
 
 | Requirement | Supported | Notes |
 | :--- | :--- | :--- |
-| **Minecraft** | `26.1.2` – `26.2` | Checked in `onEnable()`. Outside this range the plugin disables itself. |
+| **Minecraft** | `26.1.2` – `26.3` | Checked in `onEnable()`. Outside this range the plugin disables itself. |
 | **Java client** | **1.21.6 or newer** | 1.21.5 and older cannot render Dialog API menus. Block them on the proxy or ViaVersion. See [Dialog API & older clients](Dialog-API-and-Older-Clients). |
 | **Server** | Paper, Purpur, Pufferfish, Spigot, Folia | Folia uses the plugin's own scheduler abstraction; everything else uses Bukkit's. |
 | **Java** | Java 21+ | The plugin is compiled with `--release 21`. Use the JDK your Paper or Folia build requires. `/ultimatedonutsmp2 setup` reports the running Java version. |

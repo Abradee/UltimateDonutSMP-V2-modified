@@ -23,7 +23,7 @@ ProtocolLib and PlaceholderAPI are hard dependencies. If either is missing, `onE
 error and disables the plugin. Install both jars and restart.
 
 The other startup abort is an unsupported Minecraft version. The allowed range is `26.1.2` to
-`26.2` on Paper, Purpur, Pufferfish, Spigot and Folia.
+`26.3` on Paper, Purpur, Pufferfish, Spigot and Folia.
 
 ---
 
