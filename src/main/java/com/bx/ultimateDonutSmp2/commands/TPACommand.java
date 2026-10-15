@@ -40,7 +40,7 @@ public class TPACommand implements CommandExecutor {
             case "tpa" -> handleTpa(player, args);
             case "tpahere" -> handleTpaHere(player, args);
             case "tpaccept" -> handleAccept(player, args);
-            case "tpadeny" -> handleDeny(player);
+            case "tpadeny" -> handleDeny(player, args);
             case "tpacancel" -> {
                 plugin.getTPAManager().cancelRequestsByRequester(player.getUniqueId());
                 send(player, plugin.getConfigManager().getMessage("TPA.CANCELLED-REQUESTS"));
@@ -234,29 +234,45 @@ public class TPACommand implements CommandExecutor {
             return;
         }
 
-        TPAManager.TpaRequest request = plugin.getTPAManager().getRequest(player.getUniqueId());
-        if (request == null) {
-            send(player, plugin.getConfigManager().getMessage("TPA.NO-REQUEST",
-                    "{player}", args.length > 0 ? args[0] : ""));
+        if (args.length > 0) {
+            Player requester = plugin.getHideManager().findOnlinePlayer(player, args[0]);
+            if (requester == null
+                    || !plugin.getTPAManager().hasPendingFrom(player.getUniqueId(), requester.getUniqueId())) {
+                send(player, plugin.getConfigManager().getMessage("TPA.NO-REQUEST", "{player}", args[0]));
+                return;
+            }
+            plugin.getTPAManager().acceptPendingFrom(player, requester.getUniqueId());
+            return;
+        }
+
+        if (!plugin.getTPAManager().hasRequest(player.getUniqueId())) {
+            send(player, plugin.getConfigManager().getMessage("TPA.NO-REQUEST", "{player}", ""));
             return;
         }
 
         plugin.getTPAManager().acceptPendingRequest(player);
     }
 
-    private void handleDeny(Player player) {
-        if (!plugin.getTPAManager().hasRequest(player.getUniqueId())) {
-            send(player, plugin.getConfigManager().getMessage("TPA.NO-REQUEST", "{player}", ""));
-            return;
+    private void handleDeny(Player player, String[] args) {
+        TPAManager.TpaRequest request;
+        if (args.length > 0) {
+            Player requester = plugin.getHideManager().findOnlinePlayer(player, args[0]);
+            request = requester == null
+                    ? null
+                    : plugin.getTPAManager().removePendingFrom(player.getUniqueId(), requester.getUniqueId());
+            if (request == null) {
+                send(player, plugin.getConfigManager().getMessage("TPA.NO-REQUEST", "{player}", args[0]));
+                return;
+            }
+        } else {
+            request = plugin.getTPAManager().removeNewestPending(player.getUniqueId());
+            if (request == null) {
+                send(player, plugin.getConfigManager().getMessage("TPA.NO-REQUEST", "{player}", ""));
+                return;
+            }
         }
 
-        TPAManager.TpaRequest request = plugin.getTPAManager().getRequest(player.getUniqueId());
-        plugin.getTPAManager().removeRequest(player.getUniqueId());
         send(player, "&7TPA request denied.");
-        if (request == null) {
-            return;
-        }
-
         Player requester = Bukkit.getPlayer(request.requester());
         if (requester != null) {
             requester.sendMessage(ColorUtils.toComponent("&7Your teleport request was denied."));
@@ -331,12 +347,11 @@ public class TPACommand implements CommandExecutor {
             clicker.sendMessage(ColorUtils.toComponent(plugin.getCombatManager().getBlockMessage()));
             return;
         }
-        TPAManager.TpaRequest request = plugin.getTPAManager().getRequest(clicker.getUniqueId());
-        if (request == null || !request.requester().equals(requesterUuid) || request.tpaHere() != tpaHere) {
+        if (!plugin.getTPAManager().hasPending(clicker.getUniqueId(), requesterUuid, tpaHere)) {
             return;
         }
         clicker.closeInventory();
-        plugin.getTPAManager().acceptPendingRequest(clicker);
+        plugin.getTPAManager().acceptPendingRequest(clicker, requesterUuid, tpaHere);
     }
 
     private void playNotification(Player player, String path) {
@@ -361,8 +376,7 @@ public class TPACommand implements CommandExecutor {
             return;
         }
 
-        TPAManager.TpaRequest request = plugin.getTPAManager().getRequest(target.getUniqueId());
-        if (request == null || !request.requester().equals(requesterUuid) || request.tpaHere() != tpaHere) {
+        if (!plugin.getTPAManager().hasPending(target.getUniqueId(), requesterUuid, tpaHere)) {
             return;
         }
 
