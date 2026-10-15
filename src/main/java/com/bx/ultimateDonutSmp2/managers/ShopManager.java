@@ -520,6 +520,9 @@ public class ShopManager {
         if (bookUnit > 0) {
             fixedUnit = bookUnit;
             exactEnchantedBook = true;
+        } else if (material == Material.ENCHANTED_BOOK && fixedUnit > 0) {
+            // One ENCHANTED_BOOK price covers every enchant and level. Worth is not added.
+            exactEnchantedBook = true;
         }
         if (fixedUnit > 0) {
             double extraEnchants = 0;

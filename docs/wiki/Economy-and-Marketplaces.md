@@ -117,22 +117,27 @@ ignored. Quick Buy still does not purchase the listing. The seller keeps it.
 A material line is the plain item. `DIAMOND_SWORD: 100` stays 100 until the player pins an enchant,
 and then the `worth.yml` value of that enchant is added.
 
-An enchanted book is the enchant itself. Write it the same way `worth.yml` does, with the price
-after the last colon:
+`ENCHANTED_BOOK` is the exception. One price covers every enchant and every level, including a book
+that stores two enchants. `worth.yml` is not added.
 
 ```yaml
 QUICK-BUY:
   PRICING:
     FIXED-ITEMS:
-      ENCHANTED_BOOK:SHARPNESS:3: 23332
+      ENCHANTED_BOOK: 23332
 ```
 
-A Sharpness III book then sells at 23332 each. The `worth.yml` price for that book is not added,
-and the line is not dropped for being longer than a material name. Sharpness V does not use the
-Sharpness III line. A book that stores two enchants does not match a one-enchant line either.
-`minecraft:enchanted_book:sharpness:3` is the same entry. A cheaper auction listing still replaces
-the price. A more expensive listing does not. If the number is below what that player would earn
-selling the book, Quick Buy charges the sell payout instead, the same way it does for any other
+Sharpness III, Protection IV, and a book with both cost 23332 each. A more specific line overrides
+just that book, written the same way `worth.yml` does:
+
+```yaml
+      ENCHANTED_BOOK:SHARPNESS:3: 5000
+```
+
+Sharpness V does not use the Sharpness III line, so it stays on the plain `ENCHANTED_BOOK` price.
+`minecraft:enchanted_book:sharpness:3` is the same specific entry. A cheaper auction listing still
+replaces the price. A more expensive listing does not. If the number is below what that player would
+earn selling the book, Quick Buy charges the sell payout instead, the same way it does for any other
 Quick Buy price.
 
 Everything left off that list follows this order, unless `QUICK-BUY.PRICING.UNLISTED` is
