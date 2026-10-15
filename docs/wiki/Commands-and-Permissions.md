@@ -163,13 +163,13 @@ Buying from the browse menu is checked against `ultimatedonutsmp2.auctionhouse.b
 | `/portalmanager` | — `/portalmanager <list\|info\|create\|delete\|setcuboid\|setdestination\|setdisplay\|toggle\|setpriority\|sethologramhere>` | see Usage | `ultimatedonutsmp2.command.portalmanager`; action check `ultimatedonutsmp2.admin.portalmanager` | Manage RTP portal triggers. |
 | `/tpa` | — | `/tpa <player>` | `ultimatedonutsmp2.command.tpa` | Request to teleport to a player. |
 | `/tpahere` | — | `/tpahere <player>` | `ultimatedonutsmp2.command.tpahere` | Request that a player teleports to you. |
-| `/tpaccept` | — | `/tpaccept [player]` | `ultimatedonutsmp2.command.tpaccept` | Accept a pending teleport request. |
-| `/tpadeny` | — | `/tpadeny [player]` | `ultimatedonutsmp2.command.tpadeny` | Deny a pending teleport request. |
+| `/tpaccept` | — | `/tpaccept [player]` | `ultimatedonutsmp2.command.tpaccept` | Accept a pending teleport request. A name accepts that player. No name accepts the newest request. |
+| `/tpadeny` | — | `/tpadeny [player]` | `ultimatedonutsmp2.command.tpadeny` | Deny a pending teleport request. A name denies that player. No name denies the newest request. |
 | `/tpacancel` | — | `/tpacancel` | `ultimatedonutsmp2.command.tpacancel` | Cancel your outgoing teleport requests. |
 | `/tpauto` | — | `/tpauto` | `ultimatedonutsmp2.command.tpauto` | Toggle automatic acceptance of `/tpa` requests. While it is on, the action bar says you have tpauto on. Dying turns it off. |
 | `/tpahereauto` | — | `/tpahereauto` | `ultimatedonutsmp2.command.tpahereauto` | Toggle automatic acceptance of `/tpahere` requests. |
 
-`/tpa`, `/tpahere`, `/tpaccept`, `/tpadeny` and `/tpacancel` are all served by a single executor that dispatches on the command label.
+`/tpa`, `/tpahere`, `/tpaccept`, `/tpadeny` and `/tpacancel` are all served by a single executor that dispatches on the command label. More than one request can be waiting. Naming the player accepts or denies that request, and the others stay until they expire or you act on them.
 
 ### `/portalmanager` subcommands
 

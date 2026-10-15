@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -38,7 +39,7 @@ public class TPAManager {
     public record TpaQueueEntry(UUID requester, UUID target, boolean tpaHere, int position, long queuedAtMillis, long expiresAtMillis) {}
 
     private final UltimateDonutSmp2 plugin;
-    private final Map<UUID, TpaRequest> pendingRequests = new ConcurrentHashMap<>();
+    private final Map<UUID, List<TpaRequest>> pendingRequests = new ConcurrentHashMap<>();
     private final Map<UUID, Deque<TpaRequest>> autoTpaQueues = new ConcurrentHashMap<>();
     private final Map<UUID, Deque<TpaRequest>> autoTpaHereQueues = new ConcurrentHashMap<>();
     private final Map<UUID, Deque<QueuedTpaRequest>> manualTpaQueues = new ConcurrentHashMap<>();
@@ -148,23 +149,61 @@ public class TPAManager {
     }
 
     public TpaRequest getRequest(UUID targetUuid) {
-        return pendingRequests.get(targetUuid);
+        return selectPending(pendingList(targetUuid), null, null);
     }
 
     public boolean hasRequest(UUID targetUuid) {
-        return pendingRequests.containsKey(targetUuid);
+        List<TpaRequest> pending = pendingList(targetUuid);
+        return pending != null && !pending.isEmpty();
+    }
+
+    public boolean hasPending(UUID targetUuid, UUID requesterUuid, boolean tpaHere) {
+        return selectPending(pendingList(targetUuid), requesterUuid, tpaHere) != null;
+    }
+
+    public boolean hasPendingFrom(UUID targetUuid, UUID requesterUuid) {
+        return selectPending(pendingList(targetUuid), requesterUuid, null) != null;
     }
 
     public void removeRequest(UUID targetUuid) {
         pendingRequests.remove(targetUuid);
     }
 
+    /**
+     * Drops the newest incoming request and tells the caller which one it was.
+     * Used by {@code /tpadeny} when no player is named.
+     */
+    public TpaRequest removeNewestPending(UUID targetUuid) {
+        return takeFromTarget(targetUuid, null, null);
+    }
+
+    /**
+     * Drops the newest incoming request from one player, whichever direction it was.
+     * Used by {@code /tpadeny <player>}.
+     */
+    public TpaRequest removePendingFrom(UUID targetUuid, UUID requesterUuid) {
+        return takeFromTarget(targetUuid, requesterUuid, null);
+    }
+
     public boolean acceptPendingRequest(Player target) {
+        return acceptSelected(target, null, null);
+    }
+
+    public boolean acceptPendingRequest(Player target, UUID requesterUuid, boolean tpaHere) {
+        return acceptSelected(target, requesterUuid, tpaHere);
+    }
+
+    /** Accepts the newest request from {@code requesterUuid}, {@code /tpa} or {@code /tpahere}. */
+    public boolean acceptPendingFrom(Player target, UUID requesterUuid) {
+        return acceptSelected(target, requesterUuid, null);
+    }
+
+    private boolean acceptSelected(Player target, UUID requesterUuid, Boolean tpaHere) {
         if (target == null || !target.isOnline()) {
             return false;
         }
 
-        TpaRequest request = pendingRequests.remove(target.getUniqueId());
+        TpaRequest request = takeFromTarget(target.getUniqueId(), requesterUuid, tpaHere);
         if (request == null) {
             return false;
         }
@@ -265,7 +304,10 @@ public class TPAManager {
     }
 
     public void cancelRequestsByRequester(UUID requesterUuid) {
-        pendingRequests.entrySet().removeIf(entry -> entry.getValue().requester().equals(requesterUuid));
+        pendingRequests.entrySet().removeIf(entry -> {
+            entry.getValue().removeIf(request -> request.requester().equals(requesterUuid));
+            return entry.getValue().isEmpty();
+        });
         autoTpaQueues.entrySet().removeIf(entry -> {
             entry.getValue().removeIf(request -> request.requester().equals(requesterUuid));
             return entry.getValue().isEmpty();
@@ -302,10 +344,22 @@ public class TPAManager {
     }
 
     public void clearIncomingRequests(UUID targetUuid, boolean tpaHere, String reason) {
-        TpaRequest pendingRequest = pendingRequests.get(targetUuid);
-        if (pendingRequest != null && pendingRequest.tpaHere() == tpaHere) {
-            pendingRequests.remove(targetUuid);
-            notifyRequesterCleared(pendingRequest, reason);
+        List<TpaRequest> cleared = new ArrayList<>();
+        pendingRequests.compute(targetUuid, (uuid, list) -> {
+            if (list == null) {
+                return null;
+            }
+            list.removeIf(request -> {
+                if (request.tpaHere() != tpaHere) {
+                    return false;
+                }
+                cleared.add(request);
+                return true;
+            });
+            return list.isEmpty() ? null : list;
+        });
+        for (TpaRequest request : cleared) {
+            notifyRequesterCleared(request, reason);
         }
 
         if (tpaHere) {
@@ -346,16 +400,104 @@ public class TPAManager {
             return false;
         }
 
-        pendingRequests.put(request.target(), request);
-        scheduleExpiry(request);
+        return rememberPending(request);
+    }
+
+    private boolean rememberPending(TpaRequest request) {
+        boolean[] added = {false};
+        pendingRequests.compute(request.target(), (uuid, list) -> {
+            List<TpaRequest> pending = list == null ? new CopyOnWriteArrayList<>() : list;
+            added[0] = addPending(pending, request);
+            return pending.isEmpty() ? null : pending;
+        });
+        if (added[0]) {
+            scheduleExpiry(request);
+        }
+        return added[0];
+    }
+
+    private List<TpaRequest> pendingList(UUID targetUuid) {
+        return targetUuid == null ? null : pendingRequests.get(targetUuid);
+    }
+
+    private boolean hasPending(UUID targetUuid, boolean tpaHere) {
+        return selectPending(pendingList(targetUuid), null, tpaHere) != null;
+    }
+
+    private TpaRequest takeFromTarget(UUID targetUuid, UUID requesterUuid, Boolean tpaHere) {
+        if (targetUuid == null) {
+            return null;
+        }
+
+        TpaRequest[] taken = new TpaRequest[1];
+        pendingRequests.compute(targetUuid, (uuid, list) -> {
+            if (list == null) {
+                return null;
+            }
+            taken[0] = takePending(list, requesterUuid, tpaHere);
+            return list.isEmpty() ? null : list;
+        });
+        return taken[0];
+    }
+
+    /**
+     * Keeps a request beside any others already waiting on the same target.
+     * A second player must not replace the first. The same player and direction is still a duplicate.
+     */
+    static boolean addPending(List<TpaRequest> pending, TpaRequest request) {
+        if (pending == null || request == null) {
+            return false;
+        }
+        if (selectPending(pending, request.requester(), request.tpaHere()) != null) {
+            return false;
+        }
+        pending.add(request);
         return true;
     }
 
+    /**
+     * Newest match wins. A null requester means any player, and a null direction means either
+     * {@code /tpa} or {@code /tpahere}.
+     */
+    static TpaRequest selectPending(List<TpaRequest> pending, UUID requester, Boolean tpaHere) {
+        if (pending == null || pending.isEmpty()) {
+            return null;
+        }
+
+        TpaRequest found = null;
+        for (TpaRequest current : pending) {
+            if (requester != null && !current.requester().equals(requester)) {
+                continue;
+            }
+            if (tpaHere != null && current.tpaHere() != tpaHere) {
+                continue;
+            }
+            found = current;
+        }
+        return found;
+    }
+
+    /** Same match as {@link #selectPending}, then removes it so it cannot be accepted twice. */
+    static TpaRequest takePending(List<TpaRequest> pending, UUID requester, Boolean tpaHere) {
+        if (pending == null || pending.isEmpty()) {
+            return null;
+        }
+
+        for (int index = pending.size() - 1; index >= 0; index--) {
+            TpaRequest current = pending.get(index);
+            if (requester != null && !current.requester().equals(requester)) {
+                continue;
+            }
+            if (tpaHere != null && current.tpaHere() != tpaHere) {
+                continue;
+            }
+            return pending.remove(index);
+        }
+        return null;
+    }
+
     private boolean hasMatchingRequest(UUID requesterUuid, UUID targetUuid, boolean tpaHere) {
-        TpaRequest pendingRequest = pendingRequests.get(targetUuid);
-        if (pendingRequest != null
-                && pendingRequest.requester().equals(requesterUuid)
-                && pendingRequest.tpaHere() == tpaHere) {
+        if (selectPending(pendingList(targetUuid), requesterUuid, tpaHere) != null) {
             return true;
         }
 
@@ -419,7 +561,7 @@ public class TPAManager {
             return;
         }
 
-        if (pendingRequests.containsKey(targetUuid)) {
+        if (hasPending(targetUuid, false)) {
             long delayTicks = tryAutoAcceptPendingRequest(targetUuid, false)
                     ? Math.max(20L, getTpaCooldownTicks() + 20L)
                     : 20L;
@@ -442,8 +584,7 @@ public class TPAManager {
             return;
         }
 
-        pendingRequests.put(targetUuid, request);
-        scheduleExpiry(request);
+        rememberPending(request);
 
         target.sendMessage(ColorUtils.toComponent(
                 "&7Auto-accepting &b/tpa&7 request from &f" + publicName(requester) + "&7."
@@ -481,7 +622,7 @@ public class TPAManager {
             return;
         }
 
-        if (pendingRequests.containsKey(targetUuid)) {
+        if (hasPending(targetUuid, true)) {
             long delayTicks = tryAutoAcceptPendingRequest(targetUuid, true)
                     ? Math.max(20L, getTpaCooldownTicks() + 20L)
                     : 20L;
@@ -504,8 +645,7 @@ public class TPAManager {
             return;
         }
 
-        pendingRequests.put(targetUuid, request);
-        scheduleExpiry(request);
+        rememberPending(request);
 
         target.sendMessage(ColorUtils.toComponent(
                 "&7Auto-accepting &b/tpahere&7 request from &f" + publicName(requester) + "&7."
@@ -569,8 +709,8 @@ public class TPAManager {
     }
 
     private boolean tryAutoAcceptPendingRequest(UUID targetUuid, boolean tpaHere) {
-        TpaRequest request = pendingRequests.get(targetUuid);
-        if (request == null || request.tpaHere() != tpaHere) {
+        TpaRequest request = selectPending(pendingList(targetUuid), null, tpaHere);
+        if (request == null) {
             return false;
         }
 
@@ -589,7 +729,6 @@ public class TPAManager {
             return false;
         }
 
-        String command = "tpaccept " + plainPublicName(requester);
         String requestType = tpaHere ? "/tpahere" : "/tpa";
         String autoName = tpaHere ? "tpahere auto-accept" : "tpa auto-accept";
 
@@ -600,7 +739,13 @@ public class TPAManager {
                 "&7" + publicName(target) + " has &a" + autoName + "&7 enabled. Your &b" + requestType + "&7 request is being processed."
         ));
 
-        plugin.getSpigotScheduler().runEntity(target, () -> target.performCommand(command));
+        plugin.getSpigotScheduler().runEntity(target, () -> {
+            if (isBlockedByCombat(target)) {
+                target.sendMessage(ColorUtils.toComponent(plugin.getCombatManager().getBlockMessage()));
+                return;
+            }
+            acceptPendingRequest(target, request.requester(), tpaHere);
+        });
         return true;
     }
 
@@ -690,9 +835,13 @@ public class TPAManager {
 
     private void scheduleExpiry(TpaRequest request) {
         Player target = Bukkit.getPlayer(request.target());
-        Runnable expire = () -> pendingRequests.computeIfPresent(request.target(), (uuid, current) ->
-                current.equals(request) ? null : current
-        );
+        Runnable expire = () -> pendingRequests.compute(request.target(), (uuid, list) -> {
+            if (list == null) {
+                return null;
+            }
+            list.remove(request);
+            return list.isEmpty() ? null : list;
+        });
         if (target != null && target.isOnline()) {
             plugin.getSpigotScheduler().runEntityLater(target, expire, REQUEST_EXPIRY_TICKS);
         } else {
