@@ -438,25 +438,26 @@ public class ScoreboardManager {
             Team team = teams[i];
             if (team == null) continue;
             String raw = lines.get(i);
-            if (raw.equals(oldRawLines[i])) {
+            if (sidebarRawUnchanged(oldRawLines[i], raw)) {
                 continue;
             }
             String text = ColorUtils.colorize(raw, player);
             text = alignSidebarIconColumn(text, settings);
-            if (!text.equals(oldLines[i])) {
+            if (rememberFormattedLine(oldLines, oldRawLines, i, raw, text)) {
                 applyLineSpigot(team, text);
-                oldLines[i] = text;
             }
-            oldRawLines[i] = raw;
         }
 
         for (int i = count; i < MAX_LINES; i++) {
             Team team = teams[i];
             if (team != null && !"".equals(oldLines[i])) {
                 applyLineSpigot(team, "");
-                oldLines[i] = "";
             }
         }
+        // The prefix on a dropped slot is blank. Forgetting the raw text is what makes that same
+        // line get sent again when the player turns it back on; leaving it cached skips the send
+        // and the row stays empty until they rejoin.
+        dropTrailingLineCache(oldLines, oldRawLines, count);
 
         numberHider.hide(player, obj, settings.hideNumbers());
     }
@@ -1037,6 +1038,36 @@ public class ScoreboardManager {
     private boolean isVisibleFor(Player player) {
         PlayerData data = plugin.getPlayerDataManager().get(player);
         return data == null || data.isScoreboardVisible();
+    }
+
+    /** True when this slot was already drawn from the same unresolved line. A null cache is a miss. */
+    static boolean sidebarRawUnchanged(String cachedRaw, String raw) {
+        return cachedRaw != null && cachedRaw.equals(raw);
+    }
+
+    /**
+     * Records one visible slot. Returns whether the team text has to be sent: the formatted string
+     * changed, or this slot has never been drawn.
+     */
+    static boolean rememberFormattedLine(String[] oldLines, String[] oldRawLines, int index, String raw, String text) {
+        boolean rewrite = !text.equals(oldLines[index]);
+        if (rewrite) {
+            oldLines[index] = text;
+        }
+        oldRawLines[index] = raw;
+        return rewrite;
+    }
+
+    /**
+     * Drops the diff cache for slots that are no longer on the sidebar. The teams stay registered
+     * and their prefix has been cleared, so the next time that raw line comes back it must not
+     * look unchanged.
+     */
+    static void dropTrailingLineCache(String[] oldLines, String[] oldRawLines, int count) {
+        for (int i = count; i < oldRawLines.length; i++) {
+            oldLines[i] = "";
+            oldRawLines[i] = null;
+        }
     }
 
     private int findSafeSplit(String text, int max) {
