@@ -553,11 +553,15 @@ QUICK-BUY:
     # A material under FIXED-ITEMS sells at that price per item even when the auction house is empty.
     # A cheaper auction listing still wins. A more expensive listing is ignored.
     # Enchantment worth from worth.yml is added on top, so a sharpness sword costs more than the plain sword.
+    # An enchanted book can name the enchant and level, the same way worth.yml does.
+    # That price replaces the worth.yml price for that one book. It is not added on top.
+    # A different enchant, or the same enchant at another level, does not use that line.
     # Names are Bukkit materials. Quote a namespaced id, for example "minecraft:stick".
     UNLISTED: WORTH
     # FIXED-ITEMS:
     #   STICK: 1.0
     #   DIAMOND: 50.0
+    #   ENCHANTED_BOOK:SHARPNESS:3: 23332
 
   # Main GUI title and inventory size
   TITLE: '&8Quick Buy'

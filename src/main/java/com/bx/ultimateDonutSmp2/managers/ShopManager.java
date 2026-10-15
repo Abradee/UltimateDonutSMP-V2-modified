@@ -515,9 +515,15 @@ public class ShopManager {
         boolean useAh = plugin.getConfigManager().getShop().getBoolean("QUICK-BUY.PRICING.USE-AUCTION-HOUSE", true);
 
         double fixedUnit = fixedItemUnitPrice(material);
+        boolean exactEnchantedBook = false;
+        double bookUnit = fixedEnchantedBookUnitPrice(sampleItem);
+        if (bookUnit > 0) {
+            fixedUnit = bookUnit;
+            exactEnchantedBook = true;
+        }
         if (fixedUnit > 0) {
             double extraEnchants = 0;
-            if (sampleItem != null && plugin.getWorthManager() != null) {
+            if (!exactEnchantedBook && sampleItem != null && plugin.getWorthManager() != null) {
                 extraEnchants = plugin.getWorthManager().getExtraEnchantmentWorth(sampleItem);
                 if (!Double.isFinite(extraEnchants) || extraEnchants < 0) {
                     extraEnchants = 0;
@@ -591,16 +597,13 @@ public class ShopManager {
     /**
      * Unit price from {@code QUICK-BUY.PRICING.FIXED-ITEMS}, or {@code -1} when this material
      * has no positive finite price there. Keys may be {@code STICK} or {@code minecraft:stick}.
+     * {@code ENCHANTED_BOOK:SHARPNESS:3} is not a material key; see {@link #fixedEnchantedBookUnitPrice}.
      */
     double fixedItemUnitPrice(Material material) {
-        if (material == null || material.isAir() || plugin.getConfigManager() == null) {
+        if (material == null || material.isAir()) {
             return -1;
         }
-        ConfigurationSection shop = plugin.getConfigManager().getShop();
-        if (shop == null) {
-            return -1;
-        }
-        ConfigurationSection fixed = shop.getConfigurationSection("QUICK-BUY.PRICING.FIXED-ITEMS");
+        ConfigurationSection fixed = fixedItemsSection();
         if (fixed == null) {
             return -1;
         }
@@ -614,6 +617,116 @@ public class ShopManager {
             }
         }
         return -1;
+    }
+
+    /**
+     * Unit price for an enchanted book whose stored enchantment is exactly one
+     * {@code ENCHANTED_BOOK:<ENCHANT>:<LEVEL>} key, or {@code -1} when none matches.
+     * That price replaces {@code worth.yml}. It is not added on top of it.
+     */
+    double fixedEnchantedBookUnitPrice(ItemStack item) {
+        FixedEnchantedBook wanted = storedEnchantedBook(item);
+        if (wanted == null) {
+            return -1;
+        }
+        ConfigurationSection fixed = fixedItemsSection();
+        if (fixed == null) {
+            return -1;
+        }
+        for (String key : fixed.getKeys(false)) {
+            FixedEnchantedBook parsed = fixedEnchantedBookKey(key);
+            if (parsed == null || !parsed.equals(wanted)) {
+                continue;
+            }
+            double price = positivePrice(fixed.get(key));
+            if (price > 0) {
+                return price;
+            }
+        }
+        return -1;
+    }
+
+    private ConfigurationSection fixedItemsSection() {
+        if (plugin.getConfigManager() == null) {
+            return null;
+        }
+        ConfigurationSection shop = plugin.getConfigManager().getShop();
+        if (shop == null) {
+            return null;
+        }
+        return shop.getConfigurationSection("QUICK-BUY.PRICING.FIXED-ITEMS");
+    }
+
+    private static FixedEnchantedBook storedEnchantedBook(ItemStack item) {
+        if (item == null || item.getType() != Material.ENCHANTED_BOOK) {
+            return null;
+        }
+        if (!(item.getItemMeta() instanceof EnchantmentStorageMeta stored)) {
+            return null;
+        }
+        Map<org.bukkit.enchantments.Enchantment, Integer> storedEnchants = stored.getStoredEnchants();
+        if (storedEnchants == null || storedEnchants.size() != 1) {
+            return null;
+        }
+        Map.Entry<org.bukkit.enchantments.Enchantment, Integer> only = storedEnchants.entrySet().iterator().next();
+        if (only.getKey() == null || only.getKey().getKey() == null || only.getValue() == null || only.getValue() <= 0) {
+            return null;
+        }
+        String enchant = only.getKey().getKey().getKey()
+                .trim()
+                .toUpperCase(Locale.ROOT)
+                .replace('-', '_')
+                .replace(' ', '_');
+        if (enchant.isEmpty()) {
+            return null;
+        }
+        return new FixedEnchantedBook(enchant, only.getValue());
+    }
+
+    /**
+     * {@code ENCHANTED_BOOK:SHARPNESS:3}, or the same key with a {@code minecraft:} prefix.
+     * Anything else, including a plain material, is not an enchanted-book price.
+     */
+    static FixedEnchantedBook fixedEnchantedBookKey(String key) {
+        if (key == null) {
+            return null;
+        }
+        String normalized = key.trim().toUpperCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.startsWith("MINECRAFT:")) {
+            normalized = normalized.substring("MINECRAFT:".length());
+        }
+        String prefix = "ENCHANTED_BOOK:";
+        if (!normalized.startsWith(prefix)) {
+            return null;
+        }
+        String rest = normalized.substring(prefix.length());
+        int split = rest.lastIndexOf(':');
+        if (split <= 0 || split >= rest.length() - 1) {
+            return null;
+        }
+        String enchant = rest.substring(0, split);
+        if (enchant.startsWith("MINECRAFT:")) {
+            enchant = enchant.substring("MINECRAFT:".length());
+        }
+        if (enchant.isEmpty() || enchant.indexOf(':') >= 0 || !enchant.chars().allMatch(FixedEnchantedBook::isNameChar)) {
+            return null;
+        }
+        int level;
+        try {
+            level = Integer.parseInt(rest.substring(split + 1));
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+        if (level <= 0) {
+            return null;
+        }
+        return new FixedEnchantedBook(enchant, level);
+    }
+
+    record FixedEnchantedBook(String enchant, int level) {
+        private static boolean isNameChar(int c) {
+            return c == '_' || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+        }
     }
 
     static Material fixedItemMaterial(String key) {
