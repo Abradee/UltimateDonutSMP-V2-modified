@@ -25,6 +25,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class QuickBuyPricingWorthFloorTest {
@@ -350,6 +351,123 @@ class QuickBuyPricingWorthFloorTest {
         ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, Material.STICK, 1);
 
         assertEquals(3.5, quote.unitPrice(), 0.001);
+    }
+
+    @Test
+    void enchantedBookFixedKeyIsNotReadAsAMaterial() {
+        assertNull(ShopManager.fixedItemMaterial("ENCHANTED_BOOK:SHARPNESS:3"));
+        ShopManager.FixedEnchantedBook parsed = ShopManager.fixedEnchantedBookKey("ENCHANTED_BOOK:SHARPNESS:3");
+        assertNotNull(parsed);
+        assertEquals("SHARPNESS", parsed.enchant());
+        assertEquals(3, parsed.level());
+        assertEquals(parsed, ShopManager.fixedEnchantedBookKey("minecraft:enchanted_book:sharpness:3"));
+        assertNull(ShopManager.fixedEnchantedBookKey("ENCHANTED_BOOK"));
+        assertNull(ShopManager.fixedEnchantedBookKey("DIAMOND_SWORD"));
+    }
+
+    @Test
+    void enchantedBookFixedPriceReplacesWorth() throws Exception {
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK", 15.0);
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK:SHARPNESS:3", 900.0);
+        YamlConfiguration loaded = new YamlConfiguration();
+        loaded.loadFromString(String.join("\n",
+                "QUICK-BUY:",
+                "  PRICING:",
+                "    USE-AUCTION-HOUSE: true",
+                "    WORTH-MULTIPLIER: 1.0",
+                "    AUTO-BALANCE-MISSING: false",
+                "    FIXED-ITEMS:",
+                "      ENCHANTED_BOOK:SHARPNESS:3: 23332"
+        ));
+        Field shopField = ConfigManager.class.getDeclaredField("shop");
+        shopField.setAccessible(true);
+        shopField.set(plugin.getConfigManager(), loaded);
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, sharpnessBook(3), 1);
+
+        assertTrue(quote.available());
+        assertFalse(quote.fromAuction());
+        assertEquals(23332.0, quote.unitPrice(), 0.001);
+        assertEquals(23332.0, ShopManager.pricePaidFor(quote), 0.001);
+    }
+
+    @Test
+    void enchantedBookFixedPriceDoesNotApplyToAnotherLevel() {
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK:SHARPNESS:3", 900.0);
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK:SHARPNESS:3", 23332.0);
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, sharpnessBook(5), 1);
+
+        assertEquals(1500.0, quote.unitPrice(), 0.001);
+        assertFalse(quote.fromAuction());
+    }
+
+    @Test
+    void plainEnchantedBookFixedPriceStillAddsEnchantWorth() {
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK", 20.0);
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, sharpnessBook(5), 1);
+
+        assertEquals(1520.0, quote.unitPrice(), 0.001);
+    }
+
+    @Test
+    void specificEnchantedBookKeyBeatsTheMaterialPrice() {
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK:SHARPNESS:3", 900.0);
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK", 20.0);
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK:SHARPNESS:3", 23332.0);
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, sharpnessBook(3), 1);
+
+        assertEquals(23332.0, quote.unitPrice(), 0.001);
+    }
+
+    @Test
+    void enchantedBookWithTwoStoredEnchantsDoesNotUseASingleEnchantKey() {
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK:SHARPNESS:3", 900.0);
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK:SHARPNESS:3", 23332.0);
+        ItemStack book = sharpnessBook(3);
+        EnchantmentStorageMeta esm = (EnchantmentStorageMeta) book.getItemMeta();
+        esm.addStoredEnchant(new TestEnchantment(NamespacedKey.minecraft("unbreaking")), 1, true);
+        book.setItemMeta(esm);
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, book, 1);
+
+        assertEquals(900.0, quote.unitPrice(), 0.001);
+    }
+
+    @Test
+    void cheaperAuctionListingBeatsTheEnchantedBookFixedPrice() throws Exception {
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK:SHARPNESS:3", 900.0);
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK:SHARPNESS:3", 23332.0);
+        sharpnessBook(3);
+        installListings(List.of(listing(Material.ENCHANTED_BOOK, 1, 1000.0)));
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, sharpnessBook(3), 1);
+
+        assertTrue(quote.fromAuction());
+        assertEquals(1000.0, quote.unitPrice(), 0.001);
+    }
+
+    @Test
+    void moreExpensiveAuctionListingKeepsTheEnchantedBookFixedPrice() throws Exception {
+        plugin.getConfigManager().getWorth().set("TYPE.BOOK.ENCHANTED_BOOK:SHARPNESS:3", 900.0);
+        shopConfig.set("QUICK-BUY.PRICING.FIXED-ITEMS.ENCHANTED_BOOK:SHARPNESS:3", 23332.0);
+        sharpnessBook(3);
+        installListings(List.of(listing(Material.ENCHANTED_BOOK, 1, 30_000.0)));
+
+        ShopManager.QuickBuyQuote quote = shopManager.resolveQuickBuyQuote(null, sharpnessBook(3), 1);
+
+        assertFalse(quote.fromAuction());
+        assertEquals(23332.0, quote.unitPrice(), 0.001);
+    }
+
+    private ItemStack sharpnessBook(int level) {
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK, 1);
+        EnchantmentStorageMeta esm = (EnchantmentStorageMeta) book.getItemMeta();
+        esm.addStoredEnchant(sharpness, level, true);
+        book.setItemMeta(esm);
+        return book;
     }
 
     @Test

@@ -112,6 +112,29 @@ price you wrote and a sharpness sword costs more than the plain sword. With `USE
 a matching listing cheaper than that total sets the unit price instead. A more expensive listing is
 ignored. Quick Buy still does not purchase the listing. The seller keeps it.
 
+### How to add enchants to fixed items
+
+A material line is the plain item. `DIAMOND_SWORD: 100` stays 100 until the player pins an enchant,
+and then the `worth.yml` value of that enchant is added.
+
+An enchanted book is the enchant itself. Write it the same way `worth.yml` does, with the price
+after the last colon:
+
+```yaml
+QUICK-BUY:
+  PRICING:
+    FIXED-ITEMS:
+      ENCHANTED_BOOK:SHARPNESS:3: 23332
+```
+
+A Sharpness III book then sells at 23332 each. The `worth.yml` price for that book is not added,
+and the line is not dropped for being longer than a material name. Sharpness V does not use the
+Sharpness III line. A book that stores two enchants does not match a one-enchant line either.
+`minecraft:enchanted_book:sharpness:3` is the same entry. A cheaper auction listing still replaces
+the price. A more expensive listing does not. If the number is below what that player would earn
+selling the book, Quick Buy charges the sell payout instead, the same way it does for any other
+Quick Buy price.
+
 Everything left off that list follows this order, unless `QUICK-BUY.PRICING.UNLISTED` is
 `AUCTION-ONLY`. The default is `WORTH`.
 
