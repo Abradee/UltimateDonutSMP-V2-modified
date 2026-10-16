@@ -299,6 +299,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         maintenanceManager.startExpiryTask();
         new MaintenanceProtocolLibBridge(this).initialize();
         new ServerListProtocolLibBridge(this).initialize();
+        new TitleProtocolLibBridge(this).initialize();
         duelManager.initializeCrossServer();
         discordWebhookManager = new DiscordWebhookManager(this);
         pingManager = new PingManager(this);
