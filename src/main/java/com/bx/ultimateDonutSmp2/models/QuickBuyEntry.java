@@ -132,9 +132,27 @@ public record QuickBuyEntry(
         return java.util.Collections.unmodifiableMap(result);
     }
 
+    /**
+     * The shop writes curses as {@code curse_of_vanishing}. Minecraft's id is {@code vanishing_curse}.
+     */
+    static String canonicalEnchantKey(String key) {
+        if (key == null || key.isBlank()) {
+            return "";
+        }
+        String clean = key.trim().toLowerCase(java.util.Locale.ROOT);
+        if (clean.startsWith("minecraft:")) {
+            clean = clean.substring("minecraft:".length());
+        }
+        return switch (clean) {
+            case "curse_of_vanishing" -> "vanishing_curse";
+            case "curse_of_binding" -> "binding_curse";
+            default -> clean;
+        };
+    }
+
     public static org.bukkit.enchantments.Enchantment findEnchantment(String key) {
-        if (key == null || key.isBlank()) return null;
-        String clean = key.trim().toLowerCase(java.util.Locale.ROOT).replace("minecraft:", "");
+        String clean = canonicalEnchantKey(key);
+        if (clean.isEmpty()) return null;
         try {
             if (org.bukkit.Bukkit.getServer() == null) return null;
             org.bukkit.NamespacedKey nsk = org.bukkit.NamespacedKey.minecraft(clean);
