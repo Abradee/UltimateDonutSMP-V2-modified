@@ -248,6 +248,8 @@ price source Quick Buy reads from, so its health directly affects what `/shop` c
 
 `/ah neth boot prot 4` is that search without the word `search`. Each word has to show up inside the item name, so `neth` matches netherite and `boot` matches boots. An enchant abbreviation followed by a number, such as `prot 4` or `prot iv`, keeps items with that enchant at that level or higher. `/ah search` uses the same rules.
 
+Your Items has a sell hopper for listing without `/ah sell`. Java players type the price on a sign after the item is in the hopper. Bedrock players type it in chat (`30k`, `1.5M`, or a plain number). `cancel` puts the item back. A sign editor on Bedrock closes by itself, and after that no menu will open until they rejoin, so the price never goes through that sign.
+
 The `ultimatedonutsmp2.auctionhouse.*` nodes gate individual actions and default to `true`; the
 `donutauction.*` family mirrors them as legacy aliases.
 
@@ -309,10 +311,7 @@ plugin uses for item categorisation. `CATEGORY_FILTERS` in `orders.yml` is only 
 `filter.yml` produces nothing usable, and a single hardcoded `BLOCKS` category is the last resort. If
 you want to change what the category buttons show, edit `filter.yml`.
 
-Bedrock players are handled separately. With `BEDROCK.ENABLED` on and Floodgate installed, the plugin
-detects Bedrock clients and sends them native Bedrock forms instead of chest menus, because the sign
-inputs the Java flow uses for search, amount and price prompts do not work on Bedrock. Those prompts
-are configured in `SEARCH_SIGN`, `AMOUNT_SIGN` and `PRICE_SIGN`.
+Bedrock players with Floodgate and `BEDROCK.ENABLED` get native forms for browsing, creating, and editing orders. Java players get the chest menus. Bedrock players without Floodgate get those chests too. Quantity and price on a chest are a sign for Java, and a chat line for Bedrock (`64`, `30k`, and `cancel` leaves the draft unchanged). A sign editor on Bedrock closes by itself, and after that no menu will open until they rejoin. Search on that chest uses `SEARCH_SIGN`. `AMOUNT_SIGN` and `PRICE_SIGN` are the Java sign text.
 
 `NETWORK.ENABLED` with `NETWORK.REDIS_CHANNEL` publishes order events to other servers, which requires
 Redis to be enabled in [database.yml](Config-database.yml). `BOTS` works the same way as the auction

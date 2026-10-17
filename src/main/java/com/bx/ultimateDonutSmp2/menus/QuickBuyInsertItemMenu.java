@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class QuickBuyInsertItemMenu extends BaseMenu {
 
@@ -115,10 +116,12 @@ public class QuickBuyInsertItemMenu extends BaseMenu {
             realItem = null;
             QuickBuySounds.click(player, plugin);
 
-            SignInputUtil.open(plugin, player, List.of("", "↑↑↑↑↑", "Type price", ""), 0, text -> {
+            Consumer<String> applyPrice = text -> {
                 if (text == null || text.isBlank()) {
                     plugin.getAuctionHouseManager().restoreEscrow(player, itemToSell);
-                    new AuctionYourItemsMenu(plugin).open(player);
+                    if (player.isOnline()) {
+                        new AuctionYourItemsMenu(plugin).open(player);
+                    }
                     return;
                 }
 
@@ -145,7 +148,20 @@ public class QuickBuyInsertItemMenu extends BaseMenu {
                     QuickBuySounds.fail(player, plugin);
                     new AuctionYourItemsMenu(plugin).open(player);
                 }
-            });
+            };
+            String prompt = plugin.getConfigManager().getMessageOrDefault(
+                    "AUCTION_HOUSE.BEDROCK_PRICE_PROMPT",
+                    "&7Type a price in chat, like &f30k&7. Type &ccancel &7to put the item back."
+            );
+            if (plugin.getBedrockChatPrompt() != null && plugin.getBedrockChatPrompt().ask(
+                    player,
+                    prompt,
+                    applyPrice,
+                    () -> plugin.getAuctionHouseManager().restoreEscrow(player, itemToSell)
+            )) {
+                return;
+            }
+            SignInputUtil.open(plugin, player, List.of("", "↑↑↑↑↑", "Type price", ""), 0, applyPrice);
             return;
         }
 
