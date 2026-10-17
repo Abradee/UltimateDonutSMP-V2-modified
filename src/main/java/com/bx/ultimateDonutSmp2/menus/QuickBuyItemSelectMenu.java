@@ -151,6 +151,10 @@ public class QuickBuyItemSelectMenu extends BaseMenu {
         Material selected = slotToMaterial.get(slot);
         if (selected != null && !QuickBuyItemDialog.isBlacklisted(plugin, selected)) {
             click(player);
+            if (BedrockPlayers.isBedrock(player) && QuickBuyItemDialog.isEnchantable(selected)) {
+                new QuickBuyBedrockEnchantMenu(plugin, targetSlot, selected, query).open(player);
+                return;
+            }
             if (!BedrockPlayers.isBedrock(player)
                     && DialogSupport.isAvailable() && plugin.getDialogManager() != null
                     && QuickBuyItemDialog.isEnchantable(selected)) {

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuickBuyItemAmountMenu extends BaseMenu {
@@ -23,12 +24,24 @@ public class QuickBuyItemAmountMenu extends BaseMenu {
 
     private final int targetSlot;
     private final Material material;
+    private final String enchants;
     private int amount;
 
     public QuickBuyItemAmountMenu(UltimateDonutSmp2 plugin, int targetSlot, Material material, int amount) {
+        this(plugin, targetSlot, material, amount, "");
+    }
+
+    public QuickBuyItemAmountMenu(
+            UltimateDonutSmp2 plugin,
+            int targetSlot,
+            Material material,
+            int amount,
+            String enchants
+    ) {
         super(plugin, "&8How many to buy?", 27);
         this.targetSlot = targetSlot;
         this.material = material;
+        this.enchants = enchants == null ? "" : enchants;
         this.amount = Math.max(1, Math.min(material.getMaxStackSize(), amount));
     }
 
@@ -38,13 +51,17 @@ public class QuickBuyItemAmountMenu extends BaseMenu {
 
         int max = material.getMaxStackSize();
         ItemStack displayStack = new ItemStack(material, Math.min(max, amount));
+        if (!enchants.isBlank()) {
+            displayStack = new QuickBuyEntry(targetSlot, material, amount, enchants, true).applyTo(displayStack);
+        }
+        List<String> lore = new ArrayList<>();
+        lore.add("&7Selected Amount: &e" + amount);
+        lore.add("&7Max per purchase: &f" + max);
+        lore.addAll(QuickBuyBedrockEnchantMenu.enchantLore(enchants));
         set(ITEM_SLOT, ItemUtils.withDisplay(
                 displayStack,
                 "&f" + plugin.getWorthManager().prettifyMaterial(material),
-                List.of(
-                        "&7Selected Amount: &e" + amount,
-                        "&7Max per purchase: &f" + max
-                )
+                lore
         ));
 
         set(MINUS_TEN_SLOT, ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, "&c-10", List.of("&7Decrease by 10")));
@@ -73,7 +90,7 @@ public class QuickBuyItemAmountMenu extends BaseMenu {
                 return;
             }
             QuickBuySounds.play(player, plugin, QuickBuySounds.PIN);
-            QuickBuyEntry entry = new QuickBuyEntry(targetSlot, material, amount, "", true);
+            QuickBuyEntry entry = new QuickBuyEntry(targetSlot, material, amount, enchants, true);
             plugin.getShopManager().setQuickBuyEntry(player.getUniqueId(), entry);
             new QuickBuyMenu(plugin).open(player);
             return;

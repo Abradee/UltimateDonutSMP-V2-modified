@@ -99,8 +99,11 @@ blacklist is Quick Buy only, so an entry there does not disappear from `/orders`
 Bedrock clients freeze on that screen, because Geyser has to turn one dialog button per material
 into a single form. Floodgate players get a paged list with a search box instead, 20 items a page,
 under `QUICK-BUY.BEDROCK` in `shop.yml`. Submitting that search stays on the form. If Floodgate is
-not installed the same slot opens the chest catalogue (45 items a page) and does not continue into
-the enchant dialog. Search from that chest, and Search on the Quick Buy grid, asks in chat instead
+not installed the same slot opens the chest catalogue (45 items a page). Picking a sword, a tool,
+armor, or a book there opens another chest: each enchant is one click, the level goes up, and the
+click past the max clears it. Skip pins the plain item. Confirm goes on to the amount. Floodgate
+players get Choose Enchantments on the form, and tapping an enchant there cycles the level the same
+way. Search from that chest, and Search on the Quick Buy grid, asks in chat instead
 of opening a sign or a Java dialog.
 
 Most quick buy prices are still not typed into `shop.yml`. `QUICK-BUY.PRICING` decides where each
