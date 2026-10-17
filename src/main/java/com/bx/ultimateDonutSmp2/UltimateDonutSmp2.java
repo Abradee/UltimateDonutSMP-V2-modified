@@ -85,6 +85,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
     private OrdersBedrockManager ordersBedrockManager;
     private QuickBuyBedrockManager quickBuyBedrockManager;
     private QuickBuySearchPrompt quickBuySearchPrompt;
+    private BedrockChatPrompt bedrockChatPrompt;
     private EnchantmentsManager enchantmentsManager;
     private FilterManager filterManager;
     private DuelManager duelManager;
@@ -243,6 +244,7 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
         moneyNametagManager = new MoneyNametagManager(this);
         shopManager = new ShopManager(this);
         quickBuySearchPrompt = new QuickBuySearchPrompt(this);
+        bedrockChatPrompt = new BedrockChatPrompt(this);
         filterManager = new FilterManager(this);
         enchantmentsManager = new EnchantmentsManager(this);
         ordersManager = new OrdersManager(this);
@@ -1455,6 +1457,10 @@ public final class UltimateDonutSmp2 extends JavaPlugin {
 
     public QuickBuySearchPrompt getQuickBuySearchPrompt() {
         return quickBuySearchPrompt;
+    }
+
+    public BedrockChatPrompt getBedrockChatPrompt() {
+        return bedrockChatPrompt;
     }
 
     public HomeBedrockManager getHomeBedrockManager() {

@@ -1,6 +1,7 @@
 package com.bx.ultimateDonutSmp2.menus;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.managers.OrdersManager;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import com.bx.ultimateDonutSmp2.utils.ItemUtils;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class OrdersNewMenu extends BaseMenu {
 
@@ -142,7 +144,14 @@ public class OrdersNewMenu extends BaseMenu {
         if (slot == 13) {
             OrdersMenuSupport.click(player, plugin);
             ConfigurationSection config = manager.getSignConfig("AMOUNT_SIGN");
-            SignInputUtil.openFromConfig(plugin, player, config, text -> {
+            String itemLabel = session.getChosenItem() == null
+                    ? "this order"
+                    : manager.describeItem(session.getChosenItem());
+            askOrSign(player, plugin.getConfigManager().getMessageOrDefault(
+                    "ORDERS.PROMPT_QUANTITY",
+                    "&7Enter the order quantity for &f{item}&7 in chat. type &ccancel&7 to abort.",
+                    "{item}", itemLabel
+            ), config, text -> {
                 if (text != null && !text.isBlank()) {
                     try {
                         int quantity = Math.toIntExact(NumberUtils.parseLong(text));
@@ -172,7 +181,14 @@ public class OrdersNewMenu extends BaseMenu {
         if (slot == 14) {
             OrdersMenuSupport.click(player, plugin);
             ConfigurationSection config = manager.getSignConfig("PRICE_SIGN");
-            SignInputUtil.openFromConfig(plugin, player, config, text -> {
+            String itemLabel = session.getChosenItem() == null
+                    ? "this order"
+                    : manager.describeItem(session.getChosenItem());
+            askOrSign(player, plugin.getConfigManager().getMessageOrDefault(
+                    "ORDERS.PROMPT_PRICE",
+                    "&7Enter the price each for &f{item}&7 in chat. type &ccancel&7 to abort.",
+                    "{item}", itemLabel
+            ), config, text -> {
                 if (text != null && !text.isBlank()) {
                     try {
                         double priceEach = NumberUtils.parse(text);
@@ -248,6 +264,14 @@ public class OrdersNewMenu extends BaseMenu {
                 manager.endAction(player.getUniqueId());
             }
         }
+    }
+
+    private void askOrSign(Player player, String message, ConfigurationSection config, Consumer<String> callback) {
+        BedrockChatPrompt prompt = plugin.getBedrockChatPrompt();
+        if (prompt != null && prompt.ask(player, message, callback, null)) {
+            return;
+        }
+        SignInputUtil.openFromConfig(plugin, player, config, callback);
     }
 
     private String resolveFailureMessage(OrdersManager.CreateOrderResult result) {

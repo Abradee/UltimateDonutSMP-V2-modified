@@ -5,6 +5,7 @@ import com.bx.ultimateDonutSmp2.utils.PlayerSettingUtils;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.models.ItemKey;
+import com.bx.ultimateDonutSmp2.utils.BedrockPlayers;
 import com.bx.ultimateDonutSmp2.utils.SignInputUtil;
 import com.bx.ultimateDonutSmp2.menus.EnchantSelectMenu;
 import com.bx.ultimateDonutSmp2.menus.OrdersNewMenu;
@@ -1252,6 +1253,10 @@ public class OrdersManager {
         PendingOrderEdit pendingEdit = new PendingOrderEdit(orderId, EditField.QUANTITY, navigation);
         pendingEdits.put(player.getUniqueId(), pendingEdit);
         player.closeInventory();
+        Order order = validation.order();
+        if (order != null && promptBedrockInChat(player, editQuantityPrompt(order))) {
+            return;
+        }
 
         org.bukkit.configuration.ConfigurationSection config = getSignConfig("AMOUNT_SIGN");
         SignInputUtil.openFromConfig(plugin, player, config, text -> {
@@ -1289,6 +1294,10 @@ public class OrdersManager {
         PendingOrderEdit pendingEdit = new PendingOrderEdit(orderId, EditField.PRICE, navigation);
         pendingEdits.put(player.getUniqueId(), pendingEdit);
         player.closeInventory();
+        Order order = validation.order();
+        if (order != null && promptBedrockInChat(player, editPricePrompt(order))) {
+            return;
+        }
 
         org.bukkit.configuration.ConfigurationSection config = getSignConfig("PRICE_SIGN");
         SignInputUtil.openFromConfig(plugin, player, config, text -> {
@@ -2070,12 +2079,10 @@ public class OrdersManager {
         if (pendingEdit == null) {
             return;
         }
-        player.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessageOrDefault(
-                "ORDERS.PROMPT_EDIT_QUANTITY",
-                "&7Enter the new quantity for order &f#{order_id}&7. Current: &e{quantity}&7. Type &ccancel&7 to abort.",
-                "{order_id}", String.valueOf(order.id()),
-                "{quantity}", String.valueOf(order.requestedQuantity())
-        )));
+        if (promptBedrockInChat(player, editQuantityPrompt(order))) {
+            return;
+        }
+        player.sendMessage(ColorUtils.toComponent(editQuantityPrompt(order)));
         org.bukkit.configuration.ConfigurationSection config = getSignConfig("AMOUNT_SIGN");
         SignInputUtil.openFromConfig(plugin, player, config, text -> {
             if (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) {
@@ -2096,13 +2103,10 @@ public class OrdersManager {
         if (pendingEdit == null) {
             return;
         }
-        player.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessageOrDefault(
-                "ORDERS.PROMPT_EDIT_PRICE",
-                "&7Enter the new price each for order &f#{order_id}&7. Current: {price_formatted}&7. Type &ccancel&7 to abort.",
-                "{order_id}", String.valueOf(order.id()),
-                "{price}", NumberUtils.format(order.priceEach()),
-                "{price_formatted}", plugin.getCurrencyManager().formatMoney(order.priceEach())
-        )));
+        if (promptBedrockInChat(player, editPricePrompt(order))) {
+            return;
+        }
+        player.sendMessage(ColorUtils.toComponent(editPricePrompt(order)));
         org.bukkit.configuration.ConfigurationSection config = getSignConfig("PRICE_SIGN");
         SignInputUtil.openFromConfig(plugin, player, config, text -> {
             if (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) {
@@ -2116,6 +2120,33 @@ public class OrdersManager {
                 handleEditPriceInput(player, pendingEdit, text);
             }
         });
+    }
+
+    private boolean promptBedrockInChat(Player player, String message) {
+        if (player == null || !BedrockPlayers.isBedrock(player)) {
+            return false;
+        }
+        player.sendMessage(ColorUtils.toComponent(message));
+        return true;
+    }
+
+    private String editQuantityPrompt(Order order) {
+        return plugin.getConfigManager().getMessageOrDefault(
+                "ORDERS.PROMPT_EDIT_QUANTITY",
+                "&7Enter the new quantity for order &f#{order_id}&7. Current: &e{quantity}&7. Type &ccancel&7 to abort.",
+                "{order_id}", String.valueOf(order.id()),
+                "{quantity}", String.valueOf(order.requestedQuantity())
+        );
+    }
+
+    private String editPricePrompt(Order order) {
+        return plugin.getConfigManager().getMessageOrDefault(
+                "ORDERS.PROMPT_EDIT_PRICE",
+                "&7Enter the new price each for order &f#{order_id}&7. Current: {price_formatted}&7. Type &ccancel&7 to abort.",
+                "{order_id}", String.valueOf(order.id()),
+                "{price}", NumberUtils.format(order.priceEach()),
+                "{price_formatted}", plugin.getCurrencyManager().formatMoney(order.priceEach())
+        );
     }
 
     private OrderEditNavigation normalizeNavigation(

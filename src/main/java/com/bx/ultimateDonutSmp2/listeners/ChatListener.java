@@ -3,6 +3,7 @@ package com.bx.ultimateDonutSmp2.listeners;
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.managers.ChatManager;
 import com.bx.ultimateDonutSmp2.managers.FeatureManager;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.managers.QuickBuySearchPrompt;
 import com.bx.ultimateDonutSmp2.models.PunishmentRecord;
 import com.bx.ultimateDonutSmp2.models.PunishmentType;
@@ -36,6 +37,13 @@ public class ChatListener implements Listener {
         if (quickBuySearch != null && quickBuySearch.hasPending(player.getUniqueId())) {
             event.setCancelled(true);
             plugin.getSpigotScheduler().runEntity(player, () -> quickBuySearch.handle(player, rawMessage));
+            return;
+        }
+
+        BedrockChatPrompt bedrockChat = plugin.getBedrockChatPrompt();
+        if (bedrockChat != null && bedrockChat.hasPending(player.getUniqueId())) {
+            event.setCancelled(true);
+            plugin.getSpigotScheduler().runEntity(player, () -> bedrockChat.handle(player, rawMessage));
             return;
         }
 
