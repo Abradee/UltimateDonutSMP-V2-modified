@@ -11,6 +11,7 @@ import com.bx.ultimateDonutSmp2.models.PlayerData;
 import com.bx.ultimateDonutSmp2.models.QuickBuyEntry;
 import com.bx.ultimateDonutSmp2.models.SellCategory;
 import com.bx.ultimateDonutSmp2.models.ShopPreference;
+import com.bx.ultimateDonutSmp2.models.WorthResult;
 import com.bx.ultimateDonutSmp2.storage.ShopPreferenceRepository;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import com.bx.ultimateDonutSmp2.utils.ItemSerializationUtils;
@@ -187,7 +188,6 @@ public class ShopManager {
         private final List<PendingSellHistory> history = new ArrayList<>();
         private final List<Integer> soldSlots = new ArrayList<>();
         private double totalPayout;
-        /** Mirrors the seller's "Include Shulker on Sell" setting for the whole sale. */
         private boolean expandContainers = true;
     }
 
@@ -277,7 +277,6 @@ public class ShopManager {
             );
         }
 
-        /** Kept so callers that predate custom item data keep compiling. */
         public ShopItem(
                 String key,
                 String menuSection,
@@ -396,6 +395,13 @@ public class ShopManager {
         }
     }
 
+    public static double pricePaidFor(QuickBuyQuote quote) {
+        if (quote == null || quote.outOfStock()) {
+            return 0D;
+        }
+        return quote.totalPrice();
+    }
+
     public record QuickBuyExecutionResult(
             boolean success,
             String message,
@@ -498,37 +504,297 @@ public class ShopManager {
         int qty = Math.max(1, amount);
         ItemStack sampleItem = createSampleItem(material, requiredEnchants);
         double serverWorth = sampleItem != null ? getWorth(sampleItem) : getWorth(material);
-
+        double minUnitPrice = minimumQuickBuyUnitPrice(buyer, sampleItem);
+        double worthFloor = Math.max(serverWorth, minUnitPrice);
         boolean useAh = plugin.getConfigManager().getShop().getBoolean("QUICK-BUY.PRICING.USE-AUCTION-HOUSE", true);
-        if (useAh && plugin.getAuctionHouseManager() != null && plugin.getAuctionHouseManager().isEnabled()) {
-            List<AuctionListing> listings = plugin.getAuctionHouseManager().getActiveListings(AuctionHouseManager.AuctionSort.PRICE_LOWEST);
-            long now = System.currentTimeMillis();
-            AuctionListing best = listings.stream()
-                    .filter(Objects::nonNull)
-                    .filter(AuctionListing::active)
-                    .filter(l -> l.expiresAt() > now)
-                    .filter(l -> buyer == null || !buyer.getUniqueId().equals(l.sellerUuid()))
-                    .filter(l -> l.item() != null && l.item().getType() == material && l.item().getAmount() > 0)
-                    .filter(l -> matchesRequiredEnchants(l.item(), requiredEnchants))
-                    .filter(l -> serverWorth <= 0 || (l.price() / Math.max(1, l.item().getAmount())) >= serverWorth)
-                    .min(Comparator.comparingDouble(l -> l.price() / Math.max(1, l.item().getAmount())))
-                    .orElse(null);
 
-            if (best != null) {
-                double unitPrice = best.price() / Math.max(1, best.item().getAmount());
-                return new QuickBuyQuote(unitPrice, unitPrice * qty, best, true, false);
+        double fixedUnit = fixedItemUnitPrice(material);
+        boolean exactEnchantedBook = false;
+        double bookUnit = fixedEnchantedBookUnitPrice(sampleItem);
+        if (bookUnit > 0) {
+            fixedUnit = bookUnit;
+            exactEnchantedBook = true;
+        } else if (material == Material.ENCHANTED_BOOK && fixedUnit > 0) {
+            exactEnchantedBook = true;
+        }
+        if (fixedUnit > 0) {
+            double extraEnchants = 0;
+            if (!exactEnchantedBook && sampleItem != null && plugin.getWorthManager() != null) {
+                extraEnchants = plugin.getWorthManager().getExtraEnchantmentWorth(sampleItem);
+                if (!Double.isFinite(extraEnchants) || extraEnchants < 0) {
+                    extraEnchants = 0;
+                }
             }
+            double ceiling = floorQuickBuyUnitPrice(buyer, sampleItem, fixedUnit + extraEnchants);
+            if (useAh) {
+                AuctionListing cheaper = cheapestQuickBuyListing(buyer, material, requiredEnchants, true, ceiling);
+                if (cheaper != null) {
+                    return quoteFromListing(buyer, sampleItem, cheaper, qty);
+                }
+            }
+            return new QuickBuyQuote(ceiling, ceiling * qty, null, false, false);
+        }
+
+        if (useAh) {
+            AuctionListing best = cheapestQuickBuyListing(buyer, material, requiredEnchants, false, worthFloor);
+            if (best != null) {
+                return quoteFromListing(buyer, sampleItem, best, qty);
+            }
+        }
+
+        if (unlistedQuickBuyIsAuctionOnly()) {
+            return new QuickBuyQuote(0, 0, null, false, true);
         }
 
         double shopPrice = findServerShopPrice(sampleItem != null ? sampleItem : new ItemStack(material));
         if (shopPrice > 0) {
-            if (serverWorth > 0 && shopPrice < serverWorth) {
-                shopPrice = serverWorth;
+            if (worthFloor > 0 && shopPrice < worthFloor) {
+                shopPrice = worthFloor;
             }
+            shopPrice = floorQuickBuyUnitPrice(buyer, sampleItem, shopPrice);
             return new QuickBuyQuote(shopPrice, shopPrice * qty, null, false, false);
         }
 
         return new QuickBuyQuote(0, 0, null, false, true);
+    }
+
+    double minimumQuickBuyUnitPrice(Player buyer, ItemStack sample) {
+        if (sample == null || plugin.getWorthManager() == null) {
+            return 0D;
+        }
+        WorthResult worth = plugin.getWorthManager().resolveWorth(sample);
+        if (!worth.sellable() || worth.unitWorth() <= 0D || !Double.isFinite(worth.unitWorth())) {
+            return 0D;
+        }
+        SellCategory category = plugin.getWorthManager().getSellCategory(sample);
+        if (category == null) {
+            return 0D;
+        }
+        Map<SellCategory, Double> progress = buyer == null
+                ? Map.of()
+                : getSellProgress(buyer.getUniqueId());
+        double multiplier = getCurrentSellMultiplier(progress, category);
+        double floor = worth.unitWorth() * multiplier;
+        return Double.isFinite(floor) && floor > 0D ? floor : 0D;
+    }
+
+    private double floorQuickBuyUnitPrice(Player buyer, ItemStack sample, double unitPrice) {
+        if (!Double.isFinite(unitPrice) || unitPrice <= 0D) {
+            return unitPrice;
+        }
+        double min = minimumQuickBuyUnitPrice(buyer, sample);
+        return min > 0D && unitPrice < min ? min : unitPrice;
+    }
+
+    double fixedItemUnitPrice(Material material) {
+        if (material == null || material.isAir()) {
+            return -1;
+        }
+        ConfigurationSection fixed = fixedItemsSection();
+        if (fixed == null) {
+            return -1;
+        }
+        for (String key : fixed.getKeys(false)) {
+            if (fixedItemMaterial(key) != material) {
+                continue;
+            }
+            double price = positivePrice(fixed.get(key));
+            if (price > 0) {
+                return price;
+            }
+        }
+        return -1;
+    }
+
+    double fixedEnchantedBookUnitPrice(ItemStack item) {
+        FixedEnchantedBook wanted = storedEnchantedBook(item);
+        if (wanted == null) {
+            return -1;
+        }
+        ConfigurationSection fixed = fixedItemsSection();
+        if (fixed == null) {
+            return -1;
+        }
+        for (String key : fixed.getKeys(false)) {
+            FixedEnchantedBook parsed = fixedEnchantedBookKey(key);
+            if (parsed == null || !parsed.equals(wanted)) {
+                continue;
+            }
+            double price = positivePrice(fixed.get(key));
+            if (price > 0) {
+                return price;
+            }
+        }
+        return -1;
+    }
+
+    private ConfigurationSection fixedItemsSection() {
+        if (plugin.getConfigManager() == null) {
+            return null;
+        }
+        ConfigurationSection shop = plugin.getConfigManager().getShop();
+        if (shop == null) {
+            return null;
+        }
+        return shop.getConfigurationSection("QUICK-BUY.PRICING.FIXED-ITEMS");
+    }
+
+    private static FixedEnchantedBook storedEnchantedBook(ItemStack item) {
+        if (item == null || item.getType() != Material.ENCHANTED_BOOK) {
+            return null;
+        }
+        if (!(item.getItemMeta() instanceof EnchantmentStorageMeta stored)) {
+            return null;
+        }
+        Map<org.bukkit.enchantments.Enchantment, Integer> storedEnchants = stored.getStoredEnchants();
+        if (storedEnchants == null || storedEnchants.size() != 1) {
+            return null;
+        }
+        Map.Entry<org.bukkit.enchantments.Enchantment, Integer> only = storedEnchants.entrySet().iterator().next();
+        if (only.getKey() == null || only.getKey().getKey() == null || only.getValue() == null || only.getValue() <= 0) {
+            return null;
+        }
+        String enchant = only.getKey().getKey().getKey()
+                .trim()
+                .toUpperCase(Locale.ROOT)
+                .replace('-', '_')
+                .replace(' ', '_');
+        if (enchant.isEmpty()) {
+            return null;
+        }
+        return new FixedEnchantedBook(enchant, only.getValue());
+    }
+
+    static FixedEnchantedBook fixedEnchantedBookKey(String key) {
+        if (key == null) {
+            return null;
+        }
+        String normalized = key.trim().toUpperCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.startsWith("MINECRAFT:")) {
+            normalized = normalized.substring("MINECRAFT:".length());
+        }
+        String prefix = "ENCHANTED_BOOK:";
+        if (!normalized.startsWith(prefix)) {
+            return null;
+        }
+        String rest = normalized.substring(prefix.length());
+        int split = rest.lastIndexOf(':');
+        if (split <= 0 || split >= rest.length() - 1) {
+            return null;
+        }
+        String enchant = rest.substring(0, split);
+        if (enchant.startsWith("MINECRAFT:")) {
+            enchant = enchant.substring("MINECRAFT:".length());
+        }
+        if (enchant.isEmpty() || enchant.indexOf(':') >= 0 || !enchant.chars().allMatch(FixedEnchantedBook::isNameChar)) {
+            return null;
+        }
+        int level;
+        try {
+            level = Integer.parseInt(rest.substring(split + 1));
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+        if (level <= 0) {
+            return null;
+        }
+        return new FixedEnchantedBook(enchant, level);
+    }
+
+    record FixedEnchantedBook(String enchant, int level) {
+        private static boolean isNameChar(int c) {
+            return c == '_' || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+        }
+    }
+
+    static Material fixedItemMaterial(String key) {
+        if (key == null) {
+            return null;
+        }
+        String trimmed = key.trim();
+        if (trimmed.isEmpty()) {
+            return null;
+        }
+        int colon = trimmed.lastIndexOf(':');
+        String simple = (colon >= 0 ? trimmed.substring(colon + 1) : trimmed)
+                .trim()
+                .toUpperCase(Locale.ROOT)
+                .replace('-', '_')
+                .replace(' ', '_');
+        if (!simple.isEmpty()) {
+            try {
+                Material parsed = Material.valueOf(simple);
+                if (!parsed.isAir()) {
+                    return parsed;
+                }
+            } catch (IllegalArgumentException ignored) {}
+        }
+        try {
+            Material matched = Material.matchMaterial(trimmed);
+            return matched == null || matched.isAir() ? null : matched;
+        } catch (RuntimeException ignored) {
+            return null;
+        }
+    }
+
+    private static double positivePrice(Object raw) {
+        double price;
+        if (raw instanceof Number number) {
+            price = number.doubleValue();
+        } else if (raw instanceof String text) {
+            try {
+                price = Double.parseDouble(text.trim());
+            } catch (NumberFormatException ignored) {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+        return Double.isFinite(price) && price > 0 ? price : -1;
+    }
+
+    private boolean unlistedQuickBuyIsAuctionOnly() {
+        if (plugin.getConfigManager() == null || plugin.getConfigManager().getShop() == null) {
+            return false;
+        }
+        String mode = plugin.getConfigManager().getShop().getString("QUICK-BUY.PRICING.UNLISTED", "WORTH");
+        return mode != null && mode.trim().equalsIgnoreCase("AUCTION-ONLY");
+    }
+
+    private QuickBuyQuote quoteFromListing(Player buyer, ItemStack sample, AuctionListing listing, int qty) {
+        double unitPrice = listing.price() / Math.max(1, listing.item().getAmount());
+        unitPrice = floorQuickBuyUnitPrice(buyer, sample, unitPrice);
+        return new QuickBuyQuote(unitPrice, unitPrice * qty, listing, true, false);
+    }
+
+    private AuctionListing cheapestQuickBuyListing(
+            Player buyer,
+            Material material,
+            Map<org.bukkit.enchantments.Enchantment, Integer> requiredEnchants,
+            boolean ceiling,
+            double bound
+    ) {
+        if (plugin.getAuctionHouseManager() == null || !plugin.getAuctionHouseManager().isEnabled()) {
+            return null;
+        }
+        List<AuctionListing> listings = plugin.getAuctionHouseManager().getActiveListings(AuctionHouseManager.AuctionSort.PRICE_LOWEST);
+        long now = System.currentTimeMillis();
+        return listings.stream()
+                .filter(Objects::nonNull)
+                .filter(AuctionListing::active)
+                .filter(l -> l.expiresAt() > now)
+                .filter(l -> buyer == null || !buyer.getUniqueId().equals(l.sellerUuid()))
+                .filter(l -> l.item() != null && l.item().getType() == material && l.item().getAmount() > 0)
+                .filter(l -> matchesRequiredEnchants(l.item(), requiredEnchants))
+                .filter(l -> {
+                    double unit = l.price() / Math.max(1, l.item().getAmount());
+                    if (!Double.isFinite(unit) || unit < 0) {
+                        return false;
+                    }
+                    return ceiling ? unit < bound : (bound <= 0 || unit >= bound);
+                })
+                .min(Comparator.comparingDouble(l -> l.price() / Math.max(1, l.item().getAmount())))
+                .orElse(null);
     }
 
     static boolean matchesRequiredEnchants(ItemStack item, Map<org.bukkit.enchantments.Enchantment, Integer> requiredEnchants) {
@@ -623,6 +889,30 @@ public class ShopManager {
         return findServerShopPrice(sample != null ? sample : new ItemStack(material));
     }
 
+    static boolean canFitQuickBuyStack(ItemStack[] storage, ItemStack incoming, int maxStackSize) {
+        if (incoming == null || incoming.getType() == Material.AIR || incoming.getAmount() <= 0) {
+            return true;
+        }
+        if (storage == null || storage.length == 0) {
+            return false;
+        }
+        int stackLimit = Math.max(1, maxStackSize);
+        int remaining = incoming.getAmount();
+        ItemStack comparison = incoming.clone();
+        comparison.setAmount(1);
+        for (ItemStack current : storage) {
+            if (current == null || current.getType() == Material.AIR) {
+                remaining -= stackLimit;
+            } else if (current.isSimilar(comparison) && current.getAmount() < stackLimit) {
+                remaining -= stackLimit - current.getAmount();
+            }
+            if (remaining <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public CompletableFuture<QuickBuyExecutionResult> executeQuickBuy(Player buyer, QuickBuyEntry entry) {
         if (buyer == null || entry == null || entry.isEmpty() || !entry.active()) {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false, "&cInvalid item.", 0, 0));
@@ -634,45 +924,28 @@ public class ShopManager {
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.OUT_OF_STOCK", "&cOut of stock! No auction listings available."), 0, 0));
         }
 
-        if (quote.fromAuction() && quote.listing() != null) {
-            return plugin.getAuctionHouseManager().purchaseListing(buyer, quote.listing().id()).thenApply(result -> {
-                if (result.success()) {
-                    int boughtAmount = quote.listing().item() != null ? quote.listing().item().getAmount() : entry.buyAmount();
-                    double pricePaid = quote.listing().price();
-                    return new QuickBuyExecutionResult(true, "", pricePaid, boughtAmount);
-                } else {
-                    String reason = switch (result.reason()) {
-                        case NO_MONEY -> plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!");
-                        case INVENTORY_FULL -> plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!");
-                        default -> plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.FAILED", "&cPurchase failed. Price may have changed.");
-                    };
-                    return new QuickBuyExecutionResult(false, reason, 0, 0);
-                }
-            });
-        } else {
-            if (!plugin.getEconomyManager().has(buyer, quote.totalPrice())) {
-                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
-            }
-            if (buyer.getInventory().firstEmpty() == -1) {
-                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
-            }
-            var withdraw = plugin.getEconomyManager().withdraw(buyer, quote.totalPrice(), EconomyReason.SHOP_PURCHASE);
-            if (!withdraw.success()) {
-                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
-            }
-            ItemStack stack = entry.createItem(entry.buyAmount());
-            buyer.getInventory().addItem(stack);
-            PlayerData data = plugin.getPlayerDataManager().get(buyer);
-            if (data != null) {
-                data.addMoneySpent(quote.totalPrice());
-            }
-            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(true, "", quote.totalPrice(), entry.buyAmount()));
+        double price = pricePaidFor(quote);
+        if (!plugin.getEconomyManager().has(buyer, price)) {
+            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
+                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
-    }
 
+        var withdraw = plugin.getEconomyManager().withdraw(buyer, price, EconomyReason.SHOP_PURCHASE);
+        if (!withdraw.success()) {
+            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
+                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
+        }
+
+        ItemStack stack = entry.createItem(entry.buyAmount());
+        buyer.getInventory().addItem(stack).values().forEach(leftover ->
+                buyer.getWorld().dropItemNaturally(buyer.getLocation(), leftover));
+
+        PlayerData data = plugin.getPlayerDataManager().get(buyer);
+        if (data != null) {
+            data.addMoneySpent(price);
+        }
+        return CompletableFuture.completedFuture(new QuickBuyExecutionResult(true, "", price, entry.buyAmount()));
+    }
 
     public boolean isFavorite(UUID playerId, ShopItem item) {
         return getPreference(playerId).favorites().contains(favoriteId(item));
@@ -1004,9 +1277,6 @@ public class ShopManager {
         return validatePurchase(player, item, amount);
     }
 
-    /**
-     * Process a shop purchase and return a rich result for menu feedback.
-     */
     public PurchaseResult purchase(Player player, ShopItem item, int amount) {
         PurchaseResult preview = validatePurchase(player, item, amount);
         if (!preview.success()) {
@@ -1257,10 +1527,6 @@ public class ShopManager {
             return failPurchase(item, amount, totalPrice, PurchaseFailureReason.NO_MONEY);
         }
 
-        if (shouldDeliverConfiguredItem(item) && !canFitPurchasedItem(player, item, amount)) {
-            return failPurchase(item, amount, totalPrice, PurchaseFailureReason.INVENTORY_FULL);
-        }
-
         return new PurchaseResult(true, null, item, amount, totalPrice, item.currency());
     }
 
@@ -1354,10 +1620,6 @@ public class ShopManager {
         }
     }
 
-    /**
-     * The exact item stored as ITEM-DATA, or null when the entry is a plain MATERIAL one.
-     * Menus use this so the icon matches what the buyer actually receives.
-     */
     public ItemStack createCustomItem(ShopItem item) {
         if (item == null || !item.hasCustomItemData()) {
             return null;
@@ -1632,12 +1894,20 @@ public class ShopManager {
         return getSellProgressInfo(getSellProgress(uuid), category);
     }
 
+    public boolean isSellMultiplierEnabled() {
+        if (plugin == null || plugin.getConfigManager() == null || plugin.getConfigManager().getMenus() == null) {
+            return true;
+        }
+        return plugin.getConfigManager().getMenus().getBoolean("PROGRESS-MENU.ENABLED", true);
+    }
+
     public SellProgressInfo getSellProgressInfo(Map<SellCategory, Double> progress, SellCategory category) {
         List<Long> levels = getSellProgressLevels();
         double earned = progress.getOrDefault(category, 0D);
         int completedLevels = getCompletedLevels(earned, levels);
         boolean maxed = completedLevels >= levels.size();
-        double currentMultiplier = 1.0 + (completedLevels * 0.1);
+        boolean enabled = isSellMultiplierEnabled();
+        double currentMultiplier = enabled ? 1.0 + (completedLevels * 0.1) : 1.0;
         double previousGoal = completedLevels <= 0 ? 0 : levels.get(completedLevels - 1);
         double nextGoal = maxed ? levels.get(levels.size() - 1) : levels.get(completedLevels);
         int percentage = calculateProgressPercentage(earned, previousGoal, nextGoal, maxed);
@@ -1647,7 +1917,7 @@ public class ShopManager {
                 earned,
                 completedLevels,
                 currentMultiplier,
-                maxed ? "MAX" : formatMultiplier(1.0 + ((completedLevels + 1) * 0.1)),
+                !enabled ? "1.0x" : (maxed ? "MAX" : formatMultiplier(1.0 + ((completedLevels + 1) * 0.1))),
                 previousGoal,
                 nextGoal,
                 percentage,
@@ -1657,6 +1927,9 @@ public class ShopManager {
     }
 
     public double getCurrentSellMultiplier(Map<SellCategory, Double> progress, SellCategory category) {
+        if (!isSellMultiplierEnabled()) {
+            return 1.0;
+        }
         return 1.0 + (getCompletedLevels(progress.getOrDefault(category, 0D), getSellProgressLevels()) * 0.1);
     }
 
@@ -1717,10 +1990,6 @@ public class ShopManager {
         return sale;
     }
 
-    /**
-     * What the given inventory range is worth to this player right now, without selling
-     * anything. The sell menu puts this on its confirm button.
-     */
     public double previewSellWorth(Player player, Inventory inventory, int startInclusive, int endExclusive) {
         if (player == null || inventory == null) {
             return 0;
@@ -1854,11 +2123,13 @@ public class ShopManager {
         }
 
         Map<SellCategory, Double> earnedCopy = new EnumMap<>(sale.earnedByCategory);
+        boolean multipliersEnabled = isSellMultiplierEnabled();
         for (var entry : sale.earnedByCategory.entrySet()) {
             SellCategory category = entry.getKey();
             double before = sale.currentProgress.getOrDefault(category, 0D);
             double after = before + entry.getValue();
-            if (getCompletedLevels(after, getSellProgressLevels())
+            if (multipliersEnabled
+                    && getCompletedLevels(after, getSellProgressLevels())
                     > getCompletedLevels(before, getSellProgressLevels())) {
                 leveledUpCategories.add(category);
             }
@@ -1869,8 +2140,10 @@ public class ShopManager {
         plugin.getDatabaseManager().executeAsync(() -> {
             plugin.getDatabaseManager().addSellHistoryBatch(historyBatch);
             plugin.getDatabaseManager().addPlayerLogBatch(logBatch);
-            for (var entry : earnedCopy.entrySet()) {
-                plugin.getDatabaseManager().addSellProgress(player.getUniqueId(), entry.getKey(), entry.getValue());
+            if (multipliersEnabled) {
+                for (var entry : earnedCopy.entrySet()) {
+                    plugin.getDatabaseManager().addSellProgress(player.getUniqueId(), entry.getKey(), entry.getValue());
+                }
             }
         });
 

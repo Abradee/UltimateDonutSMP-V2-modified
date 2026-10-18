@@ -438,9 +438,11 @@ public class ScoreboardManager {
             Team team = teams[i];
             if (team == null) continue;
             String raw = lines.get(i);
-            if (raw.equals(oldRawLines[i])) {
+
+            if (!raw.contains("%") && raw.equals(oldRawLines[i])) {
                 continue;
             }
+
             String text = ColorUtils.colorize(raw, player);
             text = alignSidebarIconColumn(text, settings);
             if (!text.equals(oldLines[i])) {
