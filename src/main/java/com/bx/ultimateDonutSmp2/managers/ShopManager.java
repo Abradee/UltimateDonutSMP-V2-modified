@@ -188,7 +188,6 @@ public class ShopManager {
         private final List<PendingSellHistory> history = new ArrayList<>();
         private final List<Integer> soldSlots = new ArrayList<>();
         private double totalPayout;
-        /** Mirrors the seller's "Include Shulker on Sell" setting for the whole sale. */
         private boolean expandContainers = true;
     }
 
@@ -278,7 +277,6 @@ public class ShopManager {
             );
         }
 
-        /** Kept so callers that predate custom item data keep compiling. */
         public ShopItem(
                 String key,
                 String menuSection,
@@ -397,10 +395,6 @@ public class ShopManager {
         }
     }
 
-    /**
-     * What one click on a pinned slot costs. {@code totalPrice} is the unit price times the
-     * pinned amount. A matching auction listing only supplies that unit price.
-     */
     public static double pricePaidFor(QuickBuyQuote quote) {
         if (quote == null || quote.outOfStock()) {
             return 0D;
@@ -521,7 +515,6 @@ public class ShopManager {
             fixedUnit = bookUnit;
             exactEnchantedBook = true;
         } else if (material == Material.ENCHANTED_BOOK && fixedUnit > 0) {
-            // One ENCHANTED_BOOK price covers every enchant and level. Worth is not added.
             exactEnchantedBook = true;
         }
         if (fixedUnit > 0) {
@@ -565,10 +558,6 @@ public class ShopManager {
         return new QuickBuyQuote(0, 0, null, false, true);
     }
 
-    /**
-     * Lowest unit price Quick Buy may charge so a purchase cannot be sold back for more than it cost.
-     * Uses the buyer's current sell-category multiplier on top of {@code worth.yml}.
-     */
     double minimumQuickBuyUnitPrice(Player buyer, ItemStack sample) {
         if (sample == null || plugin.getWorthManager() == null) {
             return 0D;
@@ -597,11 +586,6 @@ public class ShopManager {
         return min > 0D && unitPrice < min ? min : unitPrice;
     }
 
-    /**
-     * Unit price from {@code QUICK-BUY.PRICING.FIXED-ITEMS}, or {@code -1} when this material
-     * has no positive finite price there. Keys may be {@code STICK} or {@code minecraft:stick}.
-     * {@code ENCHANTED_BOOK:SHARPNESS:3} is not a material key; see {@link #fixedEnchantedBookUnitPrice}.
-     */
     double fixedItemUnitPrice(Material material) {
         if (material == null || material.isAir()) {
             return -1;
@@ -622,11 +606,6 @@ public class ShopManager {
         return -1;
     }
 
-    /**
-     * Unit price for an enchanted book whose stored enchantment is exactly one
-     * {@code ENCHANTED_BOOK:<ENCHANT>:<LEVEL>} key, or {@code -1} when none matches.
-     * That price replaces {@code worth.yml}. It is not added on top of it.
-     */
     double fixedEnchantedBookUnitPrice(ItemStack item) {
         FixedEnchantedBook wanted = storedEnchantedBook(item);
         if (wanted == null) {
@@ -686,10 +665,6 @@ public class ShopManager {
         return new FixedEnchantedBook(enchant, only.getValue());
     }
 
-    /**
-     * {@code ENCHANTED_BOOK:SHARPNESS:3}, or the same key with a {@code minecraft:} prefix.
-     * Anything else, including a plain material, is not an enchanted-book price.
-     */
     static FixedEnchantedBook fixedEnchantedBookKey(String key) {
         if (key == null) {
             return null;
@@ -752,9 +727,7 @@ public class ShopManager {
                 if (!parsed.isAir()) {
                     return parsed;
                 }
-            } catch (IllegalArgumentException ignored) {
-                // Namespaced or legacy keys fall through to Bukkit's matcher.
-            }
+            } catch (IllegalArgumentException ignored) {}
         }
         try {
             Material matched = Material.matchMaterial(trimmed);
@@ -794,10 +767,6 @@ public class ShopManager {
         return new QuickBuyQuote(unitPrice, unitPrice * qty, listing, true, false);
     }
 
-    /**
-     * @param ceiling when true, keep listings whose unit price is strictly below {@code bound};
-     *                when false, keep listings at or above {@code bound} (a non-positive bound allows any price)
-     */
     private AuctionListing cheapestQuickBuyListing(
             Player buyer,
             Material material,
@@ -960,24 +929,23 @@ public class ShopManager {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
-        ItemStack stack = entry.createItem(entry.buyAmount());
-        if (!canFitQuickBuyStack(buyer.getInventory().getStorageContents(), stack, stack.getMaxStackSize())) {
-            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
-        }
+
         var withdraw = plugin.getEconomyManager().withdraw(buyer, price, EconomyReason.SHOP_PURCHASE);
         if (!withdraw.success()) {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
-        buyer.getInventory().addItem(stack);
+
+        ItemStack stack = entry.createItem(entry.buyAmount());
+        buyer.getInventory().addItem(stack).values().forEach(leftover ->
+                buyer.getWorld().dropItemNaturally(buyer.getLocation(), leftover));
+
         PlayerData data = plugin.getPlayerDataManager().get(buyer);
         if (data != null) {
             data.addMoneySpent(price);
         }
         return CompletableFuture.completedFuture(new QuickBuyExecutionResult(true, "", price, entry.buyAmount()));
     }
-
 
     public boolean isFavorite(UUID playerId, ShopItem item) {
         return getPreference(playerId).favorites().contains(favoriteId(item));
@@ -1309,9 +1277,6 @@ public class ShopManager {
         return validatePurchase(player, item, amount);
     }
 
-    /**
-     * Process a shop purchase and return a rich result for menu feedback.
-     */
     public PurchaseResult purchase(Player player, ShopItem item, int amount) {
         PurchaseResult preview = validatePurchase(player, item, amount);
         if (!preview.success()) {
@@ -1562,10 +1527,6 @@ public class ShopManager {
             return failPurchase(item, amount, totalPrice, PurchaseFailureReason.NO_MONEY);
         }
 
-        if (shouldDeliverConfiguredItem(item) && !canFitPurchasedItem(player, item, amount)) {
-            return failPurchase(item, amount, totalPrice, PurchaseFailureReason.INVENTORY_FULL);
-        }
-
         return new PurchaseResult(true, null, item, amount, totalPrice, item.currency());
     }
 
@@ -1659,10 +1620,6 @@ public class ShopManager {
         }
     }
 
-    /**
-     * The exact item stored as ITEM-DATA, or null when the entry is a plain MATERIAL one.
-     * Menus use this so the icon matches what the buyer actually receives.
-     */
     public ItemStack createCustomItem(ShopItem item) {
         if (item == null || !item.hasCustomItemData()) {
             return null;
@@ -2033,10 +1990,6 @@ public class ShopManager {
         return sale;
     }
 
-    /**
-     * What the given inventory range is worth to this player right now, without selling
-     * anything. The sell menu puts this on its confirm button.
-     */
     public double previewSellWorth(Player player, Inventory inventory, int startInclusive, int endExclusive) {
         if (player == null || inventory == null) {
             return 0;
