@@ -57,6 +57,38 @@ public final class BedrockChatPrompt implements Listener {
     }
 
     /**
+     * @return true when {@code player} is on Bedrock, so the caller must not open a sign or a Java dialog
+     */
+    public static boolean askIfBedrock(
+            UltimateDonutSmp2 plugin,
+            Player player,
+            String message,
+            Consumer<String> callback
+    ) {
+        return askIfBedrock(plugin, player, message, callback, null);
+    }
+
+    /**
+     * @return true when {@code player} is on Bedrock, so the caller must not open a sign or a Java dialog
+     */
+    public static boolean askIfBedrock(
+            UltimateDonutSmp2 plugin,
+            Player player,
+            String message,
+            Consumer<String> callback,
+            Runnable onQuit
+    ) {
+        if (plugin == null || player == null || callback == null || !BedrockPlayers.isBedrock(player)) {
+            return false;
+        }
+        BedrockChatPrompt prompt = plugin.getBedrockChatPrompt();
+        if (prompt != null && message != null && !message.isBlank()) {
+            prompt.ask(player, message, callback, onQuit);
+        }
+        return true;
+    }
+
+    /**
      * @return true when this player is on Bedrock and the next chat line is the answer
      */
     public boolean ask(Player player, String message, Consumer<String> callback, Runnable onQuit) {

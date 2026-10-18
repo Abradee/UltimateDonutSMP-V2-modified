@@ -210,7 +210,7 @@ Controls sit along the bottom row:
 | State Filter | Cycles All / Active / Inactive. Inactive covers both expired and manually removed records |
 | Type Filter | Cycles All / Ban / Mute / Warn / Kick / Blacklist |
 | Sort Order | Switches between newest and oldest first |
-| Search | Left-click opens a sign to type a player name, right-click clears it |
+| Search | Left-click asks for a player name. Java opens a sign; Bedrock asks in chat, and `cancel` goes back without changing the filter. Right-click clears it |
 | Refresh | Re-reads the list |
 
 Search matches any part of the stored player name and ignores case, so `rod` finds `Cuteboyrodney`. A full UUID also works. Left-clicking an entry opens that player's full history; shift-right-clicking deletes the record if the viewer holds `ultimatedonutsmp2.staff.punishments.delete`.

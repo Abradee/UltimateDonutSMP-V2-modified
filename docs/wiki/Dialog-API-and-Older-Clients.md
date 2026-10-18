@@ -102,6 +102,8 @@ If someone reports "the shop does not work on Bedrock," check:
   an active search on the chest buttons.
 - Are they expecting `/menu`, `/ah`, or `/pay` dialogs? Those remain **Java-only**.
 
+Bedrock search on the auction browser, Your Items, transaction history, the orders chest, the bounty list, and `/punishments` is a chat line too. `cancel` goes back. Java keeps the dialog where the server has one, and the sign where it does not.
+
 ### What operators should do for Bedrock
 
 1. Run **Geyser + Floodgate** together if Bedrock players should use Quick Buy pinning, Orders

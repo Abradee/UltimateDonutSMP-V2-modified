@@ -8,6 +8,7 @@ import com.bx.ultimateDonutSmp2.models.ItemKey;
 import com.bx.ultimateDonutSmp2.models.Order;
 import com.bx.ultimateDonutSmp2.models.OrderCollectionClaim;
 import com.bx.ultimateDonutSmp2.models.OrderSort;
+import com.bx.ultimateDonutSmp2.utils.BedrockPlayers;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import com.bx.ultimateDonutSmp2.utils.ItemUtils;
 import com.bx.ultimateDonutSmp2.utils.NumberUtils;
@@ -357,6 +358,10 @@ final class OrdersMenuSupport {
             String categoryFilter,
             String query
     ) {
+        if (BedrockPlayers.isBedrock(player)) {
+            plugin.getOrdersManager().promptOrdersMenuSearch(player, sort, categoryFilter, false);
+            return;
+        }
         if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
             OrdersDialog dialog = plugin.getDialogManager().getScreen(OrdersDialog.class);
             if (dialog != null) {

@@ -1791,6 +1791,7 @@ MESSAGES:
     CANCEL_USAGE: "&cUsage: /ah отменить <listingid>"
     INVALID_PRICE: "&cInvalid price format. use numbers like 100, 5k, or 1,5m."
     BEDROCK_PRICE_PROMPT: "&7Type a price in chat, like &f30k&7. Type &ccancel &7to put the item back."
+    BEDROCK_SEARCH_PROMPT: "&7Type an item name in chat. Type &ccancel &7to go back."
     INVALID_LISTING_ID: "&cInvalid listing id."
     NO_ADMIN_PERMISSION: '&cYou do not have permission to reload auction house settings.'
     RELOADED: "&aAuction house config reloaded."
@@ -2068,6 +2069,7 @@ MESSAGES:
     META-INACTIVE: "&cСейчас мета фарма не запущена."
     META-ROTATED: "&b{item} &fтеперь в мете фарма с множителем &a{multiplier}x&f и продаётся за &a{price_formatted}&f. Следующая смена через &e{countdown}&f."
   BOUNTY:
+    BEDROCK_SEARCH_PROMPT: "&7Type a player name in chat. Type &ccancel &7to go back."
     NEW: "&aA new bounty of ${price} has been placed on {player}!"
     INCREASED: "&aThe bounty for {player} has been increased by ${price}!"
     ALERT: "&aYou have a new bounty from {who} for ${price}"
@@ -2147,6 +2149,7 @@ MESSAGES:
     THE_END: "&7{player} In the &bthe end &7(&b{biome}&7)"
     UNKNOWN: "&7{player} В the &b{world}"
   PUNISHMENTS:
+    BEDROCK_SEARCH_PROMPT: "&7Type a player name in chat. Type &ccancel &7to go back."
     PLAYER-ONLY: "&cOnly players can use this command."
     NO-PERMISSION: '&cYou do not have permission to view punishment history.'
     NO-CREATE-PERMISSION: '&cYou do not have permission to create punishments.'

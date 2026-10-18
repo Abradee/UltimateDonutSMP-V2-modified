@@ -3,6 +3,7 @@ package com.bx.ultimateDonutSmp2.menus;
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.QuickBuyItemDialog;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.models.AuctionListing;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import com.bx.ultimateDonutSmp2.utils.ItemUtils;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class QuickBuyTransactionsMenu extends BaseMenu {
 
@@ -253,6 +255,29 @@ public class QuickBuyTransactionsMenu extends BaseMenu {
                 return;
             }
             click(player);
+            Consumer<String> apply = input -> {
+                searchQuery = input == null || input.isBlank() ? "" : input.trim();
+                page = 0;
+                QuickBuySounds.play(player, plugin, QuickBuySounds.SEARCH);
+                new QuickBuyTransactionsMenu(plugin, page, searchQuery, origin).open(player);
+            };
+            if (BedrockChatPrompt.askIfBedrock(
+                    plugin,
+                    player,
+                    plugin.getConfigManager().getMessageOrDefault(
+                            "AUCTION_HOUSE.BEDROCK_SEARCH_PROMPT",
+                            "&7Type an item name in chat. Type &ccancel &7to go back."
+                    ),
+                    input -> {
+                        if (input == null) {
+                            new QuickBuyTransactionsMenu(plugin, page, searchQuery, origin).open(player);
+                            return;
+                        }
+                        apply.accept(input);
+                    }
+            )) {
+                return;
+            }
             if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
                 QuickBuyItemDialog dialog = plugin.getDialogManager().getScreen(QuickBuyItemDialog.class);
                 if (dialog != null) {
@@ -261,12 +286,7 @@ public class QuickBuyTransactionsMenu extends BaseMenu {
                     return;
                 }
             }
-            SignInputUtil.open(plugin, player, List.of("", "↑↑↑↑↑↑↑↑↑↑↑↑↑↑", "Search", ""), 0, input -> {
-                searchQuery = input == null || input.isBlank() ? "" : input.trim();
-                page = 0;
-                QuickBuySounds.play(player, plugin, QuickBuySounds.SEARCH);
-                new QuickBuyTransactionsMenu(plugin, page, searchQuery, origin).open(player);
-            });
+            SignInputUtil.open(plugin, player, List.of("", "↑↑↑↑↑↑↑↑↑↑↑↑↑↑", "Search", ""), 0, apply);
         }
     }
 

@@ -5,7 +5,7 @@ want to buy and at what price, and anyone holding that item can fill the order.
 
 `MATCHING` and `DELIVERY` are the heart of it — how a held item is matched against an open
 order, and how the goods and money change hands afterwards. `CATEGORY_FILTERS` draws its
-category buttons from `filter.yml`. The `*_SIGN` sections configure the sign prompts. Search on the chest uses `SEARCH_SIGN`. Amount and price use `AMOUNT_SIGN` and `PRICE_SIGN` for Java players. Bedrock players on that chest type the amount and the price in chat, because a sign editor there closes and then no menu will open. `BEDROCK` sends native forms when Floodgate is installed. `NETWORK` syncs orders between servers over
+category buttons from `filter.yml`. The `*_SIGN` sections configure the sign prompts. Search, amount, and price on the chest are signs for Java (`SEARCH_SIGN`, `AMOUNT_SIGN`, `PRICE_SIGN`). Bedrock players on that chest type all of those in chat, because a sign editor there closes and then no menu will open. `BEDROCK` sends native forms when Floodgate is installed. `NETWORK` syncs orders between servers over
 Redis.
 
 Comment at the top of the shipped file:
