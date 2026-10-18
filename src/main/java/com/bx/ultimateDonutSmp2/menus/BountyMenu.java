@@ -3,6 +3,7 @@ package com.bx.ultimateDonutSmp2.menus;
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.BountyDialog;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.managers.TablistManager;
 import com.bx.ultimateDonutSmp2.models.Bounty;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Bounty GUI matching Design/Bounty specifications.
@@ -152,6 +154,25 @@ public class BountyMenu extends BaseMenu {
                 return;
             }
 
+            Consumer<String> apply = text -> {
+                if (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) {
+                    new BountyMenu(plugin, page, searchQuery, sortByRecent).open(player);
+                } else {
+                    new BountyMenu(plugin, 0, text.trim(), sortByRecent).open(player);
+                }
+            };
+            if (BedrockChatPrompt.askIfBedrock(
+                    plugin,
+                    player,
+                    plugin.getConfigManager().getMessageOrDefault(
+                            "BOUNTY.BEDROCK_SEARCH_PROMPT",
+                            "&7Type a player name in chat. Type &ccancel &7to go back."
+                    ),
+                    apply
+            )) {
+                return;
+            }
+
             if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
                 BountyDialog dialog = plugin.getDialogManager().getScreen(BountyDialog.class);
                 if (dialog != null && dialog.openSearch(player, searchQuery, sortByRecent, page)) {
@@ -161,13 +182,7 @@ public class BountyMenu extends BaseMenu {
 
             org.bukkit.configuration.ConfigurationSection config = plugin.getConfigManager().getMenus()
                     .getConfigurationSection("BOUNTIES-MENU.SEARCH_SIGN");
-            com.bx.ultimateDonutSmp2.utils.SignInputUtil.openFromConfig(plugin, player, config, text -> {
-                if (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) {
-                    new BountyMenu(plugin, page, searchQuery, sortByRecent).open(player);
-                } else {
-                    new BountyMenu(plugin, 0, text.trim(), sortByRecent).open(player);
-                }
-            });
+            com.bx.ultimateDonutSmp2.utils.SignInputUtil.openFromConfig(plugin, player, config, apply);
             return;
         }
 

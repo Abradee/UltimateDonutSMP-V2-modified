@@ -1,6 +1,7 @@
 package com.bx.ultimateDonutSmp2.menus;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.managers.PunishmentManager;
 import com.bx.ultimateDonutSmp2.models.PunishmentQuery;
 import com.bx.ultimateDonutSmp2.models.PunishmentRecord;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Server-wide punishment browser. Unlike {@link PunishmentHistoryMenu} this is not scoped to one
@@ -211,14 +213,26 @@ public class PunishmentsListMenu extends BaseMenu {
         );
         int inputLine = menus().getInt(MENU_PATH + ".SEARCH-SIGN.INPUT-LINE", 0);
 
-        SignInputUtil.open(plugin, player, signLines, inputLine, text -> {
+        Consumer<String> apply = text -> {
             if (text != null && !text.isBlank() && !text.equalsIgnoreCase("cancel")) {
                 String trimmed = text.trim();
                 search = trimmed.length() > MAX_SEARCH_LENGTH ? trimmed.substring(0, MAX_SEARCH_LENGTH) : trimmed;
                 page = 0;
             }
             open(player);
-        });
+        };
+        if (BedrockChatPrompt.askIfBedrock(
+                plugin,
+                player,
+                plugin.getConfigManager().getMessageOrDefault(
+                        "PUNISHMENTS.BEDROCK_SEARCH_PROMPT",
+                        "&7Type a player name in chat. Type &ccancel &7to go back."
+                ),
+                apply
+        )) {
+            return;
+        }
+        SignInputUtil.open(plugin, player, signLines, inputLine, apply);
     }
 
     private void handleRecordClick(PunishmentRecord record, Player player, ClickType clickType) {

@@ -72,6 +72,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class OrdersManager {
@@ -926,15 +927,26 @@ public class OrdersManager {
         pendingSearchInputs.put(player.getUniqueId(), PendingSearchInput.newOrder());
         player.closeInventory();
 
-        org.bukkit.configuration.ConfigurationSection configSection = getSignConfig("SEARCH_SIGN");
-        SignInputUtil.openFromConfig(plugin, player, configSection, text -> {
+        Consumer<String> apply = text -> {
             if (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) {
                 pendingSearchInputs.remove(player.getUniqueId());
                 new OrdersBrowseMenu(plugin, 1, getDefaultSort(), "ALL").open(player);
             } else {
                 handleSearchInput(player, text);
             }
-        });
+        };
+        if (BedrockChatPrompt.askIfBedrock(
+                plugin,
+                player,
+                searchPrompt(),
+                apply,
+                () -> pendingSearchInputs.remove(player.getUniqueId())
+        )) {
+            return;
+        }
+
+        org.bukkit.configuration.ConfigurationSection configSection = getSignConfig("SEARCH_SIGN");
+        SignInputUtil.openFromConfig(plugin, player, configSection, apply);
     }
 
     public void promptOrdersMenuSearch(Player player, OrderSort sortMode, String categoryFilter, boolean isMyOrders) {
@@ -943,8 +955,7 @@ public class OrdersManager {
         }
         player.closeInventory();
 
-        org.bukkit.configuration.ConfigurationSection configSection = getSignConfig("SEARCH_SIGN");
-        SignInputUtil.openFromConfig(plugin, player, configSection, text -> {
+        Consumer<String> apply = text -> {
             String query = (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) ? "" : text.trim();
             plugin.getSpigotScheduler().runEntity(player, () -> {
                 if (!query.isEmpty()) {
@@ -956,7 +967,13 @@ public class OrdersManager {
                     new com.bx.ultimateDonutSmp2.menus.OrdersBrowseMenu(plugin, 1, sortMode, categoryFilter, query).open(player);
                 }
             });
-        });
+        };
+        if (BedrockChatPrompt.askIfBedrock(plugin, player, searchPrompt(), apply)) {
+            return;
+        }
+
+        org.bukkit.configuration.ConfigurationSection configSection = getSignConfig("SEARCH_SIGN");
+        SignInputUtil.openFromConfig(plugin, player, configSection, apply);
     }
 
     public void promptEditOrderSearchInput(Player player, long orderId, OrderEditNavigation navigation) {
@@ -976,15 +993,26 @@ public class OrdersManager {
         pendingSearchInputs.put(player.getUniqueId(), PendingSearchInput.editOrder(orderId, navigation));
         player.closeInventory();
 
-        org.bukkit.configuration.ConfigurationSection configSection = getSignConfig("SEARCH_SIGN");
-        SignInputUtil.openFromConfig(plugin, player, configSection, text -> {
+        Consumer<String> apply = text -> {
             if (text == null || text.isBlank() || text.equalsIgnoreCase("cancel")) {
                 pendingSearchInputs.remove(player.getUniqueId());
                 openEditOrderMenu(player, orderId, navigation);
             } else {
                 handleSearchInput(player, text);
             }
-        });
+        };
+        if (BedrockChatPrompt.askIfBedrock(
+                plugin,
+                player,
+                searchPrompt(),
+                apply,
+                () -> pendingSearchInputs.remove(player.getUniqueId())
+        )) {
+            return;
+        }
+
+        org.bukkit.configuration.ConfigurationSection configSection = getSignConfig("SEARCH_SIGN");
+        SignInputUtil.openFromConfig(plugin, player, configSection, apply);
     }
 
     public boolean hasPendingInput(UUID uuid) {
@@ -2120,6 +2148,13 @@ public class OrdersManager {
                 handleEditPriceInput(player, pendingEdit, text);
             }
         });
+    }
+
+    private String searchPrompt() {
+        return plugin.getConfigManager().getMessageOrDefault(
+                "ORDERS.PROMPT_SEARCH",
+                "&7Enter an item or category search in chat. type &ccancel&7 to abort."
+        );
     }
 
     private boolean promptBedrockInChat(Player player, String message) {

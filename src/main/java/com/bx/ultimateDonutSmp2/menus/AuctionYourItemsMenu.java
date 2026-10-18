@@ -4,6 +4,7 @@ import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.QuickBuyItemDialog;
 import com.bx.ultimateDonutSmp2.managers.AuctionHouseManager;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.models.AuctionListing;
 import com.bx.ultimateDonutSmp2.utils.ColorUtils;
 import com.bx.ultimateDonutSmp2.utils.ItemUtils;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Auction -&gt; Your Items. Free rank matches the design screenshots:
@@ -367,6 +369,28 @@ public class AuctionYourItemsMenu extends BaseMenu {
                 return;
             }
             click(player);
+            Consumer<String> apply = input -> {
+                searchQuery = input == null || input.isBlank() ? "" : input.trim();
+                AuctionHouseSounds.play(player, plugin, AuctionHouseSounds.SEARCH);
+                reopen(player, 1);
+            };
+            if (BedrockChatPrompt.askIfBedrock(
+                    plugin,
+                    player,
+                    plugin.getConfigManager().getMessageOrDefault(
+                            "AUCTION_HOUSE.BEDROCK_SEARCH_PROMPT",
+                            "&7Type an item name in chat. Type &ccancel &7to go back."
+                    ),
+                    input -> {
+                        if (input == null) {
+                            reopen(player, 1);
+                            return;
+                        }
+                        apply.accept(input);
+                    }
+            )) {
+                return;
+            }
             if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
                 QuickBuyItemDialog dialog = plugin.getDialogManager().getScreen(QuickBuyItemDialog.class);
                 if (dialog != null) {
@@ -375,11 +399,7 @@ public class AuctionYourItemsMenu extends BaseMenu {
                     return;
                 }
             }
-            SignInputUtil.open(plugin, player, List.of("", "↑↑↑↑↑", "Search", ""), 0, input -> {
-                searchQuery = input == null || input.isBlank() ? "" : input.trim();
-                AuctionHouseSounds.play(player, plugin, AuctionHouseSounds.SEARCH);
-                reopen(player, 1);
-            });
+            SignInputUtil.open(plugin, player, List.of("", "↑↑↑↑↑", "Search", ""), 0, apply);
             return;
         }
 

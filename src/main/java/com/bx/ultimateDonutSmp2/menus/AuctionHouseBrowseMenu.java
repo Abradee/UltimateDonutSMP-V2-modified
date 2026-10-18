@@ -4,6 +4,7 @@ import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.dialogs.DialogSupport;
 import com.bx.ultimateDonutSmp2.dialogs.screens.QuickBuyItemDialog;
 import com.bx.ultimateDonutSmp2.managers.AuctionHouseManager;
+import com.bx.ultimateDonutSmp2.managers.BedrockChatPrompt;
 import com.bx.ultimateDonutSmp2.models.AuctionBrowseRequest;
 import com.bx.ultimateDonutSmp2.models.AuctionCategory;
 import com.bx.ultimateDonutSmp2.models.AuctionListing;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public final class AuctionHouseBrowseMenu extends BaseMenu {
 
@@ -218,6 +220,28 @@ public final class AuctionHouseBrowseMenu extends BaseMenu {
                 return;
             }
             AuctionHouseSounds.click(player, plugin);
+            Consumer<String> apply = text -> {
+                String search = text == null || text.isBlank() || text.equalsIgnoreCase("cancel")
+                        ? current.search()
+                        : text.trim();
+                if (search.length() > 64) {
+                    search = search.substring(0, 64);
+                }
+                manager.setSearchQuery(player.getUniqueId(), search);
+                AuctionHouseSounds.play(player, plugin, AuctionHouseSounds.SEARCH);
+                open(player, current.withSearch(search), false);
+            };
+            if (BedrockChatPrompt.askIfBedrock(
+                    plugin,
+                    player,
+                    plugin.getConfigManager().getMessageOrDefault(
+                            "AUCTION_HOUSE.BEDROCK_SEARCH_PROMPT",
+                            "&7Type an item name in chat. Type &ccancel &7to go back."
+                    ),
+                    apply
+            )) {
+                return;
+            }
             if (DialogSupport.isAvailable() && plugin.getDialogManager() != null) {
                 QuickBuyItemDialog dialog = plugin.getDialogManager().getScreen(QuickBuyItemDialog.class);
                 if (dialog != null) {
@@ -230,17 +254,7 @@ public final class AuctionHouseBrowseMenu extends BaseMenu {
             var signConfig = plugin.getConfigManager().getAuctionHouse()
                     .getConfigurationSection("GUI.BROWSE.SEARCH_SIGN");
             manager.startNavigating(player.getUniqueId());
-            SignInputUtil.openFromConfig(plugin, player, signConfig, text -> {
-                String search = text == null || text.isBlank() || text.equalsIgnoreCase("cancel")
-                        ? current.search()
-                        : text.trim();
-                if (search.length() > 64) {
-                    search = search.substring(0, 64);
-                }
-                manager.setSearchQuery(player.getUniqueId(), search);
-                AuctionHouseSounds.play(player, plugin, AuctionHouseSounds.SEARCH);
-                open(player, current.withSearch(search), false);
-            });
+            SignInputUtil.openFromConfig(plugin, player, signConfig, apply);
         } else if (slot == controlSlot("PLAYER_ITEMS", 51)) {
             AuctionHouseSounds.click(player, plugin);
             navigate(player, () -> new AuctionYourItemsMenu(plugin, AuctionYourItemsMenu.Origin.AUCTION).open(player));

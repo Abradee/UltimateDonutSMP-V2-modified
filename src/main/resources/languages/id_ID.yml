@@ -1871,6 +1871,7 @@ MESSAGES:
     CANCEL_USAGE: "&cUsage: /ah batalkan <listingid>"
     INVALID_PRICE: "&cInvalid price format. use numbers 100, 5k, or 1,5m."
     BEDROCK_PRICE_PROMPT: "&7Type a price in chat, like &f30k&7. Type &ccancel &7to put the item back."
+    BEDROCK_SEARCH_PROMPT: "&7Type an item name in chat. Type &ccancel &7to go back."
     INVALID_LISTING_ID: "&cInvalid dan id."
     NO_ADMIN_PERMISSION: '&cYou do not have permission to reload auction house settings.'
     RELOADED: "&aAuction dan seterusnya."
@@ -2147,6 +2148,7 @@ MESSAGES:
     META-INACTIVE: "&cTidak ada meta farming yang sedang berjalan."
     META-ROTATED: "&b{item} &fadalah meta farming yang baru dengan &a{multiplier}x&f dan sekarang terjual seharga &a{price_formatted}&f. Rotasi berikutnya dalam &e{countdown}&f."
   BOUNTY:
+    BEDROCK_SEARCH_PROMPT: "&7Type a player name in chat. Type &ccancel &7to go back."
     NEW: "&aA new bounty of ${price} dan on {player}!"
     INCREASED: "&aThe bounty for {player} dan been increased by ${price}!"
     ALERT: "&aYou have a new dan ​​from {who} dan ${price}"
@@ -2224,6 +2226,7 @@ MESSAGES:
     THE_END: "&7{player}'S in the &bthe end &7(&b{biome}&7)"
     UNKNOWN: '&7{player} &b{world}'
   PUNISHMENTS:
+    BEDROCK_SEARCH_PROMPT: "&7Type a player name in chat. Type &ccancel &7to go back."
     PLAYER-ONLY: "&cOnly players can use this command."
     NO-PERMISSION: '&cYou do not have permission to view punishment history.'
     NO-CREATE-PERMISSION: '&cYou do not have permission to create punishments.'
