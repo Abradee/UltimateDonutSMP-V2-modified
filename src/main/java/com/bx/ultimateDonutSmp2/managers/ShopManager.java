@@ -961,16 +961,13 @@ public class ShopManager {
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
         ItemStack stack = entry.createItem(entry.buyAmount());
-        if (!canFitQuickBuyStack(buyer.getInventory().getStorageContents(), stack, stack.getMaxStackSize())) {
-            return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
-                    plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
-        }
         var withdraw = plugin.getEconomyManager().withdraw(buyer, price, EconomyReason.SHOP_PURCHASE);
         if (!withdraw.success()) {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
-        buyer.getInventory().addItem(stack);
+        buyer.getInventory().addItem(stack).values().forEach(leftover ->
+                buyer.getWorld().dropItemNaturally(buyer.getLocation(), leftover));
         PlayerData data = plugin.getPlayerDataManager().get(buyer);
         if (data != null) {
             data.addMoneySpent(price);
@@ -1560,10 +1557,6 @@ public class ShopManager {
             }
         } else if (!plugin.getEconomyManager().has(player, totalPrice)) {
             return failPurchase(item, amount, totalPrice, PurchaseFailureReason.NO_MONEY);
-        }
-
-        if (shouldDeliverConfiguredItem(item) && !canFitPurchasedItem(player, item, amount)) {
-            return failPurchase(item, amount, totalPrice, PurchaseFailureReason.INVENTORY_FULL);
         }
 
         return new PurchaseResult(true, null, item, amount, totalPrice, item.currency());
