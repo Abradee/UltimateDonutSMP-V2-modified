@@ -195,6 +195,8 @@ SETTINGS_DIALOG:
       BUTTONS:
         - LABEL: "Scoreboard: %ultimatedonutsmp2_setting_scoreboard%"
           ACTION: "ultimatedonutsmp2:toggle_scoreboard"
+        - LABEL: "Scoreboard Style: %ultimatedonutsmp2_setting_scoreboardstyle%"
+          ACTION: "ultimatedonutsmp2:toggle_scoreboardstyle"
         - LABEL: "Show Money: %ultimatedonutsmp2_setting_showmoney%"
           ACTION: "ultimatedonutsmp2:toggle_showmoney"
         - LABEL: "Show Shards: %ultimatedonutsmp2_setting_showshards%"

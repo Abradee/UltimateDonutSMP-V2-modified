@@ -830,6 +830,7 @@ Each entry under `SETTINGS-MENU.BUTTONS` is keyed by a name you choose, and ever
 | `SHOW_DEATHS` | `&#6BF18DShow Deaths` | `SKELETON_SKULL` | `40` |
 | `SHOW_PLAYTIME` | `&#6BF18DShow Playtime` | `CLOCK` | `41` |
 | `CLEAR_ENTITIES_MESSAGES` | `&#6BF18DClear Entities Messages` | `HOPPER` | `42` |
+| `SCOREBOARD_STYLE` | `&#6BF18DScoreboard Style` | `PAINTING` | `43` |
 | `QUICK_AUCTION_PURCHASE` | `&#6BF18DQuick Auction Purchase` | `GOLD_INGOT` | `45` |
 | `QUICK_AUCTION_SELL` | `&#6BF18DQuick Auction Sell` | `GOLD_BLOCK` | `46` |
 | `DISABLE_MOB_SPAWN` | `&#6BF18DDisable Mob Spawns` | `ZOMBIE_HEAD` | `47` |

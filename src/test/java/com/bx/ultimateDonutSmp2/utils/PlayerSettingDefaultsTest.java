@@ -1,6 +1,7 @@
 package com.bx.ultimateDonutSmp2.utils;
 
 import com.bx.ultimateDonutSmp2.models.PlayerData;
+import com.bx.ultimateDonutSmp2.models.ScoreboardStyle;
 import com.bx.ultimateDonutSmp2.models.ThreeChoice;
 import com.bx.ultimateDonutSmp2.models.TwoChoice;
 import org.bukkit.configuration.ConfigurationSection;
@@ -54,6 +55,7 @@ class PlayerSettingDefaultsTest {
         buttons.set("DEATH_MESSAGES.DEFAULT", "off");
         buttons.set("PUBLIC_CHAT.DEFAULT", false);
         buttons.set("NIGHT_VISION.DEFAULT", "on");
+        buttons.set("SCOREBOARD_STYLE.DEFAULT", "MODERN");
 
         PlayerData data = newPlayer();
         PlayerSettingDefaults.applyDefaults(buttons, data);
@@ -64,6 +66,7 @@ class PlayerSettingDefaultsTest {
         assertEquals(TwoChoice.OFF, data.getDeathMessagesChoice());
         assertFalse(data.isPublicChatEnabled());
         assertTrue(data.isNightVisionEnabled());
+        assertEquals(ScoreboardStyle.MODERN, data.getScoreboardStyle());
     }
 
     @Test
