@@ -236,7 +236,7 @@ class DialogFileTest {
                 "<item:paper> Scoreboard",
                 "<item:paper> General"
         ), labels);
-        assertEquals(List.of(7, 7, 5, 4, 5, 6, 6), buttonCounts);
+        assertEquals(List.of(7, 7, 5, 4, 5, 7, 6), buttonCounts);
 
         assertEquals(List.of(
                 "Public Chat",
@@ -278,6 +278,7 @@ class DialogFileTest {
         ), buttonNames("privacy"));
         assertEquals(List.of(
                 "Scoreboard",
+                "Scoreboard Style",
                 "Show Money",
                 "Show Shards",
                 "Show Kills",

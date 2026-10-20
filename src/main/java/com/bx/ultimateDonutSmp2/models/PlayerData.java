@@ -79,7 +79,7 @@ public class PlayerData {
     private boolean combatTimerEnabled;
     private boolean sellShulkersEnabled = true;
     private boolean privateTransactionsEnabled;
-    private ScoreboardStyle scoreboardStyle = ScoreboardStyle.MODERN;
+    private ScoreboardStyle scoreboardStyle = ScoreboardStyle.LEGACY;
     private long mobSpawnDisabledUntil;
     private long phantomDisabledUntil;
 
@@ -1062,11 +1062,11 @@ public class PlayerData {
     }
 
     public ScoreboardStyle getScoreboardStyle() {
-        return scoreboardStyle == null ? ScoreboardStyle.MODERN : scoreboardStyle;
+        return scoreboardStyle == null ? ScoreboardStyle.LEGACY : scoreboardStyle;
     }
 
     public void setScoreboardStyle(ScoreboardStyle scoreboardStyle) {
-        this.scoreboardStyle = scoreboardStyle == null ? ScoreboardStyle.MODERN : scoreboardStyle;
+        this.scoreboardStyle = scoreboardStyle == null ? ScoreboardStyle.LEGACY : scoreboardStyle;
         dirty = true;
     }
 }

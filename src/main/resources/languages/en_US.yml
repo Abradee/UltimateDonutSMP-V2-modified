@@ -751,6 +751,11 @@ MENUS:
         LORE:
         - '&7Silence the spawn teleport effects'
         - '&fCurrently: {status}'
+      SCOREBOARD_STYLE:
+        DISPLAY-NAME: '&#6BF18DScoreboard Style'
+        LORE:
+        - '&7Switch between Modern and Legacy layouts'
+        - '&fCurrently: {status}'
   LEADERBOARDS-MENU:
     TITLE: '&8Leaderboards'
     TYPE-MENU:
@@ -1342,7 +1347,7 @@ MENUS:
         LORE:
         - '&7Disable storing all drops.'
     SELL-CONFIRM-MENU:
-      TITLE: 'Confirm Sell'
+      TITLE: Confirm Sell
       CANCEL-BUTTON:
         TITLE: '&cCancel'
         LORE:
@@ -1697,15 +1702,20 @@ CONFIG:
       NO-PERMISSION: '{prefix}&#BDC3C7You do not have permission to use this item.'
       WRONG-OWNER: '{prefix}&#BDC3C7This Amethyst Tool is bound to another player.'
       GIVE-SUCCESS: '{prefix}&#BDC3C7Gave &e{type} &7to &e{player}&7. &8({time})'
-      GIVE-QUEUED: '{prefix}&#BDC3C7Queued &e{type} &7for &e{player}&7. They will receive it for &e{time} &7when they join.'
-      GIVE-FAILED: '{prefix}&#BDC3C7Failed to create &e{type}&7. Check the amethyst-tools config.'
+      GIVE-QUEUED: '{prefix}&#BDC3C7Queued &e{type} &7for &e{player}&7. They will
+        receive it for &e{time} &7when they join.'
+      GIVE-FAILED: '{prefix}&#BDC3C7Failed to create &e{type}&7. Check the amethyst-tools
+        config.'
       GIVE-PLAYER-NOT-FOUND: '{prefix}&#BDC3C7Player not found: &e{player}'
       RECEIVED: '{prefix}&#BDC3C7You received &e{type} &7for &e{time}&7.'
       PLAYER-ONLINE: '&aOnline'
       PLAYER-OFFLINE: '&7Offline ({time} last online)'
-      DURATION-INVALID: '{prefix}&#BDC3C7Invalid duration. Use &e1h&7, &e5h&7, &e1d&7, or a number of seconds.'
-      DIALOG-UNAVAILABLE: '{prefix}&#BDC3C7Dialogs are unavailable. Usage: &e/amethysttool give <player> <type> [duration]'
-      GIVE-USAGE: '{prefix}&#BDC3C7Usage: &e/amethysttool &7or &e/amethysttool give <player> <type> [duration]'
+      DURATION-INVALID: '{prefix}&#BDC3C7Invalid duration. Use &e1h&7, &e5h&7, &e1d&7,
+        or a number of seconds.'
+      DIALOG-UNAVAILABLE: '{prefix}&#BDC3C7Dialogs are unavailable. Usage: &e/amethysttool
+        give <player> <type> [duration]'
+      GIVE-USAGE: '{prefix}&#BDC3C7Usage: &e/amethysttool &7or &e/amethysttool give
+        <player> <type> [duration]'
       GIVE-INVALID-TYPE: '{prefix}&#BDC3C7Invalid tool type. Types: DRILL, CHOPPER,
         SELL_AXE, SHOVEL, BUCKET, SHARD_BOOSTER, HASTE_POTION'
       RELOAD-SUCCESS: '{prefix}&#BDC3C7Configuration reloaded.'
@@ -1997,20 +2007,25 @@ CONFIG:
       LOOT_SENT_TO_CLAIMS: '&eloot from &f{player} &ehas been sent to your duel claims.'
       PREPARING_BIOME: '&epreparing duel biome arena...'
       CANCELLED_PLAYER_LEFT: '&cduel cancelled because one player left preparation.'
-      CANCELLED_PLAYER_UNAVAILABLE: '&cduel cancelled because one player is no longer available.'
+      CANCELLED_PLAYER_UNAVAILABLE: '&cduel cancelled because one player is no longer
+        available.'
       NO_BIOME_ARENA: '&cno duel biome arena is available right now.'
-      UNSAFE_ITEMS: '&cthe duel could not start because your opponent has unsafe item data.'
+      UNSAFE_ITEMS: '&cthe duel could not start because your opponent has unsafe item
+        data.'
       COULD_NOT_START: '&ccould not start the duel right now.'
       DUEL_FOUND: '&aduel found against &f{player}&a on arena &f{arena}&a.'
       ALREADY_IN_DUEL: '&cyou are already in a duel.'
       ARENA_PREPARING: '&cyour duel arena is preparing.'
       ALREADY_HAVE_REQUEST: '&cyou already have a pending duel request.'
       CANNOT_USE_FFA: '&cyou cannot use duels while inside the ffa system.'
-      FRIENDS_SAME_TEAM: '&cfriends-only duels require both players to be in the same team.'
+      FRIENDS_SAME_TEAM: '&cfriends-only duels require both players to be in the same
+        team.'
       FRIENDS_ONLY_TEAM: '&cfriends-only duels can only target members of your team.'
       CROSS_SERVER_PREPARING: '&across-server duel found. preparing match...'
-      CROSS_SERVER_TRANSFERRING: '&across-server duel found. transferring to match server...'
-      CROSS_SERVER_NO_ARENA: '&ccross-server duel could not start because no arena is available.'
+      CROSS_SERVER_TRANSFERRING: '&across-server duel found. transferring to match
+        server...'
+      CROSS_SERVER_NO_ARENA: '&ccross-server duel could not start because no arena
+        is available.'
       REQUEST_EXPIRED_TO: '&cyour duel request to &f{player} &cexpired.'
       REQUEST_EXPIRED_FROM: '&cyour duel request from &f{player} &cexpired.'
       REQUEST_CLEARED: '&cyour duel request was cleared.'
@@ -2030,15 +2045,19 @@ CONFIG:
       NO_MAP_AVAILABLE: '&cthat duel map is not available.'
       ARENA_NOT_AVAILABLE: '&cthat arena is not available.'
       NO_READY_ARENAS: '&cthere are no duel arenas ready yet.'
-      REQUEST_COULD_NOT_START: '&cyour duel request could not start because no arena is available.'
+      REQUEST_COULD_NOT_START: '&cyour duel request could not start because no arena
+        is available.'
       CLAIM_NO_LONGER_EXISTS: '&cthat duel claim no longer exists.'
       CLAIM_MAKE_ROOM: '&cmake room in your inventory before claiming that loot.'
-      CLAIM_PARTIAL: '&eclaimed some duel loot from &f{player}&e. &7some items are still waiting in claims.'
+      CLAIM_PARTIAL: '&eclaimed some duel loot from &f{player}&e. &7some items are
+        still waiting in claims.'
       CLAIM_SUCCESS: '&aclaimed duel loot from &f{player}&a.'
       CLAIM_DELETE_FAILED: '&ccould not delete that duel claim right now.'
       CLAIM_DELETED: '&cdeleted duel loot claim from &f{player}&c.'
-      QUEUE_ARENAS_NOT_READY: '&cqueue arenas exist but are not ready yet. &7use &f/arena setpos1 <id> &7and &f/arena setpos2 <id> &7for: &f{arenas}&7.'
-      QUEUE_NO_READY_ARENAS: '&cno ready queue arenas are configured yet. &7enable queue with &f/arena queue <id> true&7, then set &fpos1 &7and &fpos2&7.'
+      QUEUE_ARENAS_NOT_READY: '&cqueue arenas exist but are not ready yet. &7use &f/arena
+        setpos1 <id> &7and &f/arena setpos2 <id> &7for: &f{arenas}&7.'
+      QUEUE_NO_READY_ARENAS: '&cno ready queue arenas are configured yet. &7enable
+        queue with &f/arena queue <id> true&7, then set &fpos1 &7and &fpos2&7.'
   FFA:
     RESULT-TITLES:
       victory:
@@ -2389,7 +2408,8 @@ MESSAGES:
     SEARCH_USAGE: '&cUsage: /ah search <item>'
     CANCEL_USAGE: '&cUsage: /ah cancel <listingid>'
     INVALID_PRICE: '&cInvalid price format. use numbers like 100, 5k, or 1.5M.'
-    BEDROCK_PRICE_PROMPT: '&7Type a price in chat, like &f30k&7. Type &ccancel &7to put the item back.'
+    BEDROCK_PRICE_PROMPT: '&7Type a price in chat, like &f30k&7. Type &ccancel &7to
+      put the item back.'
     BEDROCK_SEARCH_PROMPT: '&7Type an item name in chat. Type &ccancel &7to go back.'
     INVALID_LISTING_ID: '&cInvalid listing id.'
     NO_ADMIN_PERMISSION: '&cYou do not have permission to reload auction house settings.'
@@ -4569,18 +4589,18 @@ QUICK_BUY:
   YOUR_ITEMS_TITLE: Auction -> Your Items
   BEDROCK:
     CATALOGUE_TITLE: Choose Item
-    CATALOGUE_PAGE: "Page {page}/{pages}."
-    CATALOGUE_SEARCHING: "Search: {query}. Page {page}/{pages}."
-    CATALOGUE_EMPTY: "Nothing matches {query}."
+    CATALOGUE_PAGE: Page {page}/{pages}.
+    CATALOGUE_SEARCHING: 'Search: {query}. Page {page}/{pages}.'
+    CATALOGUE_EMPTY: Nothing matches {query}.
     SEARCH_TITLE: Search items
     SEARCH_INPUT: Item name
     AMOUNT_TITLE: How many to buy?
-    AMOUNT_INPUT: "Amount (max {max})"
+    AMOUNT_INPUT: Amount (max {max})
     AMOUNT_INVALID: Enter a whole number.
     ENCHANT_TITLE: Choose Enchantments
     ENCHANT_CONTENT: Tap an enchantment to change its level.
-    ENCHANT_OFF: "{name}"
-    ENCHANT_ON: "{name} {level}"
+    ENCHANT_OFF: '{name}'
+    ENCHANT_ON: '{name} {level}'
     BUTTON_SEARCH: Search
     BUTTON_BACK: Back
     BUTTON_PREVIOUS: Previous page

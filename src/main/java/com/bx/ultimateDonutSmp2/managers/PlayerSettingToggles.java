@@ -289,6 +289,12 @@ public final class PlayerSettingToggles {
                 PlayerSettingToggles::refreshScoreboard);
         addFlag("showplaytime", "Show Playtime", PlayerData::isShowPlaytimeLine, PlayerData::setShowPlaytimeLine,
                 PlayerSettingToggles::refreshScoreboard);
+        add("scoreboardstyle", "Scoreboard Style",
+                context -> context.data().getScoreboardStyle().display(),
+                context -> {
+                    context.data().setScoreboardStyle(context.data().getScoreboardStyle().next());
+                    refreshScoreboard(context);
+                });
 
         // General — Design/Dialog API/Settings/General
         add("auctionquickbuy", "Auction Quick Buy",

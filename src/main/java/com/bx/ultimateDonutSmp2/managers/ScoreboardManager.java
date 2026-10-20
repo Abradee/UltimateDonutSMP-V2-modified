@@ -640,15 +640,23 @@ public class ScoreboardManager {
         return value == null || value.isEmpty() ? fallback : value;
     }
 
-    /** The style configured in scoreboard.yml (or player preference fallback), defaulting to modern. */
-    private ScoreboardStyle styleOf(Player player) {
+    /** Layout style configured as the default in scoreboard.yml, defaulting to legacy. */
+    public ScoreboardStyle defaultStyle() {
         FileConfiguration scoreboard = plugin.getConfigManager().getScoreboard();
         String configured = scoreboard.getString("SCOREBOARD.MODE");
         if (configured != null && !configured.isBlank()) {
             return ScoreboardStyle.parse(configured);
         }
+        return ScoreboardStyle.LEGACY;
+    }
+
+    /** The style chosen by the player, falling back to the configured default style. */
+    private ScoreboardStyle styleOf(Player player) {
         PlayerData data = plugin.getPlayerDataManager().get(player);
-        return data == null ? ScoreboardStyle.MODERN : data.getScoreboardStyle();
+        if (data != null && data.getScoreboardStyle() != null) {
+            return data.getScoreboardStyle();
+        }
+        return defaultStyle();
     }
 
     private String sidebarCurrencyIcon(CurrencyManager currency, CurrencyManager.CurrencyType type, int columnWidth) {

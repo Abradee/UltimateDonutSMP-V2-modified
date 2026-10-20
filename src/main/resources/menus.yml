@@ -635,6 +635,13 @@ SETTINGS-MENU:
       LORE:
       - '&7Show the entity clear countdown'
       - '&fCurrently: {status}'
+    SCOREBOARD_STYLE:
+      DISPLAY-NAME: '&#6BF18DScoreboard Style'
+      MATERIAL: PAINTING
+      SLOT: 43
+      LORE:
+      - '&7Switch between Modern and Legacy layouts'
+      - '&fCurrently: {status}'
     # Row 6 - the world around you
     QUICK_AUCTION_PURCHASE:
       DISPLAY-NAME: '&#6BF18DQuick Auction Purchase'

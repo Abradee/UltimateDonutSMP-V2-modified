@@ -40,7 +40,7 @@ public final class PlayerSettingsMenu extends BaseMenu {
             "AMETHYST_BREAK_MESSAGES", "DUEL_REQUESTS", "DEATH_MESSAGES", "KEY_ALL_NOTIFICATIONS",
             "QUICK_AUCTION_SELL", "ORDER_NOTIFICATIONS", "DISABLE_MOB_SPAWN", "DISABLE_PHANTOM_SPAWN",
             "NIGHT_VISION", "BOUNTY_ALERTS", "SCOREBOARD_VISIBILITY", "SHOW_MONEY", "SHOW_SHARDS",
-            "SHOW_KILLS", "SHOW_DEATHS", "SHOW_PLAYTIME", "COMBAT_TIMER"
+            "SHOW_KILLS", "SHOW_DEATHS", "SHOW_PLAYTIME", "SCOREBOARD_STYLE", "COMBAT_TIMER"
     );
 
     private final Map<Integer, String> clickableButtons = new HashMap<>();
@@ -191,6 +191,11 @@ public final class PlayerSettingsMenu extends BaseMenu {
                     !data.isShowDeathsLine(), data::setShowDeathsLine);
             case "SHOW_PLAYTIME" -> toggleSidebarLine(player, "Show Playtime",
                     !data.isShowPlaytimeLine(), data::setShowPlaytimeLine);
+            case "SCOREBOARD_STYLE" -> {
+                data.setScoreboardStyle(data.getScoreboardStyle().next());
+                plugin.getScoreboardManager().applyVisibility(player);
+                sendChoiceMessage(player, "Scoreboard Style", data.getScoreboardStyle().display());
+            }
             case "COMBAT_TIMER" -> toggle(player, "Combat Timer",
                     !data.isCombatTimerEnabled(), data::setCombatTimerEnabled);
             case "AUTO_CONFIRM_TPAS" -> {
@@ -408,6 +413,7 @@ public final class PlayerSettingsMenu extends BaseMenu {
             case "SHOW_KILLS" -> state(data.isShowKillsLine());
             case "SHOW_DEATHS" -> state(data.isShowDeathsLine());
             case "SHOW_PLAYTIME" -> state(data.isShowPlaytimeLine());
+            case "SCOREBOARD_STYLE" -> new ButtonState(data.getScoreboardStyle().display(), true);
             case "COMBAT_TIMER" -> state(data.isCombatTimerEnabled());
             case "AUTO_CONFIRM_TPAS" -> state(data.isTpauto() && data.isAutoTpaHereEnabled());
             case "NOTIFICATION_SOUNDS" -> state(data.isNotificationSoundsEnabled());

@@ -2,6 +2,7 @@ package com.bx.ultimateDonutSmp2.utils;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
 import com.bx.ultimateDonutSmp2.models.PlayerData;
+import com.bx.ultimateDonutSmp2.models.ScoreboardStyle;
 import com.bx.ultimateDonutSmp2.models.ThreeChoice;
 import com.bx.ultimateDonutSmp2.models.TwoChoice;
 import org.bukkit.configuration.ConfigurationSection;
@@ -169,6 +170,7 @@ public final class PlayerSettingDefaults {
             case AUTO_CONFIRM_TPAS -> applyAutoConfirmTpas(data, raw);
             case DISABLE_MOB_SPAWN -> applyDisableMobSpawn(data, raw);
             case DISABLE_PHANTOM_SPAWN -> applyDisablePhantomSpawn(data, raw);
+            case SCOREBOARD_STYLE -> applyScoreboardStyle(data, raw);
             case PRIVATE_MESSAGES, TPA_REQUESTS, TPA_HERE_REQUESTS, PAYMENTS
                     -> applyThreeChoice(setting, data, raw);
             case JOIN_LEAVE_MESSAGES, ADVANCEMENT_MESSAGES, DEATH_MESSAGES
@@ -247,6 +249,7 @@ public final class PlayerSettingDefaults {
             case SHOW_KILLS -> target.setShowKillsLine(source.isShowKillsLine());
             case SHOW_DEATHS -> target.setShowDeathsLine(source.isShowDeathsLine());
             case SHOW_PLAYTIME -> target.setShowPlaytimeLine(source.isShowPlaytimeLine());
+            case SCOREBOARD_STYLE -> target.setScoreboardStyle(source.getScoreboardStyle());
             case COMBAT_TIMER -> target.setCombatTimerEnabled(source.isCombatTimerEnabled());
         }
     }
@@ -360,6 +363,26 @@ public final class PlayerSettingDefaults {
         return true;
     }
 
+    private static boolean applyScoreboardStyle(PlayerData data, String raw) {
+        if (raw == null || raw.isBlank()) {
+            return false;
+        }
+        ScoreboardStyle parsed = parseScoreboardStyle(raw);
+        if (parsed == null) {
+            return false;
+        }
+        data.setScoreboardStyle(parsed);
+        return true;
+    }
+
+    private static ScoreboardStyle parseScoreboardStyle(String raw) {
+        return switch (raw.trim().toLowerCase(Locale.ROOT)) {
+            case "legacy", "compact", "old" -> ScoreboardStyle.LEGACY;
+            case "modern", "labeled", "new" -> ScoreboardStyle.MODERN;
+            default -> null;
+        };
+    }
+
     private static Boolean parseBoolean(String raw) {
         return switch (raw) {
             case "true", "yes", "on", "enable", "enabled", "1" -> Boolean.TRUE;
@@ -436,6 +459,7 @@ public final class PlayerSettingDefaults {
         SHOW_KILLS,
         SHOW_DEATHS,
         SHOW_PLAYTIME,
+        SCOREBOARD_STYLE,
         COMBAT_TIMER
     }
 }
