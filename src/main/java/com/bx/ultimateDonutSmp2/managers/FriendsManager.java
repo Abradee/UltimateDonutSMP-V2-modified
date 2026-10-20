@@ -123,7 +123,9 @@ public class FriendsManager {
                 : follower.getName();
         onlineTarget.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessageOrDefault(
                 "FRIENDS.FOLLOW_ALERT_RECEIVED",
-                "&e&lFollow &7» &b" + senderName + " &7is now following you."
+                "&e&lFollow &7» &b{player} &7is now following you.",
+                "{player}", senderName,
+                "{follower}", senderName
         ), onlineTarget));
     }
 
