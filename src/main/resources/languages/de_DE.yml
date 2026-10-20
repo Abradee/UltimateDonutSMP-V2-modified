@@ -2506,6 +2506,7 @@ MESSAGES:
     ALREADY_FOLLOWING: "&7You are alrea─dy following &f{player}&7."
     FOLLOW_SUCCESS: "&7You followe─d &f{player}&7."
     FOLLOW_FAILURE: "&cCould not follow player."
+    FOLLOW_ALERT_RECEIVED: "&e&lFollow &7» &b{player} &7is now following you."
     REMOVE_NOT_FOUND: "&cPlayer not fou─nd in your follows database."
     NOT_FOLLOWING: "&7You are not following &f{player}&7."
     UNFOLLOW_SUCCESS: "&7You unfollowe─d &f{player}&7."
