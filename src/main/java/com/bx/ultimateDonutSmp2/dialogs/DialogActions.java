@@ -97,12 +97,17 @@ public final class DialogActions {
     public static final String ORD_PICK_SRCH = "ord_pick_srch";
     public static final String ORD_PICK_CAN = "ord_pick_can";
     public static final String ORD_ITEM = "ord_item_";
+    public static final String ORD_ENCHANT_LVL = "ord_en_lvl_";
+    public static final String ORD_ENCHANT_BACK = "ord_en_back";
+    public static final String ORD_ENCHANT_SKIP = "ord_en_skip_";
+    public static final String ORD_ENCHANT_CONFIRM = "ord_en_conf_";
     public static final String ORD_AMT_CAN = "ord_amt_can";
     public static final String ORD_AMT_NEXT = "ord_amt_next";
     public static final String ORD_PRICE_CAN = "ord_price_can";
     public static final String ORD_PRICE_GO = "ord_price_go";
     public static final String ORD_REV_CAN = "ord_rev_can";
     public static final String ORD_REV_ITEM = "ord_rev_item";
+    public static final String ORD_REV_ENCHANT = "ord_rev_ench";
     public static final String ORD_REV_AMT = "ord_rev_amt";
     public static final String ORD_REV_PRICE = "ord_rev_price";
     public static final String ORD_REV_CREATE = "ord_rev_create";

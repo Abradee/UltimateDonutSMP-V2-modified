@@ -18,10 +18,21 @@ import com.bx.ultimateDonutSmp2.utils.PlayerSettingUtils;
 import io.papermc.paper.dialog.DialogResponseView;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import com.bx.ultimateDonutSmp2.models.ItemKey;
+import com.bx.ultimateDonutSmp2.models.QuickBuyEntry;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public final class OrdersDialog extends DialogScreen {
 
@@ -105,6 +116,136 @@ public final class OrdersDialog extends DialogScreen {
         return show(player, screen.build());
     }
 
+    public boolean openEnchantments(Player player, Material material) {
+        if (material == null || !QuickBuyItemDialog.isEnchantable(material)) {
+            return openAmount(player);
+        }
+        OrdersManager.NewOrderSession session = plugin.getOrdersManager().getOrCreateNewOrderSession(player.getUniqueId());
+        ItemStack item = session.getChosenItem();
+        if (item == null || item.getType() != material) {
+            item = new ItemStack(material);
+            session.setChosenItem(item);
+        }
+        Map<Enchantment, Integer> selected = getSelectedEnchantments(item);
+
+        ItemStack preview = item.clone();
+
+        DialogFactory.Screen screen = screen(player)
+                .title("Choose Enchantments")
+                .item(preview)
+                .columns(QuickBuyItemDialog.ENCHANT_COLUMNS);
+
+        List<QuickBuyItemDialog.EnchantmentSpec> specs = QuickBuyItemDialog.getEnchantmentSpecs(plugin, material);
+        for (QuickBuyItemDialog.EnchantmentSpec spec : specs) {
+            int currentLevel = 0;
+            if (spec.enchantment() != null) {
+                currentLevel = selected.getOrDefault(spec.enchantment(), 0);
+            } else {
+                for (Map.Entry<Enchantment, Integer> e : selected.entrySet()) {
+                    if (e.getKey() != null && e.getKey().getKey().getKey().equalsIgnoreCase(spec.key())) {
+                        currentLevel = e.getValue();
+                        break;
+                    }
+                }
+            }
+            String enchKey = spec.key().toLowerCase(Locale.ROOT);
+
+            Component nameComp;
+            if (spec.isCurse()) {
+                NamedTextColor color = (currentLevel > 0) ? NamedTextColor.GREEN : NamedTextColor.RED;
+                nameComp = Component.text(spec.displayName(), color).decoration(TextDecoration.ITALIC, false);
+            } else {
+                NamedTextColor color = (currentLevel > 0) ? NamedTextColor.GREEN : NamedTextColor.WHITE;
+                String text = spec.displayName() + (spec.maxLevel() > 1 ? (" " + (currentLevel > 0 ? QuickBuyItemDialog.toRoman(currentLevel) : "I")) : "");
+                nameComp = Component.text(text, color).decoration(TextDecoration.ITALIC, false);
+            }
+
+            int nameTargetLevel = currentLevel > 0 ? 0 : 1;
+            screen.button(
+                    nameComp,
+                    null,
+                    QuickBuyItemDialog.ENCHANT_NAME_WIDTH,
+                    DialogActions.ORD_ENCHANT_LVL + material.name() + "/" + enchKey + "/" + nameTargetLevel
+            );
+
+            for (int lvl = 1; lvl <= 5; lvl++) {
+                if (lvl <= spec.maxLevel()) {
+                    String roman = QuickBuyItemDialog.toRoman(lvl);
+                    NamedTextColor color = (currentLevel == lvl) ? NamedTextColor.GREEN : NamedTextColor.WHITE;
+                    Component lvlComp = Component.text(roman, color).decoration(TextDecoration.ITALIC, false);
+                    screen.button(
+                            lvlComp,
+                            null,
+                            QuickBuyItemDialog.ENCHANT_LEVEL_WIDTH,
+                            DialogActions.ORD_ENCHANT_LVL + material.name() + "/" + enchKey + "/" + lvl
+                    );
+                } else {
+                    screen.inertButton("", null, QuickBuyItemDialog.ENCHANT_INERT_WIDTH);
+                }
+            }
+        }
+
+        screen.button(
+                Component.text("Back to Items", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                null,
+                QuickBuyItemDialog.ENCHANT_BOTTOM_WIDTH,
+                DialogActions.ORD_ENCHANT_BACK
+        );
+        if (selected.isEmpty()) {
+            screen.button(
+                    Component.text("Skip Enchantments", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false),
+                    null,
+                    QuickBuyItemDialog.ENCHANT_BOTTOM_WIDTH,
+                    DialogActions.ORD_ENCHANT_SKIP + material.name()
+            );
+        } else {
+            screen.button(
+                    Component.text("Confirm Enchantments", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
+                    null,
+                    QuickBuyItemDialog.ENCHANT_BOTTOM_WIDTH,
+                    DialogActions.ORD_ENCHANT_CONFIRM + material.name()
+            );
+        }
+
+        screen.exit("&cCancel", DialogActions.ORD_REV_CAN, 120);
+        return show(player, screen.build());
+    }
+
+    private static Map<Enchantment, Integer> getSelectedEnchantments(ItemStack item) {
+        Map<Enchantment, Integer> selected = new LinkedHashMap<>();
+        if (item != null && item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+            if (item.getType() == Material.ENCHANTED_BOOK && meta instanceof EnchantmentStorageMeta esm) {
+                selected.putAll(esm.getStoredEnchants());
+            } else {
+                selected.putAll(meta.getEnchants());
+            }
+        }
+        return selected;
+    }
+
+    private static void applyEnchantments(ItemStack item, Map<Enchantment, Integer> enchants) {
+        if (item == null) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+        if (item.getType() == Material.ENCHANTED_BOOK && meta instanceof EnchantmentStorageMeta esm) {
+            for (Enchantment e : new ArrayList<>(esm.getStoredEnchants().keySet())) {
+                esm.removeStoredEnchant(e);
+            }
+            for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+                esm.addStoredEnchant(entry.getKey(), entry.getValue(), true);
+            }
+        } else {
+            for (Enchantment e : new ArrayList<>(meta.getEnchants().keySet())) {
+                meta.removeEnchant(e);
+            }
+            for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+                meta.addEnchant(entry.getKey(), entry.getValue(), true);
+            }
+        }
+        item.setItemMeta(meta);
+    }
+
     public boolean openAmount(Player player) {
         OrdersManager.NewOrderSession session = plugin.getOrdersManager().getOrCreateNewOrderSession(player.getUniqueId());
         ItemStack item = session.getChosenItem();
@@ -181,11 +322,17 @@ public final class OrdersDialog extends DialogScreen {
         String itemName = manager.describeItem(item);
         String price = stripNumber(session.getPriceEach());
         String total = stripNumber(manager.roundCurrency(session.getAmount() * session.getPriceEach()));
-        return show(player, screen(player)
+        var reviewScreen = screen(player)
                 .title(text("ORDERS.GUI.DIALOG.REVIEW.TITLE", "Review Order"))
                 .item(item.clone())
-                .text(formatItemLine(text("ORDERS.GUI.DIALOG.REVIEW.ITEM", "&7Item: &f{item}", "{item}", itemName), itemName))
-                .text(formatAmountLine("ORDERS.GUI.DIALOG.REVIEW.AMOUNT", "&7Amount: &f{amount}", session.getAmount()))
+                .text(formatItemLine(text("ORDERS.GUI.DIALOG.REVIEW.ITEM", "&7Item: &f{item}", "{item}", itemName), itemName));
+
+        ItemKey itemKey = ItemKey.fromStack(item);
+        if (!itemKey.enchants.isEmpty()) {
+            reviewScreen.text("&7Enchants: &f" + String.join(", ", itemKey.enchantLoreLines("")));
+        }
+
+        reviewScreen.text(formatAmountLine("ORDERS.GUI.DIALOG.REVIEW.AMOUNT", "&7Amount: &f{amount}", session.getAmount()))
                 .text(formatPriceLine(
                         "Price:",
                         price + " each",
@@ -211,11 +358,17 @@ public final class OrdersDialog extends DialogScreen {
                 .columns(2)
                 .canCloseWithEscape(true)
                 .button(text("ORDERS.GUI.DIALOG.REVIEW.CANCEL", "&cCancel"), null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_CAN)
-                .button(text("ORDERS.GUI.DIALOG.REVIEW.CHANGE_ITEM", "Change Item"), null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_ITEM)
-                .button(text("ORDERS.GUI.DIALOG.REVIEW.CHANGE_AMOUNT", "Change Amount"), null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_AMT)
+                .button(text("ORDERS.GUI.DIALOG.REVIEW.CHANGE_ITEM", "Change Item"), null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_ITEM);
+
+        if (QuickBuyItemDialog.isEnchantable(item.getType())) {
+            reviewScreen.button("Change Enchants", null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_ENCHANT);
+        }
+
+        reviewScreen.button(text("ORDERS.GUI.DIALOG.REVIEW.CHANGE_AMOUNT", "Change Amount"), null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_AMT)
                 .button(text("ORDERS.GUI.DIALOG.REVIEW.CHANGE_PRICE", "Change Price"), null, REVIEW_BUTTON_WIDTH, DialogActions.ORD_REV_PRICE)
-                .button(text("ORDERS.GUI.DIALOG.REVIEW.CREATE", "&aCreate Order"), null, REVIEW_CREATE_WIDTH, DialogActions.ORD_REV_CREATE)
-                .build());
+                .button(text("ORDERS.GUI.DIALOG.REVIEW.CREATE", "&aCreate Order"), null, REVIEW_CREATE_WIDTH, DialogActions.ORD_REV_CREATE);
+
+        return show(player, reviewScreen.build());
     }
 
     @Override
@@ -278,6 +431,10 @@ public final class OrdersDialog extends DialogScreen {
             if (session.getAmount() <= 0) {
                 session.setAmount(1);
             }
+            if (QuickBuyItemDialog.isEnchantable(material)) {
+                openEnchantments(player, material);
+                return true;
+            }
             if (editingDraft) {
                 openReview(player);
             } else {
@@ -285,9 +442,77 @@ public final class OrdersDialog extends DialogScreen {
             }
             return true;
         }
+        if (action.startsWith(DialogActions.ORD_ENCHANT_LVL)) {
+            String rest = action.substring(DialogActions.ORD_ENCHANT_LVL.length());
+            String[] parts = rest.split("/");
+            if (parts.length == 3) {
+                Material mat = Material.matchMaterial(parts[0]);
+                String enchKey = parts[1];
+                int lvl = 1;
+                try {
+                    lvl = Integer.parseInt(parts[2]);
+                } catch (NumberFormatException ignored) {}
+
+                if (mat != null) {
+                    Enchantment ench = QuickBuyEntry.findEnchantment(enchKey);
+                    if (ench != null) {
+                        OrdersManager.NewOrderSession session = plugin.getOrdersManager().getOrCreateNewOrderSession(player.getUniqueId());
+                        ItemStack item = session.getChosenItem();
+                        if (item == null || item.getType() != mat) {
+                            item = new ItemStack(mat);
+                        }
+                        Map<Enchantment, Integer> selected = getSelectedEnchantments(item);
+                        int currentLevel = selected.getOrDefault(ench, 0);
+                        if (lvl <= 0 || currentLevel == lvl) {
+                            selected.remove(ench);
+                        } else {
+                            selected.put(ench, lvl);
+                        }
+                        applyEnchantments(item, selected);
+                        session.setChosenItem(item);
+                    }
+                    click(player);
+                    openEnchantments(player, mat);
+                    return true;
+                }
+            }
+        }
+        if (DialogActions.ORD_ENCHANT_BACK.equals(action)) {
+            click(player);
+            openChooseItem(player);
+            return true;
+        }
+        if (action.startsWith(DialogActions.ORD_ENCHANT_SKIP)) {
+            String matName = action.substring(DialogActions.ORD_ENCHANT_SKIP.length());
+            Material mat = Material.matchMaterial(matName);
+            if (mat != null) {
+                OrdersManager.NewOrderSession session = plugin.getOrdersManager().getOrCreateNewOrderSession(player.getUniqueId());
+                session.setChosenItem(new ItemStack(mat));
+            }
+            click(player);
+            if (backToReviewIfDraft(player)) {
+                return true;
+            }
+            openAmount(player);
+            return true;
+        }
+        if (action.startsWith(DialogActions.ORD_ENCHANT_CONFIRM)) {
+            click(player);
+            if (backToReviewIfDraft(player)) {
+                return true;
+            }
+            openAmount(player);
+            return true;
+        }
         if (DialogActions.ORD_AMT_CAN.equals(action)) {
             click(player);
             if (backToReviewIfDraft(player)) {
+                return true;
+            }
+            OrdersManager.NewOrderSession session = plugin.getOrdersManager().getOrCreateNewOrderSession(player.getUniqueId());
+            ItemStack chosen = session.getChosenItem();
+            if (chosen != null && QuickBuyItemDialog.isEnchantable(chosen.getType())) {
+                openEnchantments(player, chosen.getType());
                 return true;
             }
             openChooseItem(player);
@@ -327,6 +552,17 @@ public final class OrdersDialog extends DialogScreen {
         }
         if (DialogActions.ORD_REV_ITEM.equals(action)) {
             click(player);
+            openChooseItem(player);
+            return true;
+        }
+        if (DialogActions.ORD_REV_ENCHANT.equals(action)) {
+            click(player);
+            OrdersManager.NewOrderSession session = plugin.getOrdersManager().getOrCreateNewOrderSession(player.getUniqueId());
+            ItemStack chosen = session.getChosenItem();
+            if (chosen != null && QuickBuyItemDialog.isEnchantable(chosen.getType())) {
+                openEnchantments(player, chosen.getType());
+                return true;
+            }
             openChooseItem(player);
             return true;
         }
