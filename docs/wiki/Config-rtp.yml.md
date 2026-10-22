@@ -33,7 +33,7 @@ UltimateDonutSMP2 - Random Teleport (RTP) Configuration
 | [`DENIED-WORLDS`](#section-denied-worlds) | list | 1 entries |
 | [`LOBBY-WORLDS`](#section-lobby-worlds) | list | 3 entries |
 | [`WORLD-SETTINGS`](#section-world-settings) | section | 3 keys |
-| [`RTP-MENU`](#section-rtp-menu) | section | 4 keys |
+| [`RTP-MENU`](#section-rtp-menu) | section | 5 keys |
 
 ---
 
@@ -497,6 +497,7 @@ RTP GUI Menu configuration
 
 | Option path | Type | Accepted values | Default | What it does |
 | :--- | :--- | :--- | :--- | :--- |
+| `RTP-MENU.ENABLED` | `boolean` | `true`, `false` | `true` | When true, `/rtp` without arguments opens the RTP menu. When false, it teleports immediately. |
 | `RTP-MENU.TITLE` | `string` | Any text | `&8RTP Menu` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `RTP-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
 | `RTP-MENU.PLACEHOLDER` | `boolean` | `true`, `false` | `true` | Enable background glass filler item in GUI (true / false) |
@@ -592,6 +593,8 @@ LORE:
 ```yaml
 # RTP GUI Menu configuration
 RTP-MENU:
+  # Enable GUI menu when /rtp is run without arguments (true / false)
+  ENABLED: true
   TITLE: '&8RTP Menu'
   SIZE: 27
   # Enable background glass filler item in GUI (true / false)

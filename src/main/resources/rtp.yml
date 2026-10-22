@@ -211,6 +211,8 @@ WORLD-SETTINGS:
 
 # RTP GUI Menu configuration
 RTP-MENU:
+  # Enable GUI menu when /rtp is run without arguments (true / false)
+  ENABLED: true
   TITLE: '&8RTP Menu'
   SIZE: 27
   # Enable background glass filler item in GUI (true / false)

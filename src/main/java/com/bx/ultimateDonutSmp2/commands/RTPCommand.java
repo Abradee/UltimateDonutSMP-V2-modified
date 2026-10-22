@@ -40,11 +40,20 @@ public class RTPCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
+            if (isMenuEnabled() && plugin.getRtpManager().hasMenuDestinations()) {
+                new RTPMenu(plugin).open(player);
+                return true;
+            }
+
             plugin.getRtpManager().queueCommandTeleport(player, player.getWorld().getName());
             return true;
         }
 
         plugin.getRtpManager().queueCommandTeleport(player, args[0]);
         return true;
+    }
+
+    public boolean isMenuEnabled() {
+        return plugin.getConfigManager().getRtp().getBoolean("RTP-MENU.ENABLED", true);
     }
 }
