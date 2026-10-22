@@ -30,6 +30,7 @@ class OrdersConfigurationTest {
         assertEquals(List.of("MOST_MONEY_PER_ITEM", "MOST_PAID", "RECENTLY_LISTED"), orders.getStringList("SORTING.ALLOWED"));
         assertTrue(orders.getBoolean("BEDROCK.ENABLED"));
         assertTrue(orders.getBoolean("NETWORK.ENABLED"));
+        assertTrue(orders.getBoolean("SETTINGS.EXTRA_ENCHANTMENT_LORE"));
         assertEquals("ultimate-donut-smp:orders", orders.getString("NETWORK.REDIS_CHANNEL"));
         assertTrue(orders.isConfigurationSection("SEARCH_SIGN"));
         assertTrue(orders.isConfigurationSection("AMOUNT_SIGN"));

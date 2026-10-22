@@ -25,7 +25,7 @@ UltimateDonutSMP2 - Player Item Orders Configuration
 
 | Section | Type | Contents |
 | :--- | :--- | :--- |
-| [`SETTINGS`](#section-settings) | section | 7 keys |
+| [`SETTINGS`](#section-settings) | section | 8 keys |
 | [`PRICING`](#section-pricing) | section | 4 keys |
 | [`DELIVERY`](#section-delivery) | section | 3 keys |
 | [`MATCHING`](#section-matching) | section | 1 keys |
@@ -55,6 +55,7 @@ General Order system settings
 | `SETTINGS.MAX_QUANTITY_PER_ORDER` | `integer` | Any integer | `2304` | Maximum quantity of items requested per single order listing |
 | `SETTINGS.CLICK_COOLDOWN_MS` | `integer` | Any integer | `750` | Anti-spam click cooldown between menu interactions (in milliseconds) |
 | `SETTINGS.EXPIRE_CHECK_SECONDS` | `integer` | Any integer | `30` | Interval in seconds to check for expired orders |
+| `SETTINGS.EXTRA_ENCHANTMENT_LORE` | `boolean` | `true`, `false` | `true` | Whether to display required enchantment lines in order item lore (true / false) |
 
 ### `SETTINGS.MAX_ACTIVE_ORDERS_BY_PERMISSION`
 
@@ -89,6 +90,8 @@ SETTINGS:
   CLICK_COOLDOWN_MS: 750
   # Interval in seconds to check for expired orders
   EXPIRE_CHECK_SECONDS: 30
+  # Whether to display required enchantment lines in order item lore (true / false)
+  EXTRA_ENCHANTMENT_LORE: true
 ```
 
 </details>

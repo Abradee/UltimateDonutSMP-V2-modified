@@ -45,6 +45,25 @@ final class OrdersMenuSupport {
         return material == null ? fallback : material;
     }
 
+    static boolean isExtraEnchantmentLoreEnabled(UltimateDonutSmp2 plugin) {
+        if (plugin == null) {
+            return true;
+        }
+        if (plugin.getOrdersManager() != null) {
+            return plugin.getOrdersManager().isExtraEnchantmentLoreEnabled();
+        }
+        if (plugin.getConfigManager() != null && plugin.getConfigManager().getOrders() != null) {
+            org.bukkit.configuration.file.FileConfiguration orders = plugin.getConfigManager().getOrders();
+            if (orders.contains("SETTINGS.EXTRA_ENCHANTMENT_LORE")) {
+                return orders.getBoolean("SETTINGS.EXTRA_ENCHANTMENT_LORE", true);
+            }
+            if (orders.contains("GUI.EXTRA_ENCHANTMENT_LORE")) {
+                return orders.getBoolean("GUI.EXTRA_ENCHANTMENT_LORE", true);
+            }
+        }
+        return true;
+    }
+
     static String text(UltimateDonutSmp2 plugin, String path, String fallback, String... placeholders) {
         return plugin.getLanguageManager().text(path, null, fallback, placeholders);
     }
@@ -185,11 +204,13 @@ final class OrdersMenuSupport {
         }
 
         List<String> combinedLore = new ArrayList<>();
-        List<String> enchantLines = ItemKey.fromStack(source).enchantLoreLines("&7- &e");
-        if (!enchantLines.isEmpty()) {
-            combinedLore.add(text(plugin, "ORDERS.GUI.REQUIRED_ENCHANTMENTS", "&bRequired enchantments:"));
-            combinedLore.addAll(enchantLines);
-            combinedLore.add("");
+        if (isExtraEnchantmentLoreEnabled(plugin)) {
+            List<String> enchantLines = ItemKey.fromStack(source).enchantLoreLines("&7- &e");
+            if (!enchantLines.isEmpty()) {
+                combinedLore.add(text(plugin, "ORDERS.GUI.REQUIRED_ENCHANTMENTS", "&bRequired enchantments:"));
+                combinedLore.addAll(enchantLines);
+                combinedLore.add("");
+            }
         }
         if (preserveOriginalLore && meta.hasLore() && meta.getLore() != null) {
             for (String line : meta.getLore()) {
