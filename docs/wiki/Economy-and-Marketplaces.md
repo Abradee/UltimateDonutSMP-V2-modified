@@ -69,6 +69,8 @@ Shards are configured under `SHARDS` in `config.yml` and have four sources:
 | `/shardpay <player> <amount>` | Transfer shards to another player |
 | `/addshards`, `/removeshards`, `/setshards` | Administrative shard adjustments (`ultimatedonutsmp2.admin.shards`) |
 
+Admin messages for `/addshards`, `/removeshards`, and `/setshards` are configured under `MESSAGES.BALANCE.ADMIN` in the language files (`ADD-SHARDS-SUCCESS`, `ADD-SHARDS-RECEIVED`, `REMOVE-SHARDS-SUCCESS`, `REMOVE-SHARDS-RECEIVED`, `SET-SHARDS-SUCCESS`, `SET-SHARDS-RECEIVED`, and `TARGET-NOT-ENOUGH-SHARDS`).
+
 `/shardpay` is disabled by default through `COMMANDS.SHARDPAY: false` in `config.yml`; enable it if
 you want players trading shards between themselves.
 

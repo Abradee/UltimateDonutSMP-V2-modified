@@ -1,6 +1,7 @@
 package com.bx.ultimateDonutSmp2.commands;
 
 import com.bx.ultimateDonutSmp2.UltimateDonutSmp2;
+import com.bx.ultimateDonutSmp2.managers.CurrencyManager;
 import com.bx.ultimateDonutSmp2.managers.EconomyManager;
 import com.bx.ultimateDonutSmp2.managers.LeaderboardManager;
 import com.bx.ultimateDonutSmp2.models.PlayerData;
@@ -45,36 +46,42 @@ public class ShardAdminCommand implements CommandExecutor {
         try {
             amount = NumberUtils.parseLong(args[1]);
         } catch (NumberFormatException exception) {
-            sender.sendMessage(ColorUtils.toComponent("&cAmount must be a valid number."));
+            sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage("BALANCE.ADMIN.INVALID-AMOUNT")));
             return true;
         }
 
         if (mode == Mode.SET) {
             if (amount < 0L) {
-                sender.sendMessage(ColorUtils.toComponent("&cAmount must be zero or greater."));
+                sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage("BALANCE.ADMIN.MUST-BE-NON-NEGATIVE")));
                 return true;
             }
         } else if (amount <= 0L) {
-            sender.sendMessage(ColorUtils.toComponent("&cAmount must be greater than zero."));
+            sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage("BALANCE.ADMIN.MUST-BE-POSITIVE")));
             return true;
         }
 
         EconomyManager.AccountReference account = plugin.getEconomyManager().resolveAccount(args[0]);
         if (account == null) {
-            sender.sendMessage(ColorUtils.toComponent("&cPlayer not found."));
+            sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage("BALANCE.ADMIN.PLAYER-NOT-FOUND")));
             return true;
         }
 
         PlayerData data = loadData(account);
         if (data == null) {
-            sender.sendMessage(ColorUtils.toComponent("&cPlayer data could not be loaded."));
+            sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage("BALANCE.ADMIN.PLAYER-NOT-FOUND")));
             return true;
         }
 
         long before = data.getShards();
         if (mode == Mode.REMOVE && before < amount) {
-            sender.sendMessage(ColorUtils.toComponent("&c" + account.displayName()
-                    + " only has " + formatShards(before) + "."));
+            sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage(
+                    "BALANCE.ADMIN.TARGET-NOT-ENOUGH-SHARDS",
+                    "{player}", account.displayName(),
+                    "{shards}", formatShards(before),
+                    "{shards_compact}", formatShardsCompact(before),
+                    "{balance}", formatShards(before),
+                    "{amount}", String.valueOf(before)
+            )));
             return true;
         }
 
@@ -90,14 +97,52 @@ public class ShardAdminCommand implements CommandExecutor {
         }
 
         long after = data.getShards();
-        sender.sendMessage(ColorUtils.toComponent("&a" + mode.pastTense() + " shards for &f"
-                + account.displayName() + "&a. &7Before: &f" + formatShards(before)
-                + " &7After: &f" + formatShards(after)));
+        String successKey = switch (mode) {
+            case ADD -> "BALANCE.ADMIN.ADD-SHARDS-SUCCESS";
+            case REMOVE -> "BALANCE.ADMIN.REMOVE-SHARDS-SUCCESS";
+            case SET -> "BALANCE.ADMIN.SET-SHARDS-SUCCESS";
+        };
+        sender.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage(
+                successKey,
+                "{player}", account.displayName(),
+                "{amount}", compactAmount(amount),
+                "{amount_full}", fullAmount(amount),
+                "{amount_shards}", formatShards(amount),
+                "{amount_raw}", String.valueOf(amount),
+                "{shards}", formatShards(after),
+                "{shards_compact}", formatShardsCompact(after),
+                "{balance}", formatShards(after),
+                "{balance_raw}", String.valueOf(after),
+                "{previous_balance}", formatShards(before),
+                "{previous_balance_raw}", String.valueOf(before),
+                "{previous_shards}", formatShards(before),
+                "{previous_shards_compact}", formatShardsCompact(before)
+        )));
 
         Player target = Bukkit.getPlayer(account.uuid());
         if (target != null && !target.equals(sender)) {
-            target.sendMessage(ColorUtils.toComponent("&aYour shards were updated by &f"
-                    + sender.getName() + "&a. &7Balance: &f" + formatShards(after)));
+            String receivedKey = switch (mode) {
+                case ADD -> "BALANCE.ADMIN.ADD-SHARDS-RECEIVED";
+                case REMOVE -> "BALANCE.ADMIN.REMOVE-SHARDS-RECEIVED";
+                case SET -> "BALANCE.ADMIN.SET-SHARDS-RECEIVED";
+            };
+            target.sendMessage(ColorUtils.toComponent(plugin.getConfigManager().getMessage(
+                    receivedKey,
+                    "{admin}", sender.getName(),
+                    "{player}", account.displayName(),
+                    "{amount}", compactAmount(amount),
+                    "{amount_full}", fullAmount(amount),
+                    "{amount_shards}", formatShards(amount),
+                    "{amount_raw}", String.valueOf(amount),
+                    "{shards}", formatShards(after),
+                    "{shards_compact}", formatShardsCompact(after),
+                    "{balance}", formatShards(after),
+                    "{balance_raw}", String.valueOf(after),
+                    "{previous_balance}", formatShards(before),
+                    "{previous_balance_raw}", String.valueOf(before),
+                    "{previous_shards}", formatShards(before),
+                    "{previous_shards_compact}", formatShardsCompact(before)
+            )));
         }
 
         return true;
@@ -113,6 +158,18 @@ public class ShardAdminCommand implements CommandExecutor {
 
     private String formatShards(long amount) {
         return plugin.getCurrencyManager().formatShards(amount);
+    }
+
+    private String formatShardsCompact(long amount) {
+        return plugin.getCurrencyManager().formatShardsCompact(amount);
+    }
+
+    private String compactAmount(long amount) {
+        return plugin.getCurrencyManager().formatCompactAmount(CurrencyManager.CurrencyType.SHARDS, amount);
+    }
+
+    private String fullAmount(long amount) {
+        return plugin.getCurrencyManager().formatAmount(CurrencyManager.CurrencyType.SHARDS, amount);
     }
 
     private enum Mode {
