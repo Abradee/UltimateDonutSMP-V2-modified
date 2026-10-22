@@ -433,6 +433,16 @@ public class OrdersManager {
         return config().getBoolean("DELIVERY.CLAIMS_ENABLED", true);
     }
 
+    public boolean isExtraEnchantmentLoreEnabled() {
+        if (config().contains("SETTINGS.EXTRA_ENCHANTMENT_LORE")) {
+            return config().getBoolean("SETTINGS.EXTRA_ENCHANTMENT_LORE", true);
+        }
+        if (config().contains("GUI.EXTRA_ENCHANTMENT_LORE")) {
+            return config().getBoolean("GUI.EXTRA_ENCHANTMENT_LORE", true);
+        }
+        return true;
+    }
+
     public void processAutoClaims(Player player) {
         if (player == null || !player.isOnline()) {
             return;
