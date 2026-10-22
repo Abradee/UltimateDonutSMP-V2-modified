@@ -2194,6 +2194,19 @@ MESSAGES:
       SET-MONEY-SUCCESS: "&aSet &b{player}&a's balance to &f${amount}&a. jawaban:
         &f${previous_balance}&a."
       SET-MONEY-RECEIVED: "&e{admin} Set your balance to &f${amount}&e. jawaban: &f${previous_balance}&e."
+      TARGET-NOT-ENOUGH-SHARDS: "&c{player} Tidak memiliki cukup shards. saldo saat ini:
+        &#A303F9{shards}&c."
+      ADD-SHARDS-SUCCESS: "&aAdded &#A303F9{amount} &ashards to &b{player}&a. new balance:
+        &#A303F9{shards}&a."
+      ADD-SHARDS-RECEIVED: "&a{admin} Added &#A303F9{amount} &ashards to your balance. new
+        balance: &#A303F9{shards}&a."
+      REMOVE-SHARDS-SUCCESS: "&aRemoved &#A303F9{amount} &ashards from &b{player}&a. new
+        balance: &#A303F9{shards}&a."
+      REMOVE-SHARDS-RECEIVED: "&c{admin} Removed &#A303F9{amount} &cshards from your balance. new
+        balance: &#A303F9{shards}&c."
+      SET-SHARDS-SUCCESS: "&aSet &b{player}&a's shards to &#A303F9{amount}&a. jawaban:
+        &#A303F9{previous_balance}&a."
+      SET-SHARDS-RECEIVED: "&e{admin} Set your shards to &#A303F9{amount}&e. jawaban: &#A303F9{previous_balance}&e."
     PAY:
       CANT-PAY-SELF: "&cYou cannot pay yourself."
       INVALID-AMOUNT: "&cInvalid amount format. use numbers with optional k, m, or
