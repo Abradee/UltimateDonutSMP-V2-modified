@@ -30,7 +30,7 @@ public class OrdersCollectMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ORDERS-COLLECT-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         List<OrderCollectionClaim> claims = getClaims(player);
         int itemsPerPage = plugin.getOrdersManager().getCollectItemsPerPage();

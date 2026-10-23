@@ -34,7 +34,7 @@ public class TeamKickConfirmMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         if (menus().getBoolean(MENU_PATH + ".PLACEHOLDER", true)) {
-            fill(Material.BLACK_STAINED_GLASS_PANE);
+            fill("TEAM-KICK-CONFIRM-MENU", Material.BLACK_STAINED_GLASS_PANE);
         }
 
         String targetName = resolveTargetName();

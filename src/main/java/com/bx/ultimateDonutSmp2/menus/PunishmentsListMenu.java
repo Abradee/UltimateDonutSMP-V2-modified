@@ -99,7 +99,7 @@ public class PunishmentsListMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         visibleRecords.clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("PUNISHMENTS-LIST-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         if (loading) {
             buildLoadingState();

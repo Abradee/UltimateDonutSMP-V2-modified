@@ -50,7 +50,7 @@ public class EnchantSelectMenu extends BaseMenu {
         EnchantmentsManager em = plugin.getEnchantmentsManager();
 
         // 1. Fill background if enabled
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ENCHANT-SELECT-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         // 2. Preview item slot (usually 0)
         ItemStack preview = new ItemStack(material);

@@ -59,7 +59,7 @@ public class TpaConfirmMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("TPA-CONFIRM-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         FileConfiguration menus = getMenus();
 

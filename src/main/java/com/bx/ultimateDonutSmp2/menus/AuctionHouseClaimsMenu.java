@@ -28,7 +28,7 @@ public final class AuctionHouseClaimsMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("AUCTION-HOUSE-CLAIMS-MENU", Material.GRAY_STAINED_GLASS_PANE);
         claimsBySlot.clear();
 
         AuctionHouseManager manager = plugin.getAuctionHouseManager();

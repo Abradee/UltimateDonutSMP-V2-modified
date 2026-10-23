@@ -69,7 +69,7 @@ public class OrdersDeliverConfirmMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ORDERS-DELIVER-CONFIRM-MENU", Material.GRAY_STAINED_GLASS_PANE);
         OrdersManager manager = plugin.getOrdersManager();
         Order order = manager.getOrder(orderId);
         if (order == null) {

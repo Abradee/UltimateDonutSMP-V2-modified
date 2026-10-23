@@ -50,7 +50,7 @@ public class SellStatsAdminMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("SELL-STATS-ADMIN-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         int maxItemsPerPage = 45;
         double totalRevenue = plugin.getDatabaseManager().getTotalSellRevenue();

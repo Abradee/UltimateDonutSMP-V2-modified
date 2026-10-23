@@ -38,7 +38,7 @@ public class SellProgressMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("SELL-PROGRESS-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         FileConfiguration menus = plugin.getConfigManager().getMenus();
         buildTypeButton(menus);

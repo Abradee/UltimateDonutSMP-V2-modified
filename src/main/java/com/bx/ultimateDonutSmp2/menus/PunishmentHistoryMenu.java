@@ -56,7 +56,7 @@ public class PunishmentHistoryMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         visibleRecordIds.clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("PUNISHMENT-HISTORY-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         int maxItems = Math.max(1, Math.min(45, menus().getInt(MENU_PATH + ".MAX-ITEMS-PER-PAGE", 45)));
         totalItems = plugin.getPunishmentManager().countHistory(targetUuid, query);

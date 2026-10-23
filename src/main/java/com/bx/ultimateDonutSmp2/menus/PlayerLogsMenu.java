@@ -41,7 +41,7 @@ public class PlayerLogsMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("PLAYER-LOGS-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         totalItems = plugin.getDatabaseManager().getPlayerLogsCount(targetUuid);
         totalPages = Math.max(1, (int) Math.ceil(totalItems / (double) MAX_ITEMS_PER_PAGE));

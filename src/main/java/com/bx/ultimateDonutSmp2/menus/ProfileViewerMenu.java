@@ -45,7 +45,7 @@ public class ProfileViewerMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         slotActions.clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("PROFILE-VIEWER-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         snapshot = plugin.getProfileViewerManager().resolveProfile(targetUuid).orElse(null);
         if (snapshot == null) {

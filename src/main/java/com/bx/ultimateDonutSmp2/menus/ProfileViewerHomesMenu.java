@@ -51,7 +51,7 @@ public class ProfileViewerHomesMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("PROFILE-VIEWER-HOMES-MENU", Material.GRAY_STAINED_GLASS_PANE);
         slotHomes.clear();
 
         snapshot = plugin.getProfileViewerManager().resolveProfile(targetUuid).orElse(null);

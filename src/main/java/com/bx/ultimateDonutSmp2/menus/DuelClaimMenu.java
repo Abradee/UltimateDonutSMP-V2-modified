@@ -22,7 +22,7 @@ public class DuelClaimMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("DUEL-CLAIM-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         List<DuelClaim> claims = plugin.getDuelManager().getClaims(player.getUniqueId());
         int itemsPerPage = plugin.getDuelManager().getClaimsItemsPerPage();

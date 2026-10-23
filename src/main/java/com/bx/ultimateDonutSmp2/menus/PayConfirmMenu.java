@@ -68,7 +68,7 @@ public class PayConfirmMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("PAY-CONFIRM-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         org.bukkit.configuration.file.FileConfiguration menus = getMenus();
 

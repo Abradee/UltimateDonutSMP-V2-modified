@@ -180,6 +180,7 @@ TEAM-MENUS:
       LORE:
       - '&fClick to confirm'
 MEDIA-MENU:
+  PLACEHOLDER-MATERIAL: BLACK_STAINED_GLASS_PANE
   TITLE: '&8Media Rank'
   SIZE: 27
   MEDIA-BUTTON:
@@ -947,12 +948,14 @@ SELL-MENU:
     LORE:
     - '&7Click to sell items'
 WORTH-MENU:
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
   TITLE: '&8Item Prices'
   FORMAT: '&7Worth: &a${price}'
   SORT-BUTTON:
     TITLE: '&aSort'
     MATERIAL: CAULDRON
 TPA-CONFIRM-MENU:
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
   TITLE: '&8Confirm TPA {here}'
   SIZE: 27
   BUTTONS:
@@ -1026,6 +1029,7 @@ BOUNTIES-MENU:
     LORE:
     - '&o&7Click to view next page'
 BOUNTY-CONFIRM-MENU:
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
   TITLE: '&8Confirm Bounty'
   SIZE: 27
   CANCEL-BUTTON:
@@ -1044,6 +1048,7 @@ BOUNTY-CONFIRM-MENU:
     LORE:
     - '&7Click to confirm to add {amount} bounty!'
 SELL-HISTORY-MENU:
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
   TITLE: '&8Sell History'
   SIZE: 54
   MAX-ITEMS-PER-PAGE: 45
@@ -1061,6 +1066,7 @@ SELL-HISTORY-MENU:
       - '&fTotal price: &a{price}'
       - '&fTotal amount: {amount}'
 PURCHASE-SHOP-MENU:
+  PLACEHOLDER-MATERIAL: AIR
   TITLE: '&8Confirmation Menu'
   SIZE: 27
   BUTTONS:
@@ -1132,6 +1138,7 @@ PURCHASE-SHOP-MENU:
     SUCCESS: ENTITY_EXPERIENCE_ORB_PICKUP
     ERROR: ENTITY_VILLAGER_NO
 PAY-CONFIRM-MENU:
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
   TITLE: '&8Confirm Payment'
   SIZE: 27
   CONFIRM-BUTTON:
@@ -1148,6 +1155,7 @@ PAY-CONFIRM-MENU:
     TITLE: '&#00FC00{player}'
     MATERIAL: PLAYER_HEAD
 SELLALL-CONFIRM-MENU:
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
   TITLE: '&8Confirm Sell All'
   SIZE: 27
   CONFIRM-BUTTON:
@@ -1171,6 +1179,7 @@ SELLALL-CONFIRM-MENU:
     - '&7This will sell all sellable'
     - '&7items in your inventory.'
 SERVER-INFO-MENU:
+  PLACEHOLDER-MATERIAL: BLACK_STAINED_GLASS_PANE
   TITLE: '&8Server Info'
   SIZE: 27
   BUTTONS:
@@ -1486,6 +1495,7 @@ SERVER-INFO-MENU:
           - '&#00A4FCCommand: &f/media'
           COMMAND: media
 RULES-MENU:
+  PLACEHOLDER-MATERIAL: BLACK_STAINED_GLASS_PANE
   TITLE: '&8Rules'
   SIZE: 27
   BUTTONS:
@@ -2053,3 +2063,26 @@ VOICE-CHAT-CONSENT-MENU:
     SLOT: 15
     LORE:
     - '&fVoice chat will stay disabled'
+
+CONFIRM-KILL-MENU:
+  TITLE: '&8Confirm kill'
+  SIZE: 27
+  PLACEHOLDER-MATERIAL: GRAY_STAINED_GLASS_PANE
+  CANCEL-BUTTON:
+    TITLE: '&cCancel'
+    MATERIAL: RED_STAINED_GLASS_PANE
+    SLOT: 11
+    LORE:
+    - '&7Click to cancel and live.'
+  CONFIRM-BUTTON:
+    TITLE: '&aConfirm'
+    MATERIAL: LIME_STAINED_GLASS_PANE
+    SLOT: 15
+    LORE:
+    - '&7Click to confirm kill.'
+  SKULL-BUTTON:
+    TITLE: '&cKill yourself'
+    MATERIAL: SKELETON_SKULL
+    SLOT: 13
+    LORE:
+    - '&7This will kill your character.'

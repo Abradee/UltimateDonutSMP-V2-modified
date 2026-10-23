@@ -30,7 +30,7 @@ public class LeaderboardMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         clickableTypes.clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("LEADERBOARDS-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         ConfigurationSection buttons = plugin.getConfigManager().getMenus().getConfigurationSection(MENU_PATH + ".BUTTONS");
         if (buttons == null) {

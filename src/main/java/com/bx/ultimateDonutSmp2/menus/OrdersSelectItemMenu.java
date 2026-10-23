@@ -41,7 +41,7 @@ public class OrdersSelectItemMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ORDERS-SELECT-ITEM-MENU", Material.GRAY_STAINED_GLASS_PANE);
         OrderUiState state = plugin.getOrdersManager().getUiState(player.getUniqueId());
         state.itemPage(page - 1);
         List<OrderCatalogEntry> entries = entries(state);

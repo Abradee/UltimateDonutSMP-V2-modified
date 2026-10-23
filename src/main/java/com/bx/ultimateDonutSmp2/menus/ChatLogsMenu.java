@@ -45,7 +45,7 @@ public class ChatLogsMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("CHAT-LOGS-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         totalItems = plugin.getDatabaseManager()
                 .getLogsByTypeCount(targetUuid, PlayerLogsManager.PUBLIC_CHAT_TYPE);

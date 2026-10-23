@@ -574,12 +574,23 @@ public class ItemUtils {
     private record TextureProfileData(UUID profileId, String profileName, URL skinUrl) {
     }
 
+    public static boolean isAir(Material material) {
+        return material == null || material == Material.AIR || material == Material.CAVE_AIR || material == Material.VOID_AIR;
+    }
+
     public static ItemStack createPlaceholder(Material material) {
+        if (isAir(material)) {
+            return new ItemStack(Material.AIR);
+        }
         ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName("");
-            item.setItemMeta(meta);
+        try {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName("");
+                item.setItemMeta(meta);
+            }
+        } catch (Throwable ignored) {
+            // Headless unit tests without Bukkit.server
         }
         return item;
     }
@@ -597,11 +608,15 @@ public class ItemUtils {
     }
 
     public static Material parseMaterial(String name) {
-        if (name == null || name.isEmpty()) return Material.STONE;
+        return parseMaterial(name, Material.STONE);
+    }
+
+    public static Material parseMaterial(String name, Material fallback) {
+        if (name == null || name.isEmpty()) return fallback;
         try {
             return Material.valueOf(name.toUpperCase(Locale.ROOT).trim());
         } catch (IllegalArgumentException e) {
-            return Material.STONE;
+            return fallback;
         }
     }
 
@@ -669,6 +684,9 @@ public class ItemUtils {
     }
 
     public static void fillInventory(org.bukkit.inventory.Inventory inventory, Material material) {
+        if (inventory == null || isAir(material)) {
+            return;
+        }
         ItemStack filler = createPlaceholder(material);
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null) {
