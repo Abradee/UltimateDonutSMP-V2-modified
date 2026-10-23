@@ -40,7 +40,7 @@ public class OrdersSearchItemMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ORDERS-SEARCH-ITEM-MENU", Material.GRAY_STAINED_GLASS_PANE);
         OrderUiState state = plugin.getOrdersManager().getUiState(player.getUniqueId());
         state.itemSearch(query);
         state.itemPage(page - 1);

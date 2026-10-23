@@ -24,7 +24,7 @@ public class SellAllConfirmMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill(MENU_PATH, Material.GRAY_STAINED_GLASS_PANE);
 
         FileConfiguration menus = plugin.getConfigManager().getMenus();
 

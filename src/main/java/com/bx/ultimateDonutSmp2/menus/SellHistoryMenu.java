@@ -39,7 +39,7 @@ public class SellHistoryMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("SELL-HISTORY-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         FileConfiguration menus = plugin.getConfigManager().getMenus();
         int maxItems = menus.getInt("SELL-HISTORY-MENU.MAX-ITEMS-PER-PAGE", 45);

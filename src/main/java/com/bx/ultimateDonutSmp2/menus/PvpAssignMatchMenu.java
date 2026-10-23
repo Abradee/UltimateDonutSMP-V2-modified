@@ -42,7 +42,7 @@ public class PvpAssignMatchMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.BLACK_STAINED_GLASS_PANE);
+        fill("PVP-ASSIGN-MATCH-MENU", Material.BLACK_STAINED_GLASS_PANE);
 
         List<PvpKit> kits = plugin.getPvpManager().getKits();
         if (kitId == null && !kits.isEmpty()) {

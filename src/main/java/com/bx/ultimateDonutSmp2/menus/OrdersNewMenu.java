@@ -26,7 +26,7 @@ public class OrdersNewMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ORDERS-NEW-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         OrdersManager manager = plugin.getOrdersManager();
         OrdersManager.NewOrderSession session = manager.getOrCreateNewOrderSession(player.getUniqueId());

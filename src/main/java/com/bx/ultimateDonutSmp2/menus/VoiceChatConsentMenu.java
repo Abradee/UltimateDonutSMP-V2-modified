@@ -25,7 +25,7 @@ public class VoiceChatConsentMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("VOICE-CHAT-CONSENT-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         set(slot("INFO-BUTTON", 13), button("INFO-BUTTON", Material.JUKEBOX,
                 "&bVoice Chat Policy", List.of("&7Read this before you choose.")));

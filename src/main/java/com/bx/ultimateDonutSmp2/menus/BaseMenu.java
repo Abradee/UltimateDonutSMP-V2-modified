@@ -96,8 +96,27 @@ public abstract class BaseMenu implements InventoryHolder {
         return inventory;
     }
 
+    protected Material getPlaceholderMaterial(String menuPath, Material defaultMaterial) {
+        if (menuPath == null || menuPath.isBlank()) {
+            return defaultMaterial;
+        }
+        org.bukkit.configuration.file.FileConfiguration menus = plugin.getConfigManager().getMenus();
+        if (menus == null) {
+            return defaultMaterial;
+        }
+        String configured = menus.getString(menuPath + ".PLACEHOLDER-MATERIAL");
+        if (configured == null || configured.isBlank()) {
+            return defaultMaterial;
+        }
+        return ItemUtils.parseMaterial(configured, defaultMaterial);
+    }
+
     protected void fill(Material material) {
         ItemUtils.fillInventory(inventory, material);
+    }
+
+    protected void fill(String menuPath, Material defaultMaterial) {
+        fill(getPlaceholderMaterial(menuPath, defaultMaterial));
     }
 
     protected void set(int slot, ItemStack item) {

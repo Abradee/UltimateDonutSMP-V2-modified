@@ -35,7 +35,7 @@ public class TeleportAreaDeleteConfirmMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         slotActions.clear();
-        fill(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+        fill("TELEPORT-AREA-DELETE-CONFIRM-MENU", Material.LIGHT_GRAY_STAINED_GLASS_PANE);
 
         if (area == null) {
             return;

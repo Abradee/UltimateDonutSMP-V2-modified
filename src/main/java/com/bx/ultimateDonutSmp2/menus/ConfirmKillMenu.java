@@ -23,7 +23,7 @@ public class ConfirmKillMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("CONFIRM-KILL-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         String cancelTitle = plugin.getConfigManager().getMenus().getString("CONFIRM-KILL-MENU.CANCEL-BUTTON.TITLE", "&cCancel");
         String cancelMaterialStr = plugin.getConfigManager().getMenus().getString("CONFIRM-KILL-MENU.CANCEL-BUTTON.MATERIAL", "RED_STAINED_GLASS_PANE");

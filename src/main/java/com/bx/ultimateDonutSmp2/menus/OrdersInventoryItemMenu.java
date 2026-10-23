@@ -32,7 +32,7 @@ public class OrdersInventoryItemMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("ORDERS-INVENTORY-ITEM-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         int lastRow = inventory.getSize() - 9;
         set(11, ItemUtils.createItem(

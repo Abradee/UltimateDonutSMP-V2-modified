@@ -423,6 +423,7 @@ TEAM-MENUS:
 | :--- | :--- | :--- | :--- | :--- |
 | `MEDIA-MENU.TITLE` | `string` | Any text | `&8Media Rank` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `MEDIA-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `MEDIA-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `BLACK_STAINED_GLASS_PANE` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 
 ### `MEDIA-MENU.MEDIA-BUTTON`
 
@@ -1464,6 +1465,7 @@ WORTH-MENU:
 | :--- | :--- | :--- | :--- | :--- |
 | `TPA-CONFIRM-MENU.TITLE` | `string` | Any text | `&8Confirm TPA {here}` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `TPA-CONFIRM-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `TPA-CONFIRM-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `GRAY_STAINED_GLASS_PANE` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 
 ### `TPA-CONFIRM-MENU.BUTTONS`
 
@@ -1719,6 +1721,7 @@ BOUNTY-CONFIRM-MENU:
 | :--- | :--- | :--- | :--- | :--- |
 | `SELL-HISTORY-MENU.TITLE` | `string` | Any text | `&8Sell History` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `SELL-HISTORY-MENU.SIZE` | `integer` | Any integer | `54` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `SELL-HISTORY-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `GRAY_STAINED_GLASS_PANE` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 | `SELL-HISTORY-MENU.MAX-ITEMS-PER-PAGE` | `integer` | Any integer | `45` | Max items per page. |
 
 ### `SELL-HISTORY-MENU.BUTTONS`
@@ -1800,6 +1803,7 @@ SELL-HISTORY-MENU:
 | :--- | :--- | :--- | :--- | :--- |
 | `PURCHASE-SHOP-MENU.TITLE` | `string` | Any text | `&8Confirmation Menu` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `PURCHASE-SHOP-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `PURCHASE-SHOP-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `AIR` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 
 ### `PURCHASE-SHOP-MENU.BUTTONS`
 
@@ -2132,6 +2136,7 @@ PAY-CONFIRM-MENU:
 | :--- | :--- | :--- | :--- | :--- |
 | `SELLALL-CONFIRM-MENU.TITLE` | `string` | Any text | `&8Confirm Sell All` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `SELLALL-CONFIRM-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `SELLALL-CONFIRM-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `GRAY_STAINED_GLASS_PANE` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 
 ### `SELLALL-CONFIRM-MENU.CONFIRM-BUTTON`
 
@@ -2239,6 +2244,7 @@ SELLALL-CONFIRM-MENU:
 | :--- | :--- | :--- | :--- | :--- |
 | `SERVER-INFO-MENU.TITLE` | `string` | Any text | `&8Server Info` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `SERVER-INFO-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `SERVER-INFO-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `BLACK_STAINED_GLASS_PANE` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 
 ### `SERVER-INFO-MENU.BUTTONS`
 
@@ -2453,6 +2459,7 @@ SERVER-INFO-MENU:
 | :--- | :--- | :--- | :--- | :--- |
 | `RULES-MENU.TITLE` | `string` | Any text | `&8Rules` | Title text. Supports `&` colours and `&#RRGGBB` hex. |
 | `RULES-MENU.SIZE` | `integer` | Any integer | `27` | Chest size. Must be a multiple of 9 between 9 and 54. |
+| `RULES-MENU.PLACEHOLDER-MATERIAL` | `string` | Any text | `BLACK_STAINED_GLASS_PANE` | Bukkit `Material` name for background filler panes. Set to `AIR` to leave slots empty. |
 
 ### `RULES-MENU.BUTTONS`
 

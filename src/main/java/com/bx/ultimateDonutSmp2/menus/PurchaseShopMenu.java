@@ -68,6 +68,7 @@ public class PurchaseShopMenu extends BaseMenu {
             quantity = restriction.defaultQuantity();
         }
         quantity = restriction.clamp(quantity);
+        fill("PURCHASE-SHOP-MENU", Material.AIR);
 
         buildPreviewItem(restriction);
         buildCancelButton();
@@ -105,6 +106,7 @@ public class PurchaseShopMenu extends BaseMenu {
                 playErrorSound(player);
                 player.sendMessage(ColorUtils.toComponent(resolveErrorMessage(result)));
                 quantity = restriction.clamp(quantity);
+        fill("PURCHASE-SHOP-MENU", Material.AIR);
                 build(player);
             }
             return;

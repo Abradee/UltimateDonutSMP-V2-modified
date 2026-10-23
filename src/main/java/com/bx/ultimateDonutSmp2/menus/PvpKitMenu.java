@@ -39,7 +39,7 @@ public class PvpKitMenu extends BaseMenu {
     public void build(Player player) {
         clear();
         slotKits.clear();
-        fill(Material.BLACK_STAINED_GLASS_PANE);
+        fill("PVP-KIT-MENU", Material.BLACK_STAINED_GLASS_PANE);
 
         List<PvpKit> kits = plugin.getPvpManager().getAvailableKits(player);
         if (kits.isEmpty()) {

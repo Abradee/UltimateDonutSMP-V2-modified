@@ -46,7 +46,7 @@ public class PvpMatchHistoryMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.BLACK_STAINED_GLASS_PANE);
+        fill("PVP-MATCH-HISTORY-MENU", Material.BLACK_STAINED_GLASS_PANE);
 
         PvpMatchManager matches = plugin.getPvpMatchManager();
         int total = matches.countHistory(targetUuid);

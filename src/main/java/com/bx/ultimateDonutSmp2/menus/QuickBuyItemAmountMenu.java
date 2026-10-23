@@ -47,7 +47,7 @@ public class QuickBuyItemAmountMenu extends BaseMenu {
 
     @Override
     public void build(Player player) {
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("QUICK-BUY-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         int max = material.getMaxStackSize();
         ItemStack displayStack = new ItemStack(material, Math.min(max, amount));

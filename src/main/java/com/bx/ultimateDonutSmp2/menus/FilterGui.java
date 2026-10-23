@@ -34,7 +34,7 @@ public final class FilterGui extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("FILTER-MENU", Material.GRAY_STAINED_GLASS_PANE);
         categorySlots.clear();
 
         AuctionCategory[] categories = {

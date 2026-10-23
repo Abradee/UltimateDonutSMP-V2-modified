@@ -40,7 +40,7 @@ public class TeamInfoMenu extends BaseMenu {
     @Override
     public void build(Player player) {
         clear();
-        fill(Material.GRAY_STAINED_GLASS_PANE);
+        fill("TEAM-INFO-MENU", Material.GRAY_STAINED_GLASS_PANE);
 
         List<UUID> members = orderMembers(team, memberUuid -> realName(memberUuid, null));
         int perPage = Math.max(1, menus().getInt(MENU_PATH + ".MAX-ITEMS-PER-PAGE", 45));
