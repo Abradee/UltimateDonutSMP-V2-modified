@@ -366,6 +366,10 @@ public class ShopManager {
                 .getBoolean("SHOP-GUI.FAVORITES.ENABLED", true);
     }
 
+    public boolean shouldDropItemsIfFull() {
+        return plugin.getConfigManager().getShop().getBoolean("SETTINGS.DROP-ITEMS-IF-FULL", true);
+    }
+
     public boolean toggleFavorite(UUID playerId, ShopItem item) {
         if (!areFavoritesEnabled()) {
             return false;
@@ -796,7 +800,7 @@ public class ShopManager {
 
     /**
      * @param ceiling when true, keep listings whose unit price is strictly below {@code bound};
-     *                when false, keep listings at or above {@code bound} (a non-positive bound allows any price)
+     *                 when false, keep listings at or above {@code bound} (a non-positive bound allows any price)
      */
     private AuctionListing cheapestQuickBuyListing(
             Player buyer,
@@ -955,19 +959,33 @@ public class ShopManager {
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.OUT_OF_STOCK", "&cOut of stock! No auction listings available."), 0, 0));
         }
 
+        ItemStack stack = entry.createItem(entry.buyAmount());
+
+        if (!shouldDropItemsIfFull()) {
+            if (!canFitQuickBuyStack(buyer.getInventory().getStorageContents(), stack, stack.getMaxStackSize())) {
+                return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
+                        plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.INVENTORY_FULL", "&cYour inventory is full!"), 0, 0));
+            }
+        }
+
         double price = pricePaidFor(quote);
         if (!plugin.getEconomyManager().has(buyer, price)) {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
-        ItemStack stack = entry.createItem(entry.buyAmount());
+
         var withdraw = plugin.getEconomyManager().withdraw(buyer, price, EconomyReason.SHOP_PURCHASE);
         if (!withdraw.success()) {
             return CompletableFuture.completedFuture(new QuickBuyExecutionResult(false,
                     plugin.getConfigManager().getMessageOrDefault("QUICK_BUY.NO_MONEY", "&cYou do not have enough money!"), 0, 0));
         }
-        buyer.getInventory().addItem(stack).values().forEach(leftover ->
-                buyer.getWorld().dropItemNaturally(buyer.getLocation(), leftover));
+
+        Map<Integer, ItemStack> leftovers = buyer.getInventory().addItem(stack);
+        if (shouldDropItemsIfFull()) {
+            leftovers.values().forEach(leftover ->
+                    buyer.getWorld().dropItemNaturally(buyer.getLocation(), leftover));
+        }
+
         PlayerData data = plugin.getPlayerDataManager().get(buyer);
         if (data != null) {
             data.addMoneySpent(price);
@@ -1372,6 +1390,8 @@ public class ShopManager {
             return RewardDeliveryResult.ok();
         }
 
+        boolean dropIfFull = shouldDropItemsIfFull();
+
         if (item.isAmethystToolReward()) {
             if (!isAmethystRewardAvailable(item)) {
                 return RewardDeliveryResult.failure("amethyst tools is disabled or the configured tool is unavailable.");
@@ -1395,14 +1415,20 @@ public class ShopManager {
             }
             plugin.getWorthManager().stripStorageWorthDisplayForNativePickup(player);
             for (ItemStack reward : rewards) {
-                player.getInventory().addItem(reward).values().forEach(left ->
-                        player.getWorld().dropItemNaturally(player.getLocation(), left));
+                Map<Integer, ItemStack> leftover = player.getInventory().addItem(reward);
+                if (dropIfFull) {
+                    leftover.values().forEach(left ->
+                            player.getWorld().dropItemNaturally(player.getLocation(), left));
+                }
             }
         } else {
             plugin.getWorthManager().stripStorageWorthDisplayForNativePickup(player);
             ItemStack stack = createPurchasedItem(item, quantity);
-            player.getInventory().addItem(stack).values().forEach(left ->
-                    player.getWorld().dropItemNaturally(player.getLocation(), left));
+            Map<Integer, ItemStack> leftover = player.getInventory().addItem(stack);
+            if (dropIfFull) {
+                leftover.values().forEach(left ->
+                        player.getWorld().dropItemNaturally(player.getLocation(), left));
+            }
         }
 
         plugin.getWorthManager().syncWorthDisplay(player);
@@ -1542,6 +1568,12 @@ public class ShopManager {
 
         if (item.isAmethystToolReward() && !isAmethystRewardAvailable(item)) {
             return failPurchase(item, amount, item.pricePerUnit() * amount, PurchaseFailureReason.INVALID_ITEM);
+        }
+
+        if (!shouldDropItemsIfFull() && shouldDeliverConfiguredItem(item)) {
+            if (!canFitPurchasedItem(player, item, amount)) {
+                return failPurchase(item, amount, item.pricePerUnit() * amount, PurchaseFailureReason.INVENTORY_FULL);
+            }
         }
 
         PlayerData data = plugin.getPlayerDataManager().get(player);
