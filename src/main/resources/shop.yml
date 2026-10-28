@@ -3,6 +3,12 @@
 # /shop is modern DonutSMP Quick Buy with full Auction House integration.
 # ==============================================================================
 
+SETTINGS:
+  # If on true make sure you have a safeguard for people
+  # who are spam buying things on shop because it might
+  # lag your server.
+  DROP-ITEMS-IF-FULL: true
+
 # Shard Shop Menu (/shardshop) — layout locked to Design/Shards Shop
 SHARD-MENU:
   TITLE: "&8Shard Shop"
@@ -498,8 +504,6 @@ SHARD-MENU:
     MAX-QUANTITY: 1
     DEFAULT-QUANTITY: 1
     HIDE-QUANTITY-BUTTONS: true
-
-# Configuration section for Shop Web Analytics Server
 
 # Configuration section for Shop Web Analytics Server
 SHOP-GUI:
